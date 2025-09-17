@@ -1,4 +1,6 @@
-﻿using ExampleLib.UnitTests.Helpers;
+﻿using System.IO;
+
+using ExampleLib.UnitTests.Helpers;
 
 using Xunit;
 
@@ -48,5 +50,56 @@ public class FileUtilTests
 
         string actual = File.ReadAllText(file.Path);
         Assert.Equal("", actual);
+    }
+
+    [Fact]
+    public void CanSetLineNumbersToEmptyFile()
+    {
+        using TempFile file = TempFile.Create(string.Empty);
+        FileUtil.AddLineNumbers(file.Path);
+
+        string result = File.ReadAllText(file.Path);
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public void CanSetNumbersToSingleLineFile()
+    {
+        const string baseText = "Second line";
+        using TempFile file = TempFile.Create(baseText);
+        FileUtil.AddLineNumbers(file.Path);
+
+        string[] result = File.ReadAllLines(file.Path);
+        Assert.Single(result);
+        Assert.Equal("1. Second line", result[0]);
+    }
+
+
+    [Fact]
+    public void CanSetNumbersToMultiLineFile()
+    {
+        const string baseText = "First line\nSecond line\nThird line";
+        using TempFile file = TempFile.Create(baseText);
+        FileUtil.AddLineNumbers(file.Path);
+
+        string[] result = File.ReadAllLines(file.Path);
+        Assert.Equal(3, result.Length);
+        Assert.Equal("1. First line", result[0]);
+        Assert.Equal("2. Second line", result[1]);
+        Assert.Equal("3. Third line", result[2]);
+    }
+
+    [Fact]
+    public void CanSetNumbersToFileWithEmptyLines()
+    {
+        const string baseText = "First line\n\nThird line";
+        using TempFile file = TempFile.Create(baseText);
+        FileUtil.AddLineNumbers(file.Path);
+
+        string[] result = File.ReadAllLines(file.Path);
+        Assert.Equal(3, result.Length);
+        Assert.Equal("1. First line", result[0]);
+        Assert.Equal("2. ", result[1]);
+        Assert.Equal("3. Third line", result[2]);
     }
 }

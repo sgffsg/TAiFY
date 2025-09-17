@@ -26,4 +26,23 @@ public static class FileUtil
             }
         }
     }
+
+    public static void AddLineNumbers(string path)
+    {
+        string[] lines = File.ReadAllLines(path, Encoding.UTF8);
+
+        using (FileStream file = new FileStream(path, FileMode.Truncate, FileAccess.Write))
+        {
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string numericLine = $"{i + 1}. {lines[i]}";
+                byte[] bytes = Encoding.UTF8.GetBytes(numericLine);
+                file.Write(bytes, 0, bytes.Length);
+                if (i < lines.Length - 1)
+                {
+                    file.Write("\n"u8);
+                }
+            }
+        }
+    }
 }

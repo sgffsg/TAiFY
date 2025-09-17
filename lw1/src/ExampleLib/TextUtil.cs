@@ -10,6 +10,17 @@ public static class TextUtil
     // Символы Unicode, которые мы принимаем как апостроф.
     private static readonly Rune[] Apostrophes = [new Rune('\''), new Rune('`')];
 
+    private static Dictionary<Rune, int> RomanValues = new Dictionary<Rune, int>
+    {
+        { new Rune('I'), 1 },
+        { new Rune('V'), 5 },
+        { new Rune('X'), 10 },
+        { new Rune('L'), 50 },
+        { new Rune('C'), 100 },
+        { new Rune('D'), 500 },
+        { new Rune('M'), 1000 }
+    };
+
     // Состояния распознавателя слов.
     private enum WordState
     {
@@ -126,5 +137,97 @@ public static class TextUtil
                 currentWord.Clear();
             }
         }
+    }
+
+
+    public static int ParseRoman(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+        {
+            throw new ArgumentException("Пустая строка не является допустимым римским числом");
+        }
+
+
+        int result = 0;
+        int prevValue = 0;
+        Rune prevRune = default;
+        int repeatCount = 1; // Начинаем с 1 для первого символа
+
+        foreach (Rune currentRune in text.EnumerateRunes())
+        {
+            if (!RomanValues.ContainsKey(currentRune))
+            {
+                throw new ArgumentException($"Недопустимый символ '{currentRune}' в римском числе");
+            }
+
+            int currentValue = RomanValues[currentRune];
+
+            // Проверяем повторение символов
+            if (currentRune.Equals(prevRune))
+            {
+                repeatCount++;
+
+                // Проверяем правила повторения
+                Rune v = new Rune('V');
+                Rune l = new Rune('L');
+                Rune d = new Rune('D');
+
+                if ((currentRune.Equals(v) || currentRune.Equals(l) || currentRune.Equals(d)) && repeatCount > 1)
+                {
+                    throw new ArgumentException($"Цифра '{currentRune}' не может повторяться");
+                }
+
+                if (repeatCount > 3)
+                {
+                    throw new ArgumentException($"Цифра '{currentRune}' не может повторяться более 3 раз");
+                }
+            }
+            else
+            {
+                repeatCount = 1; // Сбрасываем счетчик для нового символа
+            }
+
+            // Обрабатываем вычитательную нотацию
+            if (prevValue < currentValue)
+            {
+                if (!IsValidSubtraction(prevRune, currentRune))
+                {
+                    throw new ArgumentException($"Недопустимая комбинация '{prevRune}{currentRune}' для вычитания");
+                }
+
+                // Вычитаем дважды предыдущее значение (так как мы его уже добавили)
+                result += currentValue - 2 * prevValue;
+            }
+            else
+            {
+                result += currentValue;
+            }
+
+            prevValue = currentValue;
+            prevRune = currentRune;
+        }
+
+        if (result < 0 || result > 3000)
+        {
+            throw new ArgumentException($"Число {result} выходит за допустимый диапазон 0-3000");
+        }
+
+        return result;
+    }
+
+    private static bool IsValidSubtraction(Rune smaller, Rune larger)
+    {
+        // Допустимые комбинации для вычитания
+        Rune i = new Rune('I');
+        Rune v = new Rune('V');
+        Rune x = new Rune('X');
+        Rune l = new Rune('L');
+        Rune c = new Rune('C');
+        Rune d = new Rune('D');
+        Rune m = new Rune('M');
+
+        return (smaller.Equals(i) && (larger.Equals(v) || larger.Equals(x))) ||
+               (smaller.Equals(x) && (larger.Equals(l) || larger.Equals(c))) ||
+               (smaller.Equals(c) && (larger.Equals(d) || larger.Equals(m)));
     }
 }
