@@ -36,10 +36,9 @@
               "RelativeDocumentMoniker": "tests\\ExampleLib.UnitTests\\TextUtilTest.cs",
               "ToolTip": "C:\\Users\\Sakata\\RiderProjects\\TAiFY\\lw1\\tests\\ExampleLib.UnitTests\\TextUtilTest.cs",
               "RelativeToolTip": "tests\\ExampleLib.UnitTests\\TextUtilTest.cs",
-              "ViewState": "AgIAAJQAAAAAAAAAAADwv6QAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIoAAAAAAAAAAAAUwHoAAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T04:55:22.87Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T04:55:22.87Z"
             },
             {
               "$type": "Document",
@@ -47,9 +46,9 @@
               "Title": "TextUtil.cs",
               "DocumentMoniker": "C:\\Users\\Sakata\\RiderProjects\\TAiFY\\lw1\\src\\ExampleLib\\TextUtil.cs",
               "RelativeDocumentMoniker": "src\\ExampleLib\\TextUtil.cs",
-              "ToolTip": "C:\\Users\\Sakata\\RiderProjects\\TAiFY\\lw1\\src\\ExampleLib\\TextUtil.cs*",
-              "RelativeToolTip": "src\\ExampleLib\\TextUtil.cs*",
-              "ViewState": "AgIAANAAAAAAAAAAAADwv5QAAAAAAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Sakata\\RiderProjects\\TAiFY\\lw1\\src\\ExampleLib\\TextUtil.cs",
+              "RelativeToolTip": "src\\ExampleLib\\TextUtil.cs",
+              "ViewState": "AgIAALIAAAAAAAAAAADwv8AAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-17T04:28:31.995Z",
               "EditorCaption": ""
@@ -62,10 +61,9 @@
               "RelativeDocumentMoniker": "src\\ExampleLib\\FileUtil.cs",
               "ToolTip": "C:\\Users\\Sakata\\RiderProjects\\TAiFY\\lw1\\src\\ExampleLib\\FileUtil.cs",
               "RelativeToolTip": "src\\ExampleLib\\FileUtil.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAgwB0AAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T03:55:40.942Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T03:55:40.942Z"
             },
             {
               "$type": "Document",
@@ -75,10 +73,9 @@
               "RelativeDocumentMoniker": "tests\\ExampleLib.UnitTests\\FileUtilTests.cs",
               "ToolTip": "C:\\Users\\Sakata\\RiderProjects\\TAiFY\\lw1\\tests\\ExampleLib.UnitTests\\FileUtilTests.cs",
               "RelativeToolTip": "tests\\ExampleLib.UnitTests\\FileUtilTests.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAswCIAAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAAFkAAAAAAAAAAAAAAGcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T03:58:16.319Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T03:58:16.319Z"
             }
           ]
         }
