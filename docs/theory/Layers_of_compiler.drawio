@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0" version="28.2.4">
+  <diagram name="Страница — 1" id="zyCq1lVbxSobevNedpDp">
+    <mxGraphModel dx="562" dy="718" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="94oAqXB5yNNSihAf_de7-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="94oAqXB5yNNSihAf_de7-1" target="94oAqXB5yNNSihAf_de7-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-1" value="Логический анализ" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="300" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="94oAqXB5yNNSihAf_de7-2" target="94oAqXB5yNNSihAf_de7-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-2" value="Синтаксический анализ" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="410" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="94oAqXB5yNNSihAf_de7-3" target="94oAqXB5yNNSihAf_de7-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-3" value="Семантический анализ" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="524.5" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="94oAqXB5yNNSihAf_de7-4" target="94oAqXB5yNNSihAf_de7-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-4" value="Генерация промежуточного кода" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="640" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="94oAqXB5yNNSihAf_de7-6" target="94oAqXB5yNNSihAf_de7-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-6" value="Генерация машинного кода" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="760" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-11" value="Поток токенов" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="400" y="370" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-12" value="AST (абстрактное синтаксическое дерево)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="480" width="170" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-14" value="Аннотированное AST" style="text;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="407" y="595" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-15" value="IR (промежуточное представление)" style="text;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="180" y="714" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-17" value="Результат" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="880" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="94oAqXB5yNNSihAf_de7-19" value="Машинный код" style="text;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="836" width="210" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
