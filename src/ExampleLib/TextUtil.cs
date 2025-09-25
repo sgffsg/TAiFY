@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using System.Text;
 
@@ -12,20 +13,6 @@ public static class TextUtil
 
     // Символы Unicode, которые мы принимаем как апостроф.
     private static readonly Rune[] Apostrophes = [new Rune('\''), new Rune('`')];
-
-
-    private static readonly Dictionary<Rune, int> RomanValues = new Dictionary<Rune, int>
-    {
-        { new Rune('I'), 1 },
-        { new Rune('V'), 5 },
-        { new Rune('X'), 10 },
-        { new Rune('L'), 50 },
-        { new Rune('C'), 100 },
-        { new Rune('D'), 500 },
-        { new Rune('M'), 1000 },
-    };
-
-
 
     // Состояния распознавателя слов.
     private enum WordState
@@ -145,99 +132,106 @@ public static class TextUtil
         }
     }
 
-    public static int ParseRoman(string text)
+    public struct RomanProcessData
     {
-        if (string.IsNullOrEmpty(text))
+        public char UnitSymbol;
+        public char FiveSymbol;
+        public char TenSymbol;
+
+        public RomanProcessData(char unitSymbol, char fiveSymbol, char tenSymbol)
         {
-            throw new ArgumentException("Пустая строка не является валидным римским числом");
+            this.UnitSymbol = unitSymbol;
+            this.FiveSymbol = fiveSymbol;
+            this.TenSymbol = tenSymbol;
         }
-
-        int result = 0;
-        int prevValue = 0;
-        int repeatCount = 1;
-        Rune prevRune = default;
-
-        foreach (Rune currentRune in text.EnumerateRunes())
-        {
-            if (currentRune.Value >= 'a' && currentRune.Value <= 'z')
-            {
-                throw new ArgumentException($"Строчные буквы не допускаются: '{currentRune}'");
-            }
-
-            if (!RomanValues.ContainsKey(currentRune))
-            {
-                throw new ArgumentException($"Недопустимый символ '{currentRune}' для представления римского числа");
-            }
-
-            int currentValue = RomanValues[currentRune];
-
-            if (currentRune.Equals(prevRune))
-            {
-                repeatCount++;
-
-                if (currentValue == 5 || currentValue == 50 || currentValue == 500)
-                {
-                    throw new ArgumentException($"Цифра '{currentRune}' не может повторяться");
-                }
-
-                if (repeatCount > 3)
-                {
-                    throw new ArgumentException($"Цифра '{currentRune}' не может повторяться более 3 раз");
-                }
-            }
-            else
-            {
-                repeatCount = 1;
-            }
-
-            if (prevValue < currentValue && prevValue != 0)
-            {
-                if (!IsValidSubtraction(prevRune, currentRune))
-                {
-                    throw new ArgumentException($"Недопустимая комбинация '{prevRune}{currentRune}' для вычитания");
-                }
-
-                if (repeatCount > 1)
-                {
-                    throw new ArgumentException($"Нельзя вычитать повторяющиеся цифры");
-                }
-
-                result += currentValue - 2 * prevValue;
-            }
-            else
-            {
-                if (prevValue > 0 && currentValue > prevValue)
-                {
-                    throw new ArgumentException($"Недопустимый порядок цифр: '{prevRune}{currentRune}'");
-                }
-
-                result += currentValue;
-            }
-
-            prevValue = currentValue;
-            prevRune = currentRune;
-        }
-
-        if (result < 1 || result > 3000)
-        {
-            throw new ArgumentException($"Число {result} выходит за допустимый диапазон 1-3000");
-        }
-
-        return result;
     }
 
-    private static bool IsValidSubtraction(Rune prevRune, Rune currRune)
-    {
-        Rune i = new Rune('I');
-        Rune v = new Rune('V');
-        Rune x = new Rune('X');
-        Rune l = new Rune('L');
-        Rune c = new Rune('C');
-        Rune d = new Rune('D');
-        Rune m = new Rune('M');
+    private const char ROMAN_SYMBOL_ONE = 'I';
+    private const char ROMAN_SYMBOL_FIVE = 'V';
+    private const char ROMAN_SYMBOL_TEN = 'X';
+    private const char ROMAN_SYMBOL_FIFTY = 'L';
+    private const char ROMAN_SYMBOL_HUNDRED = 'C';
+    private const char ROMAN_SYMBOL_FIVE_HUNDRED = 'D';
+    private const char ROMAN_SYMBOL_THOUSAND = 'M';
 
-        return (prevRune.Equals(i) && (currRune.Equals(v) || currRune.Equals(x))) ||
-                 (prevRune.Equals(x) && (currRune.Equals(l) || currRune.Equals(c))) ||
-                   (prevRune.Equals(c) && (currRune.Equals(d) || currRune.Equals(m)));
+    private const int TEN_MODIFIER = 10;
+    private const int HUNDRED_MODIFIER = 100;
+    private const int THOUSAND_MODIFIER = 1000;
+
+    private static readonly RomanProcessData UNITS_PROCESS_DATA = new(ROMAN_SYMBOL_ONE, ROMAN_SYMBOL_FIVE, ROMAN_SYMBOL_TEN);
+    private static readonly RomanProcessData TENS_PROCESS_DATA = new(ROMAN_SYMBOL_TEN, ROMAN_SYMBOL_FIFTY, ROMAN_SYMBOL_HUNDRED);
+    private static readonly RomanProcessData HUNDREDS_PROCESS_DATA = new(ROMAN_SYMBOL_HUNDRED, ROMAN_SYMBOL_FIVE_HUNDRED, ROMAN_SYMBOL_THOUSAND);
+
+    /// <summary>
+    ///   Преобразует число из десятичной системы счисления в римскую
+    /// </summary>
+    /// <param name="value"> Принимает число от 0 до 3000 в десятичной системе счисления. </param>
+    /// <returns> Возвращает стоку в римской системе счисления. </returns>
+    /// <exception cref="ArgumentOutOfRangeException"> При выходе за пределы диапазона 0-3000 выбрасывается исключение. </exception>
+
+    public static string FormatRoman(int value)
+    {
+        StringBuilder result = new StringBuilder();
+
+        if (value < 0 || value > 3000)
+        {
+            throw new ArgumentOutOfRangeException("Число должно быть в диапазоне от 0 до 3000");
+        }
+
+        if (value == 0)
+        {
+            return "N";
+        }
+
+        int thousands = value / THOUSAND_MODIFIER;
+        result.Append('M', thousands);
+        value %= THOUSAND_MODIFIER;
+
+        int hundreds = value / HUNDRED_MODIFIER;
+        ProcessRomanDigit(result, hundreds, HUNDREDS_PROCESS_DATA);
+        value %= HUNDRED_MODIFIER;
+
+        int tens = value / TEN_MODIFIER;
+        ProcessRomanDigit(result, tens, TENS_PROCESS_DATA);
+        value %= TEN_MODIFIER;
+
+        ProcessRomanDigit(result, value, UNITS_PROCESS_DATA);
+
+        return result.ToString();
+    }
+
+    /// <summary>
+    ///   Обрабатывает цифру, в соответствии с правилами римской системы счисления.
+    /// </summary>
+    /// <param name="result"> Построитель строки для создания результата. </param>
+    /// <param name="digit"> Преобразуемая в римскую систему счисления цифра. </param>
+    /// <param name="processData"> Структура, содержащя значения единицы, середины и следующего разряда числа. </param>
+    private static void ProcessRomanDigit(StringBuilder result, int digit, RomanProcessData processData)
+    {
+        switch (digit)
+        {
+            case 1:
+            case 2:
+            case 3:
+                result.Append(processData.UnitSymbol, digit);
+                break;
+            case 4:
+                result.Append(processData.UnitSymbol);
+                result.Append(processData.FiveSymbol);
+                break;
+            case 5:
+                result.Append(processData.FiveSymbol);
+                break;
+            case 6:
+            case 7:
+            case 8:
+                result.Append(processData.FiveSymbol);
+                result.Append(processData.UnitSymbol, digit - 5);
+                break;
+            case 9:
+                result.Append(processData.UnitSymbol);
+                result.Append(processData.TenSymbol);
+                break;
+        }
     }
 }
