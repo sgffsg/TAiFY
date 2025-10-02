@@ -146,21 +146,21 @@ public static class TextUtil
         }
     }
 
-    private const char ROMAN_SYMBOL_ONE = 'I';
-    private const char ROMAN_SYMBOL_FIVE = 'V';
-    private const char ROMAN_SYMBOL_TEN = 'X';
-    private const char ROMAN_SYMBOL_FIFTY = 'L';
-    private const char ROMAN_SYMBOL_HUNDRED = 'C';
-    private const char ROMAN_SYMBOL_FIVE_HUNDRED = 'D';
-    private const char ROMAN_SYMBOL_THOUSAND = 'M';
+    private const char RomanSymbolOne = 'I';
+    private const char RomanSymbolFive = 'V';
+    private const char RomanSymbolTen = 'X';
+    private const char RomanSymbolFivty = 'L';
+    private const char RomanSymbolHundred = 'C';
+    private const char RomanSymbolFiveHundred = 'D';
+    private const char RomanSymbolThousand = 'M';
 
-    private const int TEN_MODIFIER = 10;
-    private const int HUNDRED_MODIFIER = 100;
-    private const int THOUSAND_MODIFIER = 1000;
+    private const int TenModifier = 10;
+    private const int HundredModifier = 100;
+    private const int ThousandModifier = 1000;
 
-    private static readonly RomanProcessData UNITS_PROCESS_DATA = new(ROMAN_SYMBOL_ONE, ROMAN_SYMBOL_FIVE, ROMAN_SYMBOL_TEN);
-    private static readonly RomanProcessData TENS_PROCESS_DATA = new(ROMAN_SYMBOL_TEN, ROMAN_SYMBOL_FIFTY, ROMAN_SYMBOL_HUNDRED);
-    private static readonly RomanProcessData HUNDREDS_PROCESS_DATA = new(ROMAN_SYMBOL_HUNDRED, ROMAN_SYMBOL_FIVE_HUNDRED, ROMAN_SYMBOL_THOUSAND);
+    private static readonly RomanProcessData UnitsProcessData = new(RomanSymbolOne, RomanSymbolFive, RomanSymbolTen);
+    private static readonly RomanProcessData TensProcessData = new(RomanSymbolTen, RomanSymbolFivty, RomanSymbolHundred);
+    private static readonly RomanProcessData HundredsProcessData = new(RomanSymbolHundred, RomanSymbolFiveHundred, RomanSymbolThousand);
 
     /// <summary>
     ///   Преобразует число из десятичной системы счисления в римскую
@@ -183,19 +183,19 @@ public static class TextUtil
             return "N";
         }
 
-        int thousands = value / THOUSAND_MODIFIER;
+        int thousands = value / ThousandModifier;
         result.Append('M', thousands);
-        value %= THOUSAND_MODIFIER;
+        value %= ThousandModifier;
 
-        int hundreds = value / HUNDRED_MODIFIER;
-        ProcessRomanDigit(result, hundreds, HUNDREDS_PROCESS_DATA);
-        value %= HUNDRED_MODIFIER;
+        int hundreds = value / HundredModifier;
+        ProcessRomanDigit(result, hundreds, HundredsProcessData);
+        value %= HundredModifier;
 
-        int tens = value / TEN_MODIFIER;
-        ProcessRomanDigit(result, tens, TENS_PROCESS_DATA);
-        value %= TEN_MODIFIER;
+        int tens = value / TenModifier;
+        ProcessRomanDigit(result, tens, TensProcessData);
+        value %= TenModifier;
 
-        ProcessRomanDigit(result, value, UNITS_PROCESS_DATA);
+        ProcessRomanDigit(result, value, UnitsProcessData);
 
         return result.ToString();
     }
