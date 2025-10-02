@@ -100,16 +100,86 @@ public class TextUtilTest
         Assert.Equal(expected, actual);
     }
 
+    public static TheoryData<int, string> BasicDigitsTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 1, "I" },
+                { 2, "II" },
+                { 3, "III" },
+                { 4, "IV" },
+                { 5, "V" },
+                { 6, "VI" },
+                { 7, "VII" },
+                { 8, "VIII" },
+                { 9, "IX" },
+            };
+    }
+
+    public static TheoryData<int, string> BoundaryValuesTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 0, "N" },
+                { 3000, "MMM" },
+            };
+    }
+
+    public static TheoryData<int> OutOfBoundsTestData()
+    {
+        return new TheoryData<int>
+            {
+                -1,
+                -100,
+                3001,
+                5000,
+            };
+    }
+
+    public static TheoryData<int, string> RankTransitionTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 1, "I" },
+                { 4, "IV" },
+                { 5, "V" },
+                { 9, "IX" },
+                { 10, "X" },
+                { 40, "XL" },
+                { 50, "L" },
+                { 90, "XC" },
+                { 100, "C" },
+                { 400, "CD" },
+                { 500, "D" },
+                { 900, "CM" },
+                { 1000, "M" },
+                { 3000, "MMM" },
+            };
+    }
+
+    public static TheoryData<int, string> ComplexValuesTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 44, "XLIV" },
+                { 49, "XLIX" },
+                { 94, "XCIV" },
+                { 99, "XCIX" },
+                { 444, "CDXLIV" },
+                { 499, "CDXCIX" },
+                { 888, "DCCCLXXXVIII" },
+                { 999, "CMXCIX" },
+                { 1494, "MCDXCIV" },
+                { 1977, "MCMLXXVII" },
+                { 2008, "MMVIII" },
+                { 2019, "MMXIX" },
+                { 2423, "MMCDXXIII" },
+            };
+    }
+
+
     [Theory]
-    [InlineData(1, "I")]
-    [InlineData(2, "II")]
-    [InlineData(3, "III")]
-    [InlineData(4, "IV")]
-    [InlineData(5, "V")]
-    [InlineData(6, "VI")]
-    [InlineData(7, "VII")]
-    [InlineData(8, "VIII")]
-    [InlineData(9, "IX")]
+    [MemberData(nameof(BasicDigitsTestData))]
     public void FormatRomanWithBasicDigits(int input, string expected)
     {
         string result = TextUtil.FormatRoman(input);
@@ -117,39 +187,23 @@ public class TextUtilTest
     }
 
     [Theory]
-    [InlineData(0, "N")]
-    [InlineData(3000, "MMM")]
+    [MemberData(nameof(BoundaryValuesTestData))]
     public void FormatRomanWithBoundaryValues(int input, string expected)
     {
         string result = TextUtil.FormatRoman(input);
         Assert.Equal(expected, result);
     }
 
+
     [Theory]
-    [InlineData(-1)]
-    [InlineData(-100)]
-    [InlineData(3001)]
-    [InlineData(5000)]
+    [MemberData(nameof(OutOfBoundsTestData))]
     public void FormatRomanWithOutOfBounds(int input)
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => TextUtil.FormatRoman(input));
     }
 
     [Theory]
-    [InlineData(1, "I")]
-    [InlineData(4, "IV")]
-    [InlineData(5, "V")]
-    [InlineData(9, "IX")]
-    [InlineData(10, "X")]
-    [InlineData(40, "XL")]
-    [InlineData(50, "L")]
-    [InlineData(90, "XC")]
-    [InlineData(100, "C")]
-    [InlineData(400, "CD")]
-    [InlineData(500, "D")]
-    [InlineData(900, "CM")]
-    [InlineData(1000, "M")]
-    [InlineData(3000, "MMM")]
+    [MemberData(nameof(RankTransitionTestData))]
     public void FormatRomanWithRankTransition(int input, string expected)
     {
         string result = TextUtil.FormatRoman(input);
@@ -157,19 +211,7 @@ public class TextUtilTest
     }
 
     [Theory]
-    [InlineData(44, "XLIV")]
-    [InlineData(49, "XLIX")]
-    [InlineData(94, "XCIV")]
-    [InlineData(99, "XCIX")]
-    [InlineData(444, "CDXLIV")]
-    [InlineData(499, "CDXCIX")]
-    [InlineData(888, "DCCCLXXXVIII")]
-    [InlineData(999, "CMXCIX")]
-    [InlineData(1494, "MCDXCIV")]
-    [InlineData(1977, "MCMLXXVII")]
-    [InlineData(2008, "MMVIII")]
-    [InlineData(2019, "MMXIX")]
-    [InlineData(2423, "MMCDXXIII")]
+    [MemberData(nameof(ComplexValuesTestData))]
     public void FormatRomanWithComplexValuesTest(int input, string expected)
     {
         string result = TextUtil.FormatRoman(input);
