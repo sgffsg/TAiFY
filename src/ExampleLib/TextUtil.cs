@@ -8,6 +8,22 @@ namespace ExampleLib;
 
 public static class TextUtil
 {
+    private const char RomanSymbolOne = 'I';
+    private const char RomanSymbolFive = 'V';
+    private const char RomanSymbolTen = 'X';
+    private const char RomanSymbolFivty = 'L';
+    private const char RomanSymbolHundred = 'C';
+    private const char RomanSymbolFiveHundred = 'D';
+    private const char RomanSymbolThousand = 'M';
+
+    private const int TenModifier = 10;
+    private const int HundredModifier = 100;
+    private const int ThousandModifier = 1000;
+
+    private static readonly RomanProcessData UnitsProcessData = new(RomanSymbolOne, RomanSymbolFive, RomanSymbolTen);
+    private static readonly RomanProcessData TensProcessData = new(RomanSymbolTen, RomanSymbolFivty, RomanSymbolHundred);
+    private static readonly RomanProcessData HundredsProcessData = new(RomanSymbolHundred, RomanSymbolFiveHundred, RomanSymbolThousand);
+
     // Символы Unicode, которые мы принимаем как дефис.
     private static readonly Rune[] Hyphens = [new Rune('‐'), new Rune('-')];
 
@@ -132,43 +148,6 @@ public static class TextUtil
         }
     }
 
-    public struct RomanProcessData
-    {
-        public char UnitSymbol;
-        public char FiveSymbol;
-        public char TenSymbol;
-
-        public RomanProcessData(char unitSymbol, char fiveSymbol, char tenSymbol)
-        {
-            this.UnitSymbol = unitSymbol;
-            this.FiveSymbol = fiveSymbol;
-            this.TenSymbol = tenSymbol;
-        }
-    }
-
-    private const char RomanSymbolOne = 'I';
-    private const char RomanSymbolFive = 'V';
-    private const char RomanSymbolTen = 'X';
-    private const char RomanSymbolFivty = 'L';
-    private const char RomanSymbolHundred = 'C';
-    private const char RomanSymbolFiveHundred = 'D';
-    private const char RomanSymbolThousand = 'M';
-
-    private const int TenModifier = 10;
-    private const int HundredModifier = 100;
-    private const int ThousandModifier = 1000;
-
-    private static readonly RomanProcessData UnitsProcessData = new(RomanSymbolOne, RomanSymbolFive, RomanSymbolTen);
-    private static readonly RomanProcessData TensProcessData = new(RomanSymbolTen, RomanSymbolFivty, RomanSymbolHundred);
-    private static readonly RomanProcessData HundredsProcessData = new(RomanSymbolHundred, RomanSymbolFiveHundred, RomanSymbolThousand);
-
-    /// <summary>
-    ///   Преобразует число из десятичной системы счисления в римскую
-    /// </summary>
-    /// <param name="value"> Принимает число от 0 до 3000 в десятичной системе счисления. </param>
-    /// <returns> Возвращает стоку в римской системе счисления. </returns>
-    /// <exception cref="ArgumentOutOfRangeException"> При выходе за пределы диапазона 0-3000 выбрасывается исключение. </exception>
-
     public static string FormatRoman(int value)
     {
         StringBuilder result = new StringBuilder();
@@ -200,12 +179,6 @@ public static class TextUtil
         return result.ToString();
     }
 
-    /// <summary>
-    ///   Обрабатывает цифру, в соответствии с правилами римской системы счисления.
-    /// </summary>
-    /// <param name="result"> Построитель строки для создания результата. </param>
-    /// <param name="digit"> Преобразуемая в римскую систему счисления цифра. </param>
-    /// <param name="processData"> Структура, содержащя значения единицы, середины и следующего разряда числа. </param>
     private static void ProcessRomanDigit(StringBuilder result, int digit, RomanProcessData processData)
     {
         switch (digit)
@@ -232,6 +205,20 @@ public static class TextUtil
                 result.Append(processData.UnitSymbol);
                 result.Append(processData.TenSymbol);
                 break;
+        }
+    }
+
+    public struct RomanProcessData
+    {
+        public char UnitSymbol;
+        public char FiveSymbol;
+        public char TenSymbol;
+
+        public RomanProcessData(char unitSymbol, char fiveSymbol, char tenSymbol)
+        {
+            this.UnitSymbol = unitSymbol;
+            this.FiveSymbol = fiveSymbol;
+            this.TenSymbol = tenSymbol;
         }
     }
 }
