@@ -177,7 +177,6 @@ public class TextUtilTest
             };
     }
 
-
     [Theory]
     [MemberData(nameof(BasicDigitsTestData))]
     public void FormatRomanWithBasicDigits(int input, string expected)
@@ -193,7 +192,6 @@ public class TextUtilTest
         string result = TextUtil.FormatRoman(input);
         Assert.Equal(expected, result);
     }
-
 
     [Theory]
     [MemberData(nameof(OutOfBoundsTestData))]
