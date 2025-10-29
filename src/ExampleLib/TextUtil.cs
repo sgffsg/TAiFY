@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using System.Text;
 
@@ -7,25 +8,27 @@ namespace ExampleLib;
 
 public static class TextUtil
 {
+    private const char RomanSymbolOne = 'I';
+    private const char RomanSymbolFive = 'V';
+    private const char RomanSymbolTen = 'X';
+    private const char RomanSymbolFivty = 'L';
+    private const char RomanSymbolHundred = 'C';
+    private const char RomanSymbolFiveHundred = 'D';
+    private const char RomanSymbolThousand = 'M';
+
+    private const int TenModifier = 10;
+    private const int HundredModifier = 100;
+    private const int ThousandModifier = 1000;
+
+    private static readonly RomanProcessData UnitsProcessData = new(RomanSymbolOne, RomanSymbolFive, RomanSymbolTen);
+    private static readonly RomanProcessData TensProcessData = new(RomanSymbolTen, RomanSymbolFivty, RomanSymbolHundred);
+    private static readonly RomanProcessData HundredsProcessData = new(RomanSymbolHundred, RomanSymbolFiveHundred, RomanSymbolThousand);
+
     // Символы Unicode, которые мы принимаем как дефис.
     private static readonly Rune[] Hyphens = [new Rune('‐'), new Rune('-')];
 
     // Символы Unicode, которые мы принимаем как апостроф.
     private static readonly Rune[] Apostrophes = [new Rune('\''), new Rune('`')];
-
-
-    private static readonly Dictionary<Rune, int> RomanValues = new Dictionary<Rune, int>
-    {
-        { new Rune('I'), 1 },
-        { new Rune('V'), 5 },
-        { new Rune('X'), 10 },
-        { new Rune('L'), 50 },
-        { new Rune('C'), 100 },
-        { new Rune('D'), 500 },
-        { new Rune('M'), 1000 },
-    };
-
-
 
     // Состояния распознавателя слов.
     private enum WordState
@@ -145,99 +148,77 @@ public static class TextUtil
         }
     }
 
-    public static int ParseRoman(string text)
+    public static string FormatRoman(int value)
     {
-        if (string.IsNullOrEmpty(text))
+        StringBuilder result = new StringBuilder();
+
+        if (value < 0 || value > 3000)
         {
-            throw new ArgumentException("Пустая строка не является валидным римским числом");
+            throw new ArgumentOutOfRangeException("Число должно быть в диапазоне от 0 до 3000");
         }
 
-        int result = 0;
-        int prevValue = 0;
-        int repeatCount = 1;
-        Rune prevRune = default;
-
-        foreach (Rune currentRune in text.EnumerateRunes())
+        if (value == 0)
         {
-            if (currentRune.Value >= 'a' && currentRune.Value <= 'z')
-            {
-                throw new ArgumentException($"Строчные буквы не допускаются: '{currentRune}'");
-            }
-
-            if (!RomanValues.ContainsKey(currentRune))
-            {
-                throw new ArgumentException($"Недопустимый символ '{currentRune}' для представления римского числа");
-            }
-
-            int currentValue = RomanValues[currentRune];
-
-            if (currentRune.Equals(prevRune))
-            {
-                repeatCount++;
-
-                if (currentValue == 5 || currentValue == 50 || currentValue == 500)
-                {
-                    throw new ArgumentException($"Цифра '{currentRune}' не может повторяться");
-                }
-
-                if (repeatCount > 3)
-                {
-                    throw new ArgumentException($"Цифра '{currentRune}' не может повторяться более 3 раз");
-                }
-            }
-            else
-            {
-                repeatCount = 1;
-            }
-
-            if (prevValue < currentValue && prevValue != 0)
-            {
-                if (!IsValidSubtraction(prevRune, currentRune))
-                {
-                    throw new ArgumentException($"Недопустимая комбинация '{prevRune}{currentRune}' для вычитания");
-                }
-
-                if (repeatCount > 1)
-                {
-                    throw new ArgumentException($"Нельзя вычитать повторяющиеся цифры");
-                }
-
-                result += currentValue - 2 * prevValue;
-            }
-            else
-            {
-                if (prevValue > 0 && currentValue > prevValue)
-                {
-                    throw new ArgumentException($"Недопустимый порядок цифр: '{prevRune}{currentRune}'");
-                }
-
-                result += currentValue;
-            }
-
-            prevValue = currentValue;
-            prevRune = currentRune;
+            return "N";
         }
 
-        if (result < 1 || result > 3000)
-        {
-            throw new ArgumentException($"Число {result} выходит за допустимый диапазон 1-3000");
-        }
+        int thousands = value / ThousandModifier;
+        result.Append('M', thousands);
+        value %= ThousandModifier;
 
-        return result;
+        int hundreds = value / HundredModifier;
+        ProcessRomanDigit(result, hundreds, HundredsProcessData);
+        value %= HundredModifier;
+
+        int tens = value / TenModifier;
+        ProcessRomanDigit(result, tens, TensProcessData);
+        value %= TenModifier;
+
+        ProcessRomanDigit(result, value, UnitsProcessData);
+
+        return result.ToString();
     }
 
-    private static bool IsValidSubtraction(Rune prevRune, Rune currRune)
+    private static void ProcessRomanDigit(StringBuilder result, int digit, RomanProcessData processData)
     {
-        Rune i = new Rune('I');
-        Rune v = new Rune('V');
-        Rune x = new Rune('X');
-        Rune l = new Rune('L');
-        Rune c = new Rune('C');
-        Rune d = new Rune('D');
-        Rune m = new Rune('M');
+        switch (digit)
+        {
+            case 1:
+            case 2:
+            case 3:
+                result.Append(processData.UnitSymbol, digit);
+                break;
+            case 4:
+                result.Append(processData.UnitSymbol);
+                result.Append(processData.FiveSymbol);
+                break;
+            case 5:
+                result.Append(processData.FiveSymbol);
+                break;
+            case 6:
+            case 7:
+            case 8:
+                result.Append(processData.FiveSymbol);
+                result.Append(processData.UnitSymbol, digit - 5);
+                break;
+            case 9:
+                result.Append(processData.UnitSymbol);
+                result.Append(processData.TenSymbol);
+                break;
+        }
+    }
 
-        return (prevRune.Equals(i) && (currRune.Equals(v) || currRune.Equals(x))) ||
-                 (prevRune.Equals(x) && (currRune.Equals(l) || currRune.Equals(c))) ||
-                   (prevRune.Equals(c) && (currRune.Equals(d) || currRune.Equals(m)));
+    public struct RomanProcessData
+    {
+        public char UnitSymbol;
+        public char FiveSymbol;
+        public char TenSymbol;
+
+        public RomanProcessData(char unitSymbol, char fiveSymbol, char tenSymbol)
+        {
+            this.UnitSymbol = unitSymbol;
+            this.FiveSymbol = fiveSymbol;
+            this.TenSymbol = tenSymbol;
+        }
     }
 }

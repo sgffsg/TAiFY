@@ -4,7 +4,7 @@ function GeneratePrimes(maxNumber: integer): array of integer;
 var
   isPrime: array of boolean;
   count: integer;
-  j: integer;
+  i, j: integer;
 begin
   if maxNumber < 2 then
   begin
@@ -13,36 +13,38 @@ begin
   end;
 
   SetLength(isPrime, maxNumber + 1);
-  for var i := 0 to maxNumber do
-    isPrime[i] := true;
-  
+  for var k := 0 to maxNumber do
+    isPrime[k] := true;
+
   isPrime[0] := false;
   isPrime[1] := false;
-  
-  for var i := 2 to maxNumber do
+
+  i := 2;
+  while i * i <= maxNumber do
   begin
     if isPrime[i] then
     begin
-      j := i * 2;
+      j := i * i;
       while j <= maxNumber do
       begin
         isPrime[j] := false;
         j := j + i;
       end;
     end;
+    i := i + 1;
   end;
-  
+
   count := 0;
-  for var i := 2 to maxNumber do
-    if isPrime[i] then
+  for var k := 2 to maxNumber do
+    if isPrime[k] then
       count := count + 1;
-  
+
   SetLength(Result, count);
   count := 0;
-  for var i := 2 to maxNumber do
-    if isPrime[i] then
+  for var k := 2 to maxNumber do
+    if isPrime[k] then
     begin
-      Result[count] := i;
+      Result[count] := k;
       count := count + 1;
     end;
 end;

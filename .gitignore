@@ -18,5 +18,7 @@ x86/
 [Oo]bj/
 [Ll]og/
 
+.vs/
+
 # Sandbox directory
 sandbox/

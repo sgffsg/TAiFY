@@ -100,146 +100,119 @@ public class TextUtilTest
         Assert.Equal(expected, actual);
     }
 
-    [Theory]
-    [InlineData("I", 1)]
-    [InlineData("V", 5)]
-    [InlineData("X", 10)]
-    [InlineData("L", 50)]
-    [InlineData("C", 100)]
-    [InlineData("D", 500)]
-    [InlineData("M", 1000)]
-    public void ParseRomanWithSingleDigitNumber(string roman, int expected)
+    public static TheoryData<int, string> BasicDigitsTestData()
     {
-        int result = TextUtil.ParseRoman(roman);
+        return new TheoryData<int, string>
+            {
+                { 1, "I" },
+                { 2, "II" },
+                { 3, "III" },
+                { 4, "IV" },
+                { 5, "V" },
+                { 6, "VI" },
+                { 7, "VII" },
+                { 8, "VIII" },
+                { 9, "IX" },
+            };
+    }
+
+    public static TheoryData<int, string> BoundaryValuesTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 0, "N" },
+                { 3000, "MMM" },
+            };
+    }
+
+    public static TheoryData<int> OutOfBoundsTestData()
+    {
+        return new TheoryData<int>
+            {
+                -1,
+                -100,
+                3001,
+                5000,
+            };
+    }
+
+    public static TheoryData<int, string> RankTransitionTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 1, "I" },
+                { 4, "IV" },
+                { 5, "V" },
+                { 9, "IX" },
+                { 10, "X" },
+                { 40, "XL" },
+                { 50, "L" },
+                { 90, "XC" },
+                { 100, "C" },
+                { 400, "CD" },
+                { 500, "D" },
+                { 900, "CM" },
+                { 1000, "M" },
+                { 3000, "MMM" },
+            };
+    }
+
+    public static TheoryData<int, string> ComplexValuesTestData()
+    {
+        return new TheoryData<int, string>
+            {
+                { 44, "XLIV" },
+                { 49, "XLIX" },
+                { 94, "XCIV" },
+                { 99, "XCIX" },
+                { 444, "CDXLIV" },
+                { 499, "CDXCIX" },
+                { 888, "DCCCLXXXVIII" },
+                { 999, "CMXCIX" },
+                { 1494, "MCDXCIV" },
+                { 1977, "MCMLXXVII" },
+                { 2008, "MMVIII" },
+                { 2019, "MMXIX" },
+                { 2423, "MMCDXXIII" },
+            };
+    }
+
+    [Theory]
+    [MemberData(nameof(BasicDigitsTestData))]
+    public void FormatRomanWithBasicDigits(int input, string expected)
+    {
+        string result = TextUtil.FormatRoman(input);
         Assert.Equal(expected, result);
     }
 
     [Theory]
-    [InlineData("II", 2)]
-    [InlineData("III", 3)]
-    [InlineData("XX", 20)]
-    [InlineData("XXX", 30)]
-    [InlineData("CC", 200)]
-    [InlineData("CCC", 300)]
-    [InlineData("MM", 2000)]
-    [InlineData("MMM", 3000)]
-    public void ParseRomanWithRepeatedDigits(string roman, int expected)
+    [MemberData(nameof(BoundaryValuesTestData))]
+    public void FormatRomanWithBoundaryValues(int input, string expected)
     {
-        int result = TextUtil.ParseRoman(roman);
+        string result = TextUtil.FormatRoman(input);
         Assert.Equal(expected, result);
     }
 
     [Theory]
-    [InlineData("IV", 4)]
-    [InlineData("IX", 9)]
-    [InlineData("XL", 40)]
-    [InlineData("XC", 90)]
-    [InlineData("CD", 400)]
-    [InlineData("CM", 900)]
-    public void ParseRomanWithValidSubtraction(string roman, int expected)
+    [MemberData(nameof(OutOfBoundsTestData))]
+    public void FormatRomanWithOutOfBounds(int input)
     {
-        int result = TextUtil.ParseRoman(roman);
+        Assert.Throws<ArgumentOutOfRangeException>(() => TextUtil.FormatRoman(input));
+    }
+
+    [Theory]
+    [MemberData(nameof(RankTransitionTestData))]
+    public void FormatRomanWithRankTransition(int input, string expected)
+    {
+        string result = TextUtil.FormatRoman(input);
         Assert.Equal(expected, result);
     }
 
     [Theory]
-    [InlineData("XIV", 14)]
-    [InlineData("XIX", 19)]
-    [InlineData("XLII", 42)]
-    [InlineData("XCIX", 99)]
-    [InlineData("CDXLIV", 444)]
-    [InlineData("CMXCIX", 999)]
-    [InlineData("MMCMXCIX", 2999)]
-    [InlineData("MCMLXXXIV", 1984)]
-    [InlineData("MMXXIII", 2023)]
-    public void ParseRomanWithCorrectValues(string roman, int expected)
+    [MemberData(nameof(ComplexValuesTestData))]
+    public void FormatRomanWithComplexValuesTest(int input, string expected)
     {
-        int result = TextUtil.ParseRoman(roman);
+        string result = TextUtil.FormatRoman(input);
         Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("")]
-    [InlineData(null)]
-    public void ParseRomanWithEmptyString(string roman)
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
-    }
-
-    [Theory]
-    [InlineData("A")]
-    [InlineData("Z")]
-    [InlineData("1")]
-    [InlineData("IVX")]
-    [InlineData("Hello")]
-    public void ParseRomanWithInvalidCharacters(string roman)
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
-    }
-
-    [Theory]
-    [InlineData("VV")]
-    [InlineData("LL")]
-    [InlineData("DD")]
-    [InlineData("VVV")]
-    public void ParseRoman_RepeatedVLD_ThrowsArgumentException(string roman)
-    {
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
-    }
-
-    [Theory]
-    [InlineData("IIII")]
-    [InlineData("XXXX")]
-    [InlineData("CCCC")]
-    [InlineData("MMMM")]
-    public void ParseRomanWithUnacceptableRepeats(string roman)
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
-    }
-
-    [Theory]
-    [InlineData("IL")]
-    [InlineData("IC")]
-    [InlineData("ID")]
-    [InlineData("IM")]
-    [InlineData("VX")]
-    [InlineData("VL")]
-    [InlineData("VC")]
-    [InlineData("VD")]
-    [InlineData("VM")]
-    [InlineData("XD")]
-    [InlineData("XM")]
-    [InlineData("LC")]
-    [InlineData("LD")]
-    [InlineData("LM")]
-    [InlineData("DM")]
-    public void ParseRomanWithInvalidSubstraction(string roman)
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
-    }
-
-    [Theory]
-    [InlineData("iv")]
-    [InlineData("xix")]
-    public void ParseRomanWithLowercaseLetters(string roman)
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
-    }
-
-    [Theory]
-    [InlineData("MMCMXCIX", 2999)]
-    [InlineData("I", 1)]
-    public void ParseRomanWithInBoundaries(string roman, int expected)
-    {
-        int result = TextUtil.ParseRoman(roman);
-        Assert.Equal(expected, result);
-    }
-
-    [Theory]
-    [InlineData("MMMI")]
-    public void ParseRomanWithOutOfBoundaries(string roman)
-    {
-        Assert.Throws<ArgumentException>(() => TextUtil.ParseRoman(roman));
     }
 }

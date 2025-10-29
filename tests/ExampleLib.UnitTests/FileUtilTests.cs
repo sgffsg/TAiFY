@@ -74,7 +74,6 @@ public class FileUtilTests
         Assert.Equal("1. Second line", result[0]);
     }
 
-
     [Fact]
     public void CanSetNumbersToMultiLineFile()
     {
