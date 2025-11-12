@@ -37,6 +37,7 @@ namespace Lexer
             { "МИНИМУМ", TokenType.Minimum },
             { "МАКСИМУМ", TokenType.Maximum },
             { "СТЕПЕНЬ", TokenType.Pow },
+            { "КОРЕНЬ", TokenType.Sqrt },
             { "СИНУС", TokenType.Sinus },
             { "КОСИНУС", TokenType.Cosinus },
             { "ТАНГЕНС", TokenType.Tangens },
