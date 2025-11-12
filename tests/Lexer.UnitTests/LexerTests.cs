@@ -218,13 +218,13 @@ public class LexerTest
             },
             {
                 "123идентификатор", [
-                    new Token(TokenType.Error, new TokenValue("123идентификатор"))
+                    new Token(TokenType.Error, new TokenValue("Incorrect numeric literal: 123идентификатор"))
                 ]
             },
             {
                 "спец@символ", [
                     new Token(TokenType.Identifier, new TokenValue("спец")),
-                    new Token(TokenType.Error, new TokenValue("Неизвестный символ: '@'")),
+                    new Token(TokenType.Error, new TokenValue("Unknown symbol: '@'")),
                     new Token(TokenType.Identifier, new TokenValue("символ"))
                 ]
             },
@@ -245,32 +245,32 @@ public class LexerTest
         {
             {
                 "123", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(123m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(123m))
                 ]
             },
             {
                 "-456", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(-456))
+                    new Token(TokenType.NumericLiteral, new TokenValue(-456))
                 ]
             },
             {
                 "0", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(0))
+                    new Token(TokenType.NumericLiteral, new TokenValue(0))
                 ]
             },
             {
                 "3.14", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(3.14m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(3.14m))
                 ]
             },
             {
                 "-2.5", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(-2.5m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(-2.5m))
                 ]
             },
             {
                 "0.0", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(0.0m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(0.0m))
                 ]
             },
             {
@@ -405,13 +405,12 @@ public class LexerTest
             },
             {
                 "+5", [
-                    new Token(TokenType.Plus),
-                    new Token(TokenType.NumberLiteral, new TokenValue(5m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(5m))
                 ]
             },
             {
                 "-10", [
-                    new Token(TokenType.NumberLiteral, new TokenValue(-10m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(-10m))
                 ]
             },
         };
@@ -495,7 +494,7 @@ public class LexerTest
                 "переменная = 42 + переменная2;", [
                     new Token(TokenType.Identifier, new TokenValue("переменная")),
                     new Token(TokenType.Assignment),
-                    new Token(TokenType.NumberLiteral, new TokenValue(42m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(42m)),
                     new Token(TokenType.Plus),
                     new Token(TokenType.Identifier, new TokenValue("переменная2")),
                     new Token(TokenType.Semicolon)
@@ -514,7 +513,7 @@ public class LexerTest
             },
             {
                 "@", [
-                    new Token(TokenType.Error, new TokenValue("Неизвестный символ: '@'"))
+                    new Token(TokenType.Error, new TokenValue("Unknown symbol: '@'"))
                 ]
             },
         };
@@ -544,7 +543,7 @@ public class LexerTest
                 "массив[5]", [
                     new Token(TokenType.Identifier, new TokenValue("массив")),
                     new Token(TokenType.OpenSquareBracket),
-                    new Token(TokenType.NumberLiteral, new TokenValue(5m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(5m)),
                     new Token(TokenType.CloseSquareBracket)
                 ]
             },
@@ -574,7 +573,7 @@ public class LexerTest
                     new Token(TokenType.OpenParenthesis),
                     new Token(TokenType.Identifier, new TokenValue("счетчик")),
                     new Token(TokenType.LessThan),
-                    new Token(TokenType.NumberLiteral, new TokenValue(10m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(10m)),
                     new Token(TokenType.CloseParenthesis),
                     new Token(TokenType.OpenCurlyBrace),
                     new Token(TokenType.CloseCurlyBrace)
@@ -585,7 +584,7 @@ public class LexerTest
                     new Token(TokenType.Baza),
                     new Token(TokenType.Identifier, new TokenValue("константа")),
                     new Token(TokenType.Assignment),
-                    new Token(TokenType.NumberLiteral, new TokenValue(100m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(100m)),
                     new Token(TokenType.Semicolon)
                 ]
             },
@@ -595,7 +594,7 @@ public class LexerTest
                     new Token(TokenType.ColonTypeIndication),
                     new Token(TokenType.Ciferka),
                     new Token(TokenType.Assignment),
-                    new Token(TokenType.NumberLiteral, new TokenValue(5m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(5m)),
                     new Token(TokenType.Semicolon)
                 ]
             },

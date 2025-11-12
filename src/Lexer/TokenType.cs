@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lexer
+﻿namespace Lexer
 {
     public enum TokenType
     {
@@ -87,7 +81,7 @@ namespace Lexer
         /// <summary>
         /// Числовой литерал float/int
         /// </summary>
-        NumberLiteral,
+        NumericLiteral,
 
         /// <summary>
         /// Логическое "истина" ХАЙП
@@ -264,6 +258,11 @@ namespace Lexer
         /// </summary>
         Semicolon,
 
+        /// <summary>
+        /// Строка '"'
+        /// </summary>
+        DoubleQuote,
+
         // Комментарии
 
         /// <summary>
@@ -275,6 +274,55 @@ namespace Lexer
         /// Многострочные комментарии (ПОЯСНИТЕЛЬНАЯ-БРИГАДА: ... ФИНАЛОЧКА-КОММЕНТАРИЯ)
         /// </summary>
         MultiLineComment,
+
+        // Встроенные константы
+
+        /// <summary>
+        /// Константа 3.14159265358
+        /// </summary>
+        PI,
+
+        /// <summary>
+        /// Константа 2.71828182846
+        /// </summary>
+        EULER,
+
+        // Встроенные функции
+
+        /// <summary>
+        /// Модуль числа МОДУЛЬ(X)
+        /// </summary>
+        Module,
+
+        /// <summary>
+        /// Минимум числа МИНИМУМ(x, y, ...)
+        /// </summary>
+        Minimum,
+
+        /// <summary>
+        /// Максимум числа МАКСИМУМ(x, y, ...)
+        /// </summary>
+        Maximum,
+
+        /// <summary>
+        /// Возведение числа в степент СТЕПЕНЬ()
+        /// </summary>
+        Pow,
+
+        /// <summary>
+        /// Синус угла СИНУС(X)
+        /// </summary>
+        Sinus,
+
+        /// <summary>
+        /// Косинус угла КОСИНУС(X)
+        /// </summary>
+        Cosinus,
+
+        /// <summary>
+        /// Тангенс угла ТАНГЕНС(X)
+        /// </summary>
+        Tangens,
 
         // Служебные слова
 

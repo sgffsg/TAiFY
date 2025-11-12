@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Lexer
 {
@@ -38,7 +34,7 @@ namespace Lexer
                 {
                     lexemData.Identifiers++;
                 }
-                else if (t.Type == TokenType.NumberLiteral)
+                else if (t.Type == TokenType.NumericLiteral)
                 {
                     lexemData.NumberLiterals++;
                 }
