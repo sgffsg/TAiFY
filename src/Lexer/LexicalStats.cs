@@ -28,7 +28,7 @@ namespace Lexer
             Lexer lexer = new(text);
 
             LexemStats lexemData = new();
-            for (Token t = lexer.ParseToken(); t.Type != TokenType.EndOfFile; t = lexer.ParseToken())
+            for (Token t = lexer.ParseToken(); t.Type != TokenType.EOF; t = lexer.ParseToken())
             {
                 if (t.Type == TokenType.Identifier)
                 {

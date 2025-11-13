@@ -56,7 +56,7 @@ namespace Lexer
 
             if (scanner.IsEnd())
             {
-                return new Token(TokenType.EndOfFile);
+                return new Token(TokenType.EOF);
             }
 
             char ch = scanner.Peek();

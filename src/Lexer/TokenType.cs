@@ -334,7 +334,7 @@
         /// <summary>
         /// Конец файла.
         /// </summary>
-        EndOfFile,
+        EOF,
 
         /// <summary>
         /// Недопустимая лексема.
