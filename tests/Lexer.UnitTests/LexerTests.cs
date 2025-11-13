@@ -617,7 +617,7 @@ public class LexerTest
         List<Token> results = [];
         Lexer lexer = new(text);
 
-        for (Token t = lexer.ParseToken(); t.Type != TokenType.EndOfFile; t = lexer.ParseToken())
+        for (Token t = lexer.ParseToken(); t.Type != TokenType.EOF; t = lexer.ParseToken())
         {
             results.Add(t);
         }
