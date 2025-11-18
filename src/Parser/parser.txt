@@ -1,0 +1,382 @@
+using Lexer;
+
+namespace Parser;
+
+/// <summary>
+/// Выполняет синтаксический разбор для языка Vaibik.
+/// Грамматика языка описана в файле `docs/specification/expressions-grammar.md`.
+/// </summary>
+public class Parser
+{
+    private readonly TokenStream tokens;
+
+    private Parser(string code)
+    {
+        tokens = new TokenStream(code);
+    }
+
+    public static List<decimal> ExecuteExpr(string expr)
+    {
+        Parser p = new(expr);
+        return p.ParseExpressionList();
+    }
+
+    private List<decimal> ParseExpressionList()
+    {
+        List<decimal> values = new List<decimal> { ParseExpr() };
+        while (tokens.Peek().Type == TokenType.Comma)
+        {
+            tokens.Advance();
+            values.Add(ParseExpr());
+        }
+
+        return values;
+    }
+
+    /// <summary>
+    /// Выполняет парсинг одного выражения.
+    /// expression = logicalOrExpression.
+    /// </summary>
+    private decimal ParseExpr()
+    {
+        return ParseLogicalOrExpr();
+    }
+
+    /// <summary>
+    /// Выполняет парсинг выражения ИЛИ.
+    /// logicalOrExpression = logicalAndExpression, { "ИЛИ", logicalAndExpression }.
+    /// </summary>
+    private decimal ParseLogicalOrExpr()
+    {
+        decimal value = ParseLogicalAndExpr();
+        while (tokens.Peek().Type == TokenType.Or)
+        {
+            tokens.Advance();
+            decimal right = ParseLogicalAndExpr();
+            value = (value != 0 || right != 0) ? 1 : 0;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Выполняет парсинг выражения И.
+    /// logicalAndExpression = comparisonExpression, { "И", comparisonExpression }.
+    /// </summary>
+    private decimal ParseLogicalAndExpr()
+    {
+        decimal value = ParseComparisonExpr();
+        while (tokens.Peek().Type == TokenType.And)
+        {
+            tokens.Advance();
+            decimal right = ParseComparisonExpr();
+            value = (value != 0 && right != 0) ? 1 : 0;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Выполняет парсинг сравнения выражений.
+    /// comparisonExpression = additiveExpression, [ ( "==" | "!=" | "<" | ">" | "<=" | ">=" ), additiveExpression ].
+    /// </summary>
+    private decimal ParseComparisonExpr()
+    {
+        decimal value = ParseAdditiveExpr();
+
+        switch (tokens.Peek().Type)
+        {
+            case TokenType.Equal:
+                tokens.Advance();
+                value = (value == ParseAdditiveExpr()) ? 1 : 0;
+                break;
+            case TokenType.NotEqual:
+                tokens.Advance();
+                value = (value != ParseAdditiveExpr()) ? 1 : 0;
+                break;
+            case TokenType.LessThan:
+                tokens.Advance();
+                value = (value < ParseAdditiveExpr()) ? 1 : 0;
+                break;
+            case TokenType.GreaterThan:
+                tokens.Advance();
+                value = (value > ParseAdditiveExpr()) ? 1 : 0;
+                break;
+            case TokenType.LessThanOrEqual:
+                tokens.Advance();
+                value = (value <= ParseAdditiveExpr()) ? 1 : 0;
+                break;
+            case TokenType.GreaterThanOrEqual:
+                tokens.Advance();
+                value = (value >= ParseAdditiveExpr()) ? 1 : 0;
+                break;
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Выполняет парсинг сложения/вычитания.
+    /// additiveExpression = multiplicativeExpression, { ("+" | "-"), multiplicativeExpression }.
+    /// </summary>
+    private decimal ParseAdditiveExpr()
+    {
+        decimal value = ParseMultiplicativeExpr();
+
+        while (true)
+        {
+            switch (tokens.Peek().Type)
+            {
+                case TokenType.Plus:
+                    tokens.Advance();
+                    value += ParseMultiplicativeExpr();
+                    break;
+                case TokenType.Minus:
+                    tokens.Advance();
+                    value -= ParseMultiplicativeExpr();
+                    break;
+                default:
+                    return value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Разбирает умножение/деление/остаток.
+    /// multiplicativeExpression = unaryExpression, { ("*" | "/" | "%"), unaryExpression }.
+    /// </summary>
+    private decimal ParseMultiplicativeExpr()
+    {
+        decimal value = ParseUnaryExpr();
+        while (true)
+        {
+            switch (tokens.Peek().Type)
+            {
+                case TokenType.Multiplication:
+                    tokens.Advance();
+                    value *= ParseUnaryExpr();
+                    break;
+                case TokenType.Division:
+                    tokens.Advance();
+                    {
+                        decimal divisor = ParseUnaryExpr();
+                        if (divisor == 0)
+                        {
+                            throw new DivideByZeroException();
+                        }
+
+                        value /= divisor;
+                    }
+
+                    break;
+                case TokenType.Remainder:
+                    tokens.Advance();
+                    {
+                        decimal divisor = ParseUnaryExpr();
+                        if (divisor == 0)
+                        {
+                            throw new DivideByZeroException();
+                        }
+
+                        value %= divisor;
+                    }
+
+                    break;
+                default:
+                    return value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Разбирает унарную операцию.
+    /// unaryExpression = { "+" | "-" | "НЕ" } , primary.
+    /// </summary>
+    private decimal ParseUnaryExpr()
+    {
+        while (true)
+        {
+            TokenType type = tokens.Peek().Type;
+            if (type == TokenType.Plus || type == TokenType.Minus || type == TokenType.Not)
+            {
+                tokens.Advance();
+                decimal value = ParseUnaryExpr(); // Рекурсия для право-ассоциативности
+
+                return type switch
+                {
+                    TokenType.Plus => +value,
+                    TokenType.Minus => -value,
+                    TokenType.Not => (value == 0) ? 1 : 0,
+                    _ => value
+                };
+            }
+
+            return ParsePrimary();
+        }
+    }
+
+    /// <summary>
+    /// Парсинг основного выражения.
+    /// primary = numericLiteral | stringLiteral | logicalLiteral | constant | functionCall | identifier | "(", expression, ")".
+    /// </summary>
+    private decimal ParsePrimary()
+    {
+        Token t = tokens.Peek();
+        switch (t.Type)
+        {
+            case TokenType.NumericLiteral:
+            case TokenType.StringLiteral:
+            case TokenType.Hype:
+            case TokenType.Cringe:
+                return ParseLiteral();
+
+            case TokenType.PI:
+            case TokenType.EULER:
+                return ParseConstant();
+
+            case TokenType.Module:
+            case TokenType.Minimum:
+            case TokenType.Maximum:
+            case TokenType.Pow:
+            case TokenType.Sqrt:
+            case TokenType.Sinus:
+            case TokenType.Cosinus:
+            case TokenType.Tangens:
+                return ParseFunctionCall();
+
+            case TokenType.Identifier:
+                tokens.Advance();
+
+                if (tokens.Peek().Type == TokenType.OpenParenthesis)
+                {
+                   // ToDo: Вызов функций
+                }
+                else
+                {
+                    // ToDo: Определение переменных
+                }
+
+                return 0;
+
+            case TokenType.OpenParenthesis:
+                tokens.Advance();
+                decimal value = ParseExpr();
+                Match(TokenType.CloseParenthesis);
+                return value;
+
+            default:
+                throw new UnexpectedLexemeException(t.Type, t);
+        }
+    }
+
+    private decimal ParseLiteral()
+    {
+        Token t = tokens.Peek();
+        switch (t.Type)
+        {
+            case TokenType.NumericLiteral:
+                return ParseNumericLiteral();
+            case TokenType.StringLiteral:
+                return ParseStringLiteral();
+            case TokenType.Hype:
+            case TokenType.Cringe:
+                return ParseLogicalLiteral();
+            default:
+                throw new UnexpectedLexemeException(t.Type, t);
+        }
+    }
+
+    /// <summary>
+    /// Парсинг числового литерала.
+    /// numericLiteral = realLiteral | integerLiteral.
+    /// </summary>
+    private decimal ParseNumericLiteral()
+    {
+        Token t = tokens.Peek();
+        if (t.Type == TokenType.NumericLiteral)
+        {
+            decimal value = t.Value!.ToDecimal();
+            tokens.Advance();
+            return value;
+        }
+
+        throw new UnexpectedLexemeException(TokenType.NumericLiteral, t);
+    }
+
+    /// <summary>
+    /// Парсинг строкового литерала.
+    /// stringLiteral = '"', { anyChar - '"' | escapeSequence }, '"'.
+    /// </summary>
+    private decimal ParseStringLiteral()
+    {
+        // В данной реализации строки не поддерживаются для числовых вычислений
+        Token t = tokens.Peek();
+        tokens.Advance();
+        return 0;
+    }
+
+    /// <summary>
+    /// Парсинг логического значения.
+    /// logicalLiteral = "ХАЙП" | "КРИНЖ".
+    /// </summary>
+    private decimal ParseLogicalLiteral()
+    {
+        Token t = tokens.Peek();
+        tokens.Advance();
+        return t.Type switch
+        {
+            TokenType.Hype => 1,
+            TokenType.Cringe => 0,
+            _ => throw new UnexpectedLexemeException(t.Type, t),
+        };
+    }
+
+    /// <summary>
+    /// Парсинг констант.
+    /// constant = "ПИ" | "ЕШКА".
+    /// </summary>
+    private decimal ParseConstant()
+    {
+        Token t = tokens.Peek();
+        tokens.Advance();
+        return t.Type switch
+        {
+            TokenType.EULER => 2.7182818284M,
+            TokenType.PI => 3.1415926535M,
+            _ => throw new UnexpectedLexemeException(t.Type, t),
+        };
+    }
+
+    /// <summary>
+    /// Парсинг вызова функции.
+    /// functionCall = identifier, "(", [ argumentList ], ")".
+    /// </summary>
+    private decimal ParseFunctionCall()
+    {
+        Token nameToken = tokens.Peek();
+        tokens.Advance();
+        Match(TokenType.OpenParenthesis);
+
+        List<decimal> args = new List<decimal>();
+        if (tokens.Peek().Type != TokenType.CloseParenthesis)
+        {
+            args = ParseExpressionList();
+        }
+
+        Match(TokenType.CloseParenthesis);
+        return BuiltinFunctions.Instance.Invoke(nameToken.Type, args);
+    }
+
+    /// <summary>
+    /// Пропускает ожидаемую лексему либо бросает исключение, если встретит иную лексему.
+    /// </summary>
+    private void Match(TokenType expected)
+    {
+        if (tokens.Peek().Type != expected)
+        {
+            throw new UnexpectedLexemeException(expected, tokens.Peek());
+        }
+
+        tokens.Advance();
+    }
+}

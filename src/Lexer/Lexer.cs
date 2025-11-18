@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace Lexer
 {
@@ -34,6 +31,16 @@ namespace Lexer
             { "И", TokenType.And },
             { "ИЛИ", TokenType.Or },
             { "НЕ", TokenType.Not },
+            { "ПИ", TokenType.PI },
+            { "ЕШКА", TokenType.EULER },
+            { "МОДУЛЬ", TokenType.Module },
+            { "МИНИМУМ", TokenType.Minimum },
+            { "МАКСИМУМ", TokenType.Maximum },
+            { "СТЕПЕНЬ", TokenType.Pow },
+            { "КОРЕНЬ", TokenType.Sqrt },
+            { "СИНУС", TokenType.Sinus },
+            { "КОСИНУС", TokenType.Cosinus },
+            { "ТАНГЕНС", TokenType.Tangens },
         };
 
         private readonly TextScanner scanner;
@@ -49,42 +56,215 @@ namespace Lexer
 
             if (scanner.IsEnd())
             {
-                return new Token(TokenType.EndOfFile);
+                return new Token(TokenType.EOF);
             }
 
-            char c = scanner.Peek();
+            char ch = scanner.Peek();
 
-            if (char.IsLetter(c) || c == '_')
+            if (char.IsLetter(ch) || ch == '_')
             {
                 return ParseIdentifierOrKeyword();
             }
-            else if (char.IsAsciiDigit(c) || (c == '-' && char.IsAsciiDigit(scanner.Peek(1))))
+            else if (char.IsAsciiDigit(ch) || ((ch == '-' || ch == '+' || ch == '.') && char.IsAsciiDigit(scanner.Peek(1))))
             {
-                int startPos = scanner.GetPosition();
-                Token numberToken = ParseNumericLiteral();
-
-                char nextChar = scanner.Peek();
-                if (char.IsLetter(nextChar) || nextChar == '_')
-                {
-                    scanner.SetPosition(startPos);
-                    string errorText = "";
-                    while (!scanner.IsEnd() && !char.IsWhiteSpace(scanner.Peek()))
-                    {
-                        errorText += scanner.Peek();
-                        scanner.Advance();
-                    }
-
-                    return new Token(TokenType.Error, new TokenValue(errorText));
-                }
-
-                return numberToken;
+                return ParseNumericLiteral();
             }
-            else if (c == '"')
+            else if (ch == '"')
             {
                 return ParseStringLiteral();
             }
+            else
+            {
+                return ParseRemainTokens();
+            }
+        }
 
-            switch (c)
+        private Token ParseIdentifierOrKeyword()
+        {
+            StringBuilder value = new StringBuilder();
+            value.Append(scanner.Peek());
+            scanner.Advance();
+
+            while (!scanner.IsEnd())
+            {
+                char c = scanner.Peek();
+                if (char.IsLetter(c) || char.IsAsciiDigit(c) || c == '_')
+                {
+                    value.Append(c);
+                    scanner.Advance();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            string identifier = value.ToString();
+            if (Keywords.TryGetValue(identifier, out TokenType type))
+            {
+                return new Token(type);
+            }
+
+            return new Token(TokenType.Identifier, new TokenValue(identifier));
+        }
+
+        private Token ParseNumericLiteral()
+        {
+            StringBuilder value = new StringBuilder();
+            bool hasDigits = false;
+
+            if (scanner.Peek() == '-')
+            {
+                value.Append(scanner.Peek());
+                scanner.Advance();
+            }
+            else if (scanner.Peek() == '+')
+            {
+                scanner.Advance();
+            }
+
+            while (char.IsAsciiDigit(scanner.Peek()))
+            {
+                value.Append(scanner.Peek());
+                scanner.Advance();
+                hasDigits = true;
+            }
+
+            if (scanner.Peek() == '.')
+            {
+                value.Append(scanner.Peek());
+                scanner.Advance();
+
+                bool hasFractionDigits = false;
+                while (char.IsAsciiDigit(scanner.Peek()))
+                {
+                    value.Append(scanner.Peek());
+                    scanner.Advance();
+                    hasFractionDigits = true;
+                    hasDigits = true;
+                }
+
+                if (!hasFractionDigits)
+                {
+                    return new Token(TokenType.Error, new TokenValue("Missing numbers after dot"));
+                }
+            }
+
+            if (char.IsLetter(scanner.Peek()) || scanner.Peek() == '_')
+            {
+                int startPos = scanner.GetPosition();
+                scanner.SetPosition(startPos);
+                StringBuilder errorToken = new StringBuilder();
+                errorToken.Append(value);
+
+                while (!scanner.IsEnd() && !char.IsWhiteSpace(scanner.Peek()))
+                {
+                    errorToken.Append(scanner.Peek());
+                    scanner.Advance();
+                }
+
+                return new Token(TokenType.Error, new TokenValue($"Incorrect numeric literal: {errorToken}"));
+            }
+
+            if (!hasDigits)
+            {
+                return new Token(TokenType.Error, new TokenValue("No digits in the number"));
+            }
+
+            if (decimal.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal resultNumber))
+            {
+                return new Token(TokenType.NumericLiteral, new TokenValue(resultNumber));
+            }
+            else
+            {
+                return new Token(TokenType.Error, new TokenValue($"Не удалось распознать число: {value}"));
+            }
+        }
+
+        private Token ParseStringLiteral()
+        {
+            scanner.Advance();
+            StringBuilder content = new StringBuilder();
+
+            while(!scanner.IsEnd() && scanner.Peek() != '"')
+            {
+                if (scanner.Peek() == '\n' || scanner.Peek() == '\r')
+                {
+                    return new Token(TokenType.Error, new TokenValue("The string cannot contain newline characters."));
+                }
+
+                if (scanner.Peek() == '\\')
+                {
+                    if (TryParseEscapeSequence(out char escapeSequence))
+                    {
+                        content.Append(escapeSequence);
+                    }
+                    else
+                    {
+                        return new Token(TokenType.Error, new TokenValue("Invalid Escape Sequence"));
+                    }
+                }
+                else
+                {
+                    content.Append(scanner.Peek());
+                    scanner.Advance();
+                }
+            }
+
+            if (scanner.IsEnd())
+            {
+                return new Token(TokenType.Error, new TokenValue("Unclosed string"));
+            }
+
+            scanner.Advance();
+            return new Token(TokenType.StringLiteral, new TokenValue(content.ToString()));
+        }
+
+        private bool TryParseEscapeSequence(out char escapeSequence)
+        {
+            scanner.Advance();
+
+            if (scanner.IsEnd())
+            {
+                escapeSequence = '\0';
+                return false;
+            }
+
+            char escapeChar = scanner.Peek();
+            bool isValid = true;
+
+            switch (escapeChar)
+            {
+                case 'n':
+                    escapeSequence = '\n';
+                    break;
+                case 't':
+                    escapeSequence = '\t';
+                    break;
+                case '"':
+                    escapeSequence = '"';
+                    break;
+                case '\\':
+                    escapeSequence = '\\';
+                    break;
+                case 'r':
+                    escapeSequence = '\r';
+                    break;
+                default:
+                    escapeSequence = '\0';
+                    isValid = false;
+                    break;
+            }
+
+            scanner.Advance();
+            return isValid;
+        }
+
+        private Token ParseRemainTokens()
+        {
+            char ch = scanner.Peek();
+
+            switch (ch)
             {
                 case ';':
                     scanner.Advance();
@@ -148,7 +328,7 @@ namespace Lexer
                         return new Token(TokenType.NotEqual);
                     }
 
-                    return new Token(TokenType.Error, new TokenValue("Неизвестный оператор '!'"));
+                    return new Token(TokenType.Error, new TokenValue("Unknown operator: '!'"));
                 case '<':
                     scanner.Advance();
                     if (scanner.Peek() == '=')
@@ -167,148 +347,9 @@ namespace Lexer
                     }
 
                     return new Token(TokenType.GreaterThan);
-            }
-
-            scanner.Advance();
-            return new Token(TokenType.Error, new TokenValue($"Неизвестный символ: '{c}'"));
-        }
-
-        private Token ParseIdentifierOrKeyword()
-        {
-            StringBuilder value = new StringBuilder();
-            value.Append(scanner.Peek());
-            scanner.Advance();
-
-            while (!scanner.IsEnd())
-            {
-                char c = scanner.Peek();
-                if (char.IsLetter(c) || char.IsAsciiDigit(c) || c == '_')
-                {
-                    value.Append(c);
-                    scanner.Advance();
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            string identifier = value.ToString();
-            if (Keywords.TryGetValue(identifier, out TokenType type))
-            {
-                return new Token(type);
-            }
-
-            return new Token(TokenType.Identifier, new TokenValue(identifier));
-        }
-
-        private Token ParseNumericLiteral()
-        {
-            string value = "";
-
-            if (scanner.Peek() == '-')
-            {
-                value += scanner.Peek();
-                scanner.Advance();
-            }
-
-            while (char.IsAsciiDigit(scanner.Peek()))
-            {
-                value += scanner.Peek();
-                scanner.Advance();
-            }
-
-            if (scanner.Peek() == '.')
-            {
-                value += scanner.Peek();
-                scanner.Advance();
-
-                while (char.IsAsciiDigit(scanner.Peek()))
-                {
-                    value += scanner.Peek();
-                    scanner.Advance();
-                }
-            }
-
-            if (decimal.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal number))
-            {
-                return new Token(TokenType.NumberLiteral, new TokenValue(number));
-            }
-            else
-            {
-                return new Token(TokenType.Error, new TokenValue(value));
-            }
-        }
-
-        private Token ParseStringLiteral()
-        {
-            scanner.Advance();
-
-            StringBuilder contents = new StringBuilder();
-
-            while (!scanner.IsEnd() && scanner.Peek() != '"')
-            {
-                if (scanner.Peek() == '\\')
-                {
-                    if (TryParseStringLiteralEscapeSequence(out char unescaped))
-                    {
-                        contents.Append(unescaped);
-                    }
-                    else
-                    {
-                        return new Token(TokenType.Error, new TokenValue("Некорректная escape-последовательность"));
-                    }
-                }
-                else
-                {
-                    contents.Append(scanner.Peek());
-                    scanner.Advance();
-                }
-            }
-
-            if (scanner.IsEnd())
-            {
-                return new Token(TokenType.Error, new TokenValue("Незакрытая строка"));
-            }
-
-            scanner.Advance();
-
-            return new Token(TokenType.StringLiteral, new TokenValue(contents.ToString()));
-        }
-
-        private bool TryParseStringLiteralEscapeSequence(out char unescaped)
-        {
-            scanner.Advance();
-
-            if (scanner.IsEnd())
-            {
-                unescaped = '\0';
-                return false;
-            }
-
-            char escapeChar = scanner.Peek();
-            scanner.Advance();
-
-            switch (escapeChar)
-            {
-                case 'n':
-                    unescaped = '\n';
-                    return true;
-                case 't':
-                    unescaped = '\t';
-                    return true;
-                case '"':
-                    unescaped = '"';
-                    return true;
-                case '\\':
-                    unescaped = '\\';
-                    return true;
-                case 'r':
-                    unescaped = '\r';
-                    return true;
                 default:
-                    unescaped = '\0';
-                    return false;
+                    scanner.Advance();
+                    return new Token(TokenType.Error, new TokenValue($"Unknown symbol: '{ch.ToString()}'"));
             }
         }
 
