@@ -101,98 +101,57 @@ escapeSequence = "\" , ( "n" | "t" | '"' | "\" ) ;
 #### Лексемы (Токены)
 
 ```
-numericLiteral = realLiteral | integerLiteral ;
-integerLiteral = [ "-" | "+" ], digit, { digit } ;
-realLiteral = [ "-" | "+" ], digit, { digit }, ".", digit, { digit } ;
-stringLiteral = '"', { anyChar - '"' | escapeSequence }, '"' ;
-logicalLiteral = "ХАЙП" | "КРИНЖ" ;
-constant = "ПИ" | "ЕШКА" ;
-
 identifier = ( cyrillicLetter | underscore ), { cyrillicLetter | digit | underscore } ;
 
+numericLiteral = realLiteral | integerLiteral ;
+integerLiteral = [ "-" | "+" ], digit, { digit } ;
+realLiteral    = [ "-" | "+" ], digit, { digit }, ".", digit, { digit } ;
+stringLiteral  = '"', { anyChar - '"' | escapeSequence }, '"' ;
+logicalLiteral = "ХАЙП" | "КРИНЖ" ;
+
+constant = "ПИ" | "ЕШКА" ;
+
 typeName = "ЦИФЕРКА" | "ПОЛТОРАШКА" | "ЦИТАТА" | "РАСКЛАД" | "ПШИК" ;
-```
-
-#### Базовые конструкции
-
-```
-functionCall = identifier, "(", [ argumentList ], ")" ;
-argumentList = expression, { ",", expression } ;
-```
-
-#### Инструкции
-
-```
-program = "ПОЕХАЛИ", statementList, "ФИНАЛОЧКА" ;
-statementList = { statement } ;
-block = "ПОЕХАЛИ", statementList, "ФИНАЛОЧКА" ;
-blockOrStatement = statement | block ;
-statement = 
-      ( variableDeclaration | assignmentStatement | ifStatement | loopStatement 
-      | returnStatement | breakStatement | ioStatement | functionCallStatement
-      | functionDeclaration | procedureDeclaration )
-    ;
-variableDeclaration = 
-      ( typeName, identifier, "=", expression, ";" )
-    | ( "БАЗА", typeName, identifier, "=", expression, ";" )
-    ;
-assignmentStatement = identifier, "=", expression, ";" ;
-
-ifStatement = 
-    "ЕСЛИ", "(", expression, ")", "ТО", blockOrStatement, 
-    [ "ИНАЧE", blockOrStatement ] ;
-
-loopStatement = 
-    "ЦИКЛ", "(", 
-      ( assignmentStatement, ";", expression, ";", assignmentStatement ) (* 'for' стиль *)
-      | expression (* 'while' стиль *)
-    , ")", block ;
-
-returnStatement = "ДРАТУТИ", expression, ";" ;
-
-breakStatement = "ХВАТИТ", ";" ;
-
-ioStatement = 
-      ( "ВЫБРОС", "(", argumentList, ")", ";" )
-    | ( "ВБРОС", "(", identifier, { ",", identifier } , ")", ";" )
-    ;
-
-functionCallStatement = functionCall, ";" ;
-
-functionDeclaration = 
-    typeName, identifier, "(", [ parameterList ], ")", block ;
-
-procedureDeclaration = 
-    "ПРОКРАСТИНИРУЕМ", identifier, "(", [ parameterList ], ")", block ;
-
-parameterList = 
-    identifier, ":", typeName, { ",", identifier, ":", typeName } ;
 ```
 
 #### Грамматика Выражений
 
 ```
-expression = logicalOrExpression ;
+expression = assignmentExpression ;
+
+(* --- Присваивание (Приоритет 0) --- *)
+(* Право-ассоциативное: a = b = 5 *)
+assignmentExpression = 
+    logicalOrExpression, [ "=", assignmentExpression ] ;
+
+(* --- Логические операции (Приоритет 1-2) --- *)
 logicalOrExpression = 
     logicalAndExpression, { "ИЛИ", logicalAndExpression } ;
 
 logicalAndExpression = 
-    comparisonExpression, { "И", comparisonExpression } ;
+    equalityExpression, { "И", equalityExpression } ;
 
-comparisonExpression = 
-    additiveExpression, 
-    [ ( "==" | "!=" | "<" | ">" | "<=" | ">=" ), additiveExpression ] ;
+(* --- Сравнения (Приоритет 3-4) --- *)
+equalityExpression = 
+    relationalExpression, { ( "==" | "!=" ), relationalExpression } ;
 
+relationalExpression = 
+    additiveExpression, { ( "<" | ">" | "<=" | ">=" ), additiveExpression } ;
+
+(* --- Арифметика (Приоритет 5-6) --- *)
 additiveExpression = 
-    multiplicativeExpression, 
-    { ( "+" | "-" ), multiplicativeExpression } ;
+    multiplicativeExpression, { ( "+" | "-" ), multiplicativeExpression } ;
 
 multiplicativeExpression =
     unaryExpression, { ( "*" | "/" | "%" ), unaryExpression } ;
 
+(* --- Унарные операции (Приоритет 7) --- *)
 unaryExpression = 
-    { "+" | "-" | "НЕ" } , primary ;
+      ( "-" | "+" | "НЕ" ), unaryExpression 
+    | primary 
+    ;
 
+(* --- Первичные выражения (Приоритет 8) --- *)
 primary = 
       numericLiteral
     | stringLiteral
@@ -202,4 +161,9 @@ primary =
     | identifier
     | "(", expression, ")"
     ;
+
+(* --- Вспомогательные конструкции --- *)
+functionCall = identifier, "(", [ argumentList ], ")" ;
+
+argumentList = expression, { ",", expression } ;
 ```
