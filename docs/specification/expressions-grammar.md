@@ -119,39 +119,32 @@ typeName = "ЦИФЕРКА" | "ПОЛТОРАШКА" | "ЦИТАТА" | "РАС�
 ```
 expression = assignmentExpression ;
 
-(* --- Присваивание (Приоритет 0) --- *)
-(* Право-ассоциативное: a = b = 5 *)
 assignmentExpression = 
     logicalOrExpression, [ "=", assignmentExpression ] ;
 
-(* --- Логические операции (Приоритет 1-2) --- *)
 logicalOrExpression = 
     logicalAndExpression, { "ИЛИ", logicalAndExpression } ;
 
 logicalAndExpression = 
     equalityExpression, { "И", equalityExpression } ;
 
-(* --- Сравнения (Приоритет 3-4) --- *)
 equalityExpression = 
     relationalExpression, { ( "==" | "!=" ), relationalExpression } ;
 
 relationalExpression = 
     additiveExpression, { ( "<" | ">" | "<=" | ">=" ), additiveExpression } ;
 
-(* --- Арифметика (Приоритет 5-6) --- *)
 additiveExpression = 
     multiplicativeExpression, { ( "+" | "-" ), multiplicativeExpression } ;
 
 multiplicativeExpression =
     unaryExpression, { ( "*" | "/" | "%" ), unaryExpression } ;
 
-(* --- Унарные операции (Приоритет 7) --- *)
 unaryExpression = 
       ( "-" | "+" | "НЕ" ), unaryExpression 
     | primary 
     ;
 
-(* --- Первичные выражения (Приоритет 8) --- *)
 primary = 
       numericLiteral
     | stringLiteral
@@ -162,7 +155,6 @@ primary =
     | "(", expression, ")"
     ;
 
-(* --- Вспомогательные конструкции --- *)
 functionCall = identifier, "(", [ argumentList ], ")" ;
 
 argumentList = expression, { ",", expression } ;
