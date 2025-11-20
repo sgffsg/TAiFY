@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <Antlr4 Include="Grammars\VaibikParser.g4">
+        <Listener>true</Listener>
+        <Visitor>false</Visitor>
+        <GAtn>false</GAtn>
+        <Error>false</Error>
+        <Package>VaibikGrammar</Package>
+      </Antlr4>
+      <Antlr4 Include="Grammars/VaibikLexer.g4">
+        <Listener>true</Listener>
+        <Visitor>false</Visitor>
+        <GAtn>false</GAtn>
+        <Error>false</Error>
+        <Package>VaibikGrammar</Package>
+      </Antlr4>
+    </ItemGroup>
+
+</Project>
