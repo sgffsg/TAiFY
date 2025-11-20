@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Lexer
 {
@@ -32,13 +28,13 @@ namespace Lexer
             Lexer lexer = new(text);
 
             LexemStats lexemData = new();
-            for (Token t = lexer.ParseToken(); t.Type != TokenType.EndOfFile; t = lexer.ParseToken())
+            for (Token t = lexer.ParseToken(); t.Type != TokenType.EOF; t = lexer.ParseToken())
             {
                 if (t.Type == TokenType.Identifier)
                 {
                     lexemData.Identifiers++;
                 }
-                else if (t.Type == TokenType.NumberLiteral)
+                else if (t.Type == TokenType.NumericLiteral)
                 {
                     lexemData.NumberLiterals++;
                 }
