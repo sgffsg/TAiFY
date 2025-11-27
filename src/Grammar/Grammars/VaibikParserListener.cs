@@ -41,125 +41,15 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitProgram([NotNull] VaibikParser.ProgramContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.statementList"/>.
+	/// Enter a parse tree produced by <see cref="VaibikParser.topLevelItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterStatementList([NotNull] VaibikParser.StatementListContext context);
+	void EnterTopLevelItem([NotNull] VaibikParser.TopLevelItemContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.statementList"/>.
+	/// Exit a parse tree produced by <see cref="VaibikParser.topLevelItem"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitStatementList([NotNull] VaibikParser.StatementListContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.block"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBlock([NotNull] VaibikParser.BlockContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.block"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBlock([NotNull] VaibikParser.BlockContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.blockOrStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBlockOrStatement([NotNull] VaibikParser.BlockOrStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.blockOrStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBlockOrStatement([NotNull] VaibikParser.BlockOrStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterStatement([NotNull] VaibikParser.StatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.statement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitStatement([NotNull] VaibikParser.StatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.variableDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterVariableDeclaration([NotNull] VaibikParser.VariableDeclarationContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.variableDeclaration"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitVariableDeclaration([NotNull] VaibikParser.VariableDeclarationContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.assignmentStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterAssignmentStatement([NotNull] VaibikParser.AssignmentStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.assignmentStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitAssignmentStatement([NotNull] VaibikParser.AssignmentStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.ifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterIfStatement([NotNull] VaibikParser.IfStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.ifStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitIfStatement([NotNull] VaibikParser.IfStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.loopStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterLoopStatement([NotNull] VaibikParser.LoopStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.loopStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitLoopStatement([NotNull] VaibikParser.LoopStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.returnStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterReturnStatement([NotNull] VaibikParser.ReturnStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.returnStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitReturnStatement([NotNull] VaibikParser.ReturnStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.breakStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBreakStatement([NotNull] VaibikParser.BreakStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.breakStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBreakStatement([NotNull] VaibikParser.BreakStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.ioStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterIoStatement([NotNull] VaibikParser.IoStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.ioStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitIoStatement([NotNull] VaibikParser.IoStatementContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.functionCallStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFunctionCallStatement([NotNull] VaibikParser.FunctionCallStatementContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.functionCallStatement"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFunctionCallStatement([NotNull] VaibikParser.FunctionCallStatementContext context);
+	void ExitTopLevelItem([NotNull] VaibikParser.TopLevelItemContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.functionDeclaration"/>.
 	/// </summary>
@@ -191,6 +81,26 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitParameterList([NotNull] VaibikParser.ParameterListContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterParameter([NotNull] VaibikParser.ParameterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitParameter([NotNull] VaibikParser.ParameterContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.fullType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFullType([NotNull] VaibikParser.FullTypeContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.fullType"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFullType([NotNull] VaibikParser.FullTypeContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.typeName"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -201,15 +111,189 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitTypeName([NotNull] VaibikParser.TypeNameContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.argumentList"/>.
+	/// Enter a parse tree produced by <see cref="VaibikParser.arrayType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterArgumentList([NotNull] VaibikParser.ArgumentListContext context);
+	void EnterArrayType([NotNull] VaibikParser.ArrayTypeContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.argumentList"/>.
+	/// Exit a parse tree produced by <see cref="VaibikParser.arrayType"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitArgumentList([NotNull] VaibikParser.ArgumentListContext context);
+	void ExitArrayType([NotNull] VaibikParser.ArrayTypeContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.globalVariableDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterGlobalVariableDeclaration([NotNull] VaibikParser.GlobalVariableDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.globalVariableDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitGlobalVariableDeclaration([NotNull] VaibikParser.GlobalVariableDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.variableDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterVariableDeclaration([NotNull] VaibikParser.VariableDeclarationContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.variableDeclaration"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitVariableDeclaration([NotNull] VaibikParser.VariableDeclarationContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.block"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBlock([NotNull] VaibikParser.BlockContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.block"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBlock([NotNull] VaibikParser.BlockContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.statementList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStatementList([NotNull] VaibikParser.StatementListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.statementList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStatementList([NotNull] VaibikParser.StatementListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterStatement([NotNull] VaibikParser.StatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.statement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitStatement([NotNull] VaibikParser.StatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.expressionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterExpressionStatement([NotNull] VaibikParser.ExpressionStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.expressionStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitExpressionStatement([NotNull] VaibikParser.ExpressionStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.arrayAssignmentStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayAssignmentStatement([NotNull] VaibikParser.ArrayAssignmentStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.arrayAssignmentStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayAssignmentStatement([NotNull] VaibikParser.ArrayAssignmentStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.sideEffectStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterSideEffectStatement([NotNull] VaibikParser.SideEffectStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.sideEffectStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitSideEffectStatement([NotNull] VaibikParser.SideEffectStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.ifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIfStatement([NotNull] VaibikParser.IfStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.ifStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIfStatement([NotNull] VaibikParser.IfStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.loopStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoopStatement([NotNull] VaibikParser.LoopStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.loopStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoopStatement([NotNull] VaibikParser.LoopStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>whileLoop</c>
+	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhileLoop([NotNull] VaibikParser.WhileLoopContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>whileLoop</c>
+	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhileLoop([NotNull] VaibikParser.WhileLoopContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>forLoop</c>
+	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterForLoop([NotNull] VaibikParser.ForLoopContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>forLoop</c>
+	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitForLoop([NotNull] VaibikParser.ForLoopContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.assignmentExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAssignmentExpr([NotNull] VaibikParser.AssignmentExprContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.assignmentExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAssignmentExpr([NotNull] VaibikParser.AssignmentExprContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.returnStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterReturnStatement([NotNull] VaibikParser.ReturnStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.returnStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitReturnStatement([NotNull] VaibikParser.ReturnStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.breakStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBreakStatement([NotNull] VaibikParser.BreakStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.breakStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBreakStatement([NotNull] VaibikParser.BreakStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.ioStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterIoStatement([NotNull] VaibikParser.IoStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.ioStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitIoStatement([NotNull] VaibikParser.IoStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.inputList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterInputList([NotNull] VaibikParser.InputListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.inputList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitInputList([NotNull] VaibikParser.InputListContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.expression"/>.
 	/// </summary>
@@ -220,6 +304,16 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitExpression([NotNull] VaibikParser.ExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.assignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterAssignmentExpression([NotNull] VaibikParser.AssignmentExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.assignmentExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitAssignmentExpression([NotNull] VaibikParser.AssignmentExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.logicalOrExpression"/>.
 	/// </summary>
@@ -241,15 +335,25 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitLogicalAndExpression([NotNull] VaibikParser.LogicalAndExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.comparisonExpression"/>.
+	/// Enter a parse tree produced by <see cref="VaibikParser.equalityExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterComparisonExpression([NotNull] VaibikParser.ComparisonExpressionContext context);
+	void EnterEqualityExpression([NotNull] VaibikParser.EqualityExpressionContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.comparisonExpression"/>.
+	/// Exit a parse tree produced by <see cref="VaibikParser.equalityExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitComparisonExpression([NotNull] VaibikParser.ComparisonExpressionContext context);
+	void ExitEqualityExpression([NotNull] VaibikParser.EqualityExpressionContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.relationalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterRelationalExpression([NotNull] VaibikParser.RelationalExpressionContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.relationalExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitRelationalExpression([NotNull] VaibikParser.RelationalExpressionContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.additiveExpression"/>.
 	/// </summary>
@@ -271,15 +375,29 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitMultiplicativeExpression([NotNull] VaibikParser.MultiplicativeExpressionContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.unaryExpression"/>.
+	/// Enter a parse tree produced by the <c>unaryOp</c>
+	/// labeled alternative in <see cref="VaibikParser.unaryExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterUnaryExpression([NotNull] VaibikParser.UnaryExpressionContext context);
+	void EnterUnaryOp([NotNull] VaibikParser.UnaryOpContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.unaryExpression"/>.
+	/// Exit a parse tree produced by the <c>unaryOp</c>
+	/// labeled alternative in <see cref="VaibikParser.unaryExpression"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitUnaryExpression([NotNull] VaibikParser.UnaryExpressionContext context);
+	void ExitUnaryOp([NotNull] VaibikParser.UnaryOpContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>primaryAtom</c>
+	/// labeled alternative in <see cref="VaibikParser.unaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterPrimaryAtom([NotNull] VaibikParser.PrimaryAtomContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>primaryAtom</c>
+	/// labeled alternative in <see cref="VaibikParser.unaryExpression"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitPrimaryAtom([NotNull] VaibikParser.PrimaryAtomContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.primary"/>.
 	/// </summary>
@@ -290,6 +408,56 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitPrimary([NotNull] VaibikParser.PrimaryContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.arrayAccess"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArrayAccess([NotNull] VaibikParser.ArrayAccessContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.arrayAccess"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArrayAccess([NotNull] VaibikParser.ArrayAccessContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterFunctionCall([NotNull] VaibikParser.FunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.functionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitFunctionCall([NotNull] VaibikParser.FunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.builtinFunctionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBuiltinFunctionCall([NotNull] VaibikParser.BuiltinFunctionCallContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.builtinFunctionCall"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBuiltinFunctionCall([NotNull] VaibikParser.BuiltinFunctionCallContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.argumentList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArgumentList([NotNull] VaibikParser.ArgumentListContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.argumentList"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArgumentList([NotNull] VaibikParser.ArgumentListContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLiteral([NotNull] VaibikParser.LiteralContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLiteral([NotNull] VaibikParser.LiteralContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.logicalLiteral"/>.
 	/// </summary>
@@ -310,14 +478,4 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitConstant([NotNull] VaibikParser.ConstantContext context);
-	/// <summary>
-	/// Enter a parse tree produced by <see cref="VaibikParser.functionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterFunctionCall([NotNull] VaibikParser.FunctionCallContext context);
-	/// <summary>
-	/// Exit a parse tree produced by <see cref="VaibikParser.functionCall"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitFunctionCall([NotNull] VaibikParser.FunctionCallContext context);
 }

@@ -36,60 +36,68 @@ public partial class VaibikParser : Parser {
 	protected static DFA[] decisionToDFA;
 	protected static PredictionContextCache sharedContextCache = new PredictionContextCache();
 	public const int
-		POEHALI=1, FINALOCHKA=2, PROKRASTINIRUEM=3, VBROS=4, VYBROS=5, PACHKA=6, 
-		CITATA=7, HAIP=8, KRINZH=9, RASKLAD=10, POLTORASHKA=11, DRATUTI=12, CIFERKA=13, 
-		PSHIK=14, HVATIT=15, BAZA=16, ESLI=17, TO=18, INACHE=19, CIKL=20, I=21, 
-		ILI=22, NE=23, POYASNITELNAYA_BRIGADA=24, FINALOCHKA_KOMMENTARIYA=25, 
-		PI=26, ESHKA=27, MODUL=28, MINIMUM=29, MAXIMUM=30, SINUS=31, KOSINUS=32, 
-		TANGENS=33, PLUS=34, MINUS=35, MULT=36, DIV=37, MOD=38, EQ=39, NEQ=40, 
-		LT=41, GT=42, LTE=43, GTE=44, ASSIGN=45, SEMI=46, COMMA=47, DOT=48, LPAREN=49, 
-		RPAREN=50, LBRACE=51, RBRACE=52, LBRACK=53, RBRACK=54, COLON=55, ID=56, 
-		INTEGER=57, REAL=58, STRING=59, WS=60, COMMENT=61, SINGLE_LINE_COMMENT=62;
+		POEHALI=1, FINALOCHKA=2, PROKRASTINIRUEM=3, DRATUTI=4, VBROS=5, VYBROS=6, 
+		PACHKA=7, CITATA_TYPE=8, RASKLAD=9, POLTORASHKA=10, CIFERKA=11, PSHIK=12, 
+		BAZA=13, HAIP=14, KRINZH=15, HVATIT=16, ESLI=17, TO=18, INACHE=19, CIKL=20, 
+		I=21, ILI=22, NE=23, PI=24, ESHKA=25, POYASNITELNAYA_BRIGADA=26, FINALOCHKA_KOMMENTARIYA=27, 
+		MODUL=28, MINIMUM=29, MAXIMUM=30, SINUS=31, KOSINUS=32, TANGENS=33, PLUS=34, 
+		MINUS=35, MULT=36, DIV=37, MOD=38, EQ=39, NEQ=40, LT=41, GT=42, LTE=43, 
+		GTE=44, ASSIGN=45, SEMI=46, COMMA=47, DOT=48, LPAREN=49, RPAREN=50, LBRACE=51, 
+		RBRACE=52, LBRACK=53, RBRACK=54, COLON=55, ID=56, INTEGER=57, REAL=58, 
+		STRING=59, WS=60, COMMENT=61, SINGLE_LINE_COMMENT=62;
 	public const int
-		RULE_program = 0, RULE_statementList = 1, RULE_block = 2, RULE_blockOrStatement = 3, 
-		RULE_statement = 4, RULE_variableDeclaration = 5, RULE_assignmentStatement = 6, 
-		RULE_ifStatement = 7, RULE_loopStatement = 8, RULE_returnStatement = 9, 
-		RULE_breakStatement = 10, RULE_ioStatement = 11, RULE_functionCallStatement = 12, 
-		RULE_functionDeclaration = 13, RULE_procedureDeclaration = 14, RULE_parameterList = 15, 
-		RULE_typeName = 16, RULE_argumentList = 17, RULE_expression = 18, RULE_logicalOrExpression = 19, 
-		RULE_logicalAndExpression = 20, RULE_comparisonExpression = 21, RULE_additiveExpression = 22, 
-		RULE_multiplicativeExpression = 23, RULE_unaryExpression = 24, RULE_primary = 25, 
-		RULE_logicalLiteral = 26, RULE_constant = 27, RULE_functionCall = 28;
+		RULE_program = 0, RULE_topLevelItem = 1, RULE_functionDeclaration = 2, 
+		RULE_procedureDeclaration = 3, RULE_parameterList = 4, RULE_parameter = 5, 
+		RULE_fullType = 6, RULE_typeName = 7, RULE_arrayType = 8, RULE_globalVariableDeclaration = 9, 
+		RULE_variableDeclaration = 10, RULE_block = 11, RULE_statementList = 12, 
+		RULE_statement = 13, RULE_expressionStatement = 14, RULE_arrayAssignmentStatement = 15, 
+		RULE_sideEffectStatement = 16, RULE_ifStatement = 17, RULE_loopStatement = 18, 
+		RULE_loopControl = 19, RULE_assignmentExpr = 20, RULE_returnStatement = 21, 
+		RULE_breakStatement = 22, RULE_ioStatement = 23, RULE_inputList = 24, 
+		RULE_expression = 25, RULE_assignmentExpression = 26, RULE_logicalOrExpression = 27, 
+		RULE_logicalAndExpression = 28, RULE_equalityExpression = 29, RULE_relationalExpression = 30, 
+		RULE_additiveExpression = 31, RULE_multiplicativeExpression = 32, RULE_unaryExpression = 33, 
+		RULE_primary = 34, RULE_arrayAccess = 35, RULE_functionCall = 36, RULE_builtinFunctionCall = 37, 
+		RULE_argumentList = 38, RULE_literal = 39, RULE_logicalLiteral = 40, RULE_constant = 41;
 	public static readonly string[] ruleNames = {
-		"program", "statementList", "block", "blockOrStatement", "statement", 
-		"variableDeclaration", "assignmentStatement", "ifStatement", "loopStatement", 
-		"returnStatement", "breakStatement", "ioStatement", "functionCallStatement", 
-		"functionDeclaration", "procedureDeclaration", "parameterList", "typeName", 
-		"argumentList", "expression", "logicalOrExpression", "logicalAndExpression", 
-		"comparisonExpression", "additiveExpression", "multiplicativeExpression", 
-		"unaryExpression", "primary", "logicalLiteral", "constant", "functionCall"
+		"program", "topLevelItem", "functionDeclaration", "procedureDeclaration", 
+		"parameterList", "parameter", "fullType", "typeName", "arrayType", "globalVariableDeclaration", 
+		"variableDeclaration", "block", "statementList", "statement", "expressionStatement", 
+		"arrayAssignmentStatement", "sideEffectStatement", "ifStatement", "loopStatement", 
+		"loopControl", "assignmentExpr", "returnStatement", "breakStatement", 
+		"ioStatement", "inputList", "expression", "assignmentExpression", "logicalOrExpression", 
+		"logicalAndExpression", "equalityExpression", "relationalExpression", 
+		"additiveExpression", "multiplicativeExpression", "unaryExpression", "primary", 
+		"arrayAccess", "functionCall", "builtinFunctionCall", "argumentList", 
+		"literal", "logicalLiteral", "constant"
 	};
 
 	private static readonly string[] _LiteralNames = {
 		null, "'\\u041F\\u041E\\u0415\\u0425\\u0410\\u041B\\u0418'", "'\\u0424\\u0418\\u041D\\u0410\\u041B\\u041E\\u0427\\u041A\\u0410'", 
 		"'\\u041F\\u0420\\u041E\\u041A\\u0420\\u0410\\u0421\\u0422\\u0418\\u041D\\u0418\\u0420\\u0423\\u0415\\u041C'", 
-		"'\\u0412\\u0411\\u0420\\u041E\\u0421'", "'\\u0412\\u042B\\u0411\\u0420\\u041E\\u0421'", 
-		"'\\u041F\\u0410\\u0427\\u041A\\u0410'", "'\\u0426\\u0418\\u0422\\u0410\\u0422\\u0410'", 
-		"'\\u0425\\u0410\\u0419\\u041F'", "'\\u041A\\u0420\\u0418\\u041D\\u0416'", 
-		"'\\u0420\\u0410\\u0421\\u041A\\u041B\\u0410\\u0414'", "'\\u041F\\u041E\\u041B\\u0422\\u041E\\u0420\\u0410\\u0428\\u041A\\u0410'", 
-		"'\\u0414\\u0420\\u0410\\u0422\\u0423\\u0422\\u0418'", "'\\u0426\\u0418\\u0424\\u0415\\u0420\\u041A\\u0410'", 
-		"'\\u041F\\u0428\\u0418\\u041A'", "'\\u0425\\u0412\\u0410\\u0422\\u0418\\u0422'", 
-		"'\\u0411\\u0410\\u0417\\u0410'", "'\\u0415\\u0421\\u041B\\u0418'", "'\\u0422\\u041E'", 
-		"'\\u0418\\u041D\\u0410\\u0427\\u0415'", "'\\u0426\\u0418\\u041A\\u041B'", 
-		"'\\u0418'", "'\\u0418\\u041B\\u0418'", "'\\u041D\\u0415'", "'(\\u041F\\u041E\\u042F\\u0421\\u041D\\u0418\\u0422\\u0415\\u041B\\u042C\\u041D\\u0410\\u042F-\\u0411\\u0420\\u0418\\u0413\\u0410\\u0414\\u0410:'", 
+		"'\\u0414\\u0420\\u0410\\u0422\\u0423\\u0422\\u0418'", "'\\u0412\\u0411\\u0420\\u041E\\u0421'", 
+		"'\\u0412\\u042B\\u0411\\u0420\\u041E\\u0421'", "'\\u041F\\u0410\\u0427\\u041A\\u0410'", 
+		"'\\u0426\\u0418\\u0422\\u0410\\u0422\\u0410'", "'\\u0420\\u0410\\u0421\\u041A\\u041B\\u0410\\u0414'", 
+		"'\\u041F\\u041E\\u041B\\u0422\\u041E\\u0420\\u0410\\u0428\\u041A\\u0410'", 
+		"'\\u0426\\u0418\\u0424\\u0415\\u0420\\u041A\\u0410'", "'\\u041F\\u0428\\u0418\\u041A'", 
+		"'\\u0411\\u0410\\u0417\\u0410'", "'\\u0425\\u0410\\u0419\\u041F'", "'\\u041A\\u0420\\u0418\\u041D\\u0416'", 
+		"'\\u0425\\u0412\\u0410\\u0422\\u0418\\u0422'", "'\\u0415\\u0421\\u041B\\u0418'", 
+		"'\\u0422\\u041E'", "'\\u0418\\u041D\\u0410\\u0427\\u0415'", "'\\u0426\\u0418\\u041A\\u041B'", 
+		"'\\u0418'", "'\\u0418\\u041B\\u0418'", "'\\u041D\\u0415'", "'\\u041F\\u0418'", 
+		"'\\u0415\\u0428\\u041A\\u0410'", "'(\\u041F\\u041E\\u042F\\u0421\\u041D\\u0418\\u0422\\u0415\\u041B\\u042C\\u041D\\u0410\\u042F-\\u0411\\u0420\\u0418\\u0413\\u0410\\u0414\\u0410:'", 
 		"'\\u0424\\u0418\\u041D\\u0410\\u041B\\u041E\\u0427\\u041A\\u0410-\\u041A\\u041E\\u041C\\u041C\\u0415\\u041D\\u0422\\u0410\\u0420\\u0418\\u042F)'", 
-		"'\\u041F\\u0418'", "'\\u0415\\u0428\\u041A\\u0410'", "'\\u041C\\u041E\\u0414\\u0423\\u041B\\u042C'", 
-		"'\\u041C\\u0418\\u041D\\u0418\\u041C\\u0423\\u041C'", "'\\u041C\\u0410\\u041A\\u0421\\u0418\\u041C\\u0423\\u041C'", 
-		"'\\u0421\\u0418\\u041D\\u0423\\u0421'", "'\\u041A\\u041E\\u0421\\u0418\\u041D\\u0423\\u0421'", 
-		"'\\u0422\\u0410\\u041D\\u0413\\u0415\\u041D\\u0421'", "'+'", "'-'", "'*'", 
-		"'/'", "'%'", "'=='", "'!='", "'<'", "'>'", "'<='", "'>='", "'='", "';'", 
-		"','", "'.'", "'('", "')'", "'{'", "'}'", "'['", "']'", "':'"
+		"'\\u041C\\u041E\\u0414\\u0423\\u041B\\u042C'", "'\\u041C\\u0418\\u041D\\u0418\\u041C\\u0423\\u041C'", 
+		"'\\u041C\\u0410\\u041A\\u0421\\u0418\\u041C\\u0423\\u041C'", "'\\u0421\\u0418\\u041D\\u0423\\u0421'", 
+		"'\\u041A\\u041E\\u0421\\u0418\\u041D\\u0423\\u0421'", "'\\u0422\\u0410\\u041D\\u0413\\u0415\\u041D\\u0421'", 
+		"'+'", "'-'", "'*'", "'/'", "'%'", "'=='", "'!='", "'<'", "'>'", "'<='", 
+		"'>='", "'='", "';'", "','", "'.'", "'('", "')'", "'{'", "'}'", "'['", 
+		"']'", "':'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, "POEHALI", "FINALOCHKA", "PROKRASTINIRUEM", "VBROS", "VYBROS", "PACHKA", 
-		"CITATA", "HAIP", "KRINZH", "RASKLAD", "POLTORASHKA", "DRATUTI", "CIFERKA", 
-		"PSHIK", "HVATIT", "BAZA", "ESLI", "TO", "INACHE", "CIKL", "I", "ILI", 
-		"NE", "POYASNITELNAYA_BRIGADA", "FINALOCHKA_KOMMENTARIYA", "PI", "ESHKA", 
+		null, "POEHALI", "FINALOCHKA", "PROKRASTINIRUEM", "DRATUTI", "VBROS", 
+		"VYBROS", "PACHKA", "CITATA_TYPE", "RASKLAD", "POLTORASHKA", "CIFERKA", 
+		"PSHIK", "BAZA", "HAIP", "KRINZH", "HVATIT", "ESLI", "TO", "INACHE", "CIKL", 
+		"I", "ILI", "NE", "PI", "ESHKA", "POYASNITELNAYA_BRIGADA", "FINALOCHKA_KOMMENTARIYA", 
 		"MODUL", "MINIMUM", "MAXIMUM", "SINUS", "KOSINUS", "TANGENS", "PLUS", 
 		"MINUS", "MULT", "DIV", "MOD", "EQ", "NEQ", "LT", "GT", "LTE", "GTE", 
 		"ASSIGN", "SEMI", "COMMA", "DOT", "LPAREN", "RPAREN", "LBRACE", "RBRACE", 
@@ -129,11 +137,13 @@ public partial class VaibikParser : Parser {
 	}
 
 	public partial class ProgramContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POEHALI() { return GetToken(VaibikParser.POEHALI, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public StatementListContext statementList() {
-			return GetRuleContext<StatementListContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode Eof() { return GetToken(VaibikParser.Eof, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TopLevelItemContext[] topLevelItem() {
+			return GetRuleContexts<TopLevelItemContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FINALOCHKA() { return GetToken(VaibikParser.FINALOCHKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TopLevelItemContext topLevelItem(int i) {
+			return GetRuleContext<TopLevelItemContext>(i);
+		}
 		public ProgramContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
@@ -155,74 +165,26 @@ public partial class VaibikParser : Parser {
 	public ProgramContext program() {
 		ProgramContext _localctx = new ProgramContext(Context, State);
 		EnterRule(_localctx, 0, RULE_program);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 58;
-			Match(POEHALI);
-			State = 59;
-			statementList();
-			State = 60;
-			Match(FINALOCHKA);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class StatementListContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
-			return GetRuleContexts<StatementContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
-			return GetRuleContext<StatementContext>(i);
-		}
-		public StatementListContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_statementList; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterStatementList(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitStatementList(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public StatementListContext statementList() {
-		StatementListContext _localctx = new StatementListContext(Context, State);
-		EnterRule(_localctx, 2, RULE_statementList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 65;
+			State = 87;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 72057594039237816L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 16264L) != 0)) {
 				{
 				{
-				State = 62;
-				statement();
+				State = 84;
+				topLevelItem();
 				}
 				}
-				State = 67;
+				State = 89;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
+			State = 90;
+			Match(Eof);
 			}
 		}
 		catch (RecognitionException re) {
@@ -236,810 +198,62 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
-	public partial class BlockContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POEHALI() { return GetToken(VaibikParser.POEHALI, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public StatementListContext statementList() {
-			return GetRuleContext<StatementListContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FINALOCHKA() { return GetToken(VaibikParser.FINALOCHKA, 0); }
-		public BlockContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_block; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterBlock(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitBlock(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BlockContext block() {
-		BlockContext _localctx = new BlockContext(Context, State);
-		EnterRule(_localctx, 4, RULE_block);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 68;
-			Match(POEHALI);
-			State = 69;
-			statementList();
-			State = 70;
-			Match(FINALOCHKA);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BlockOrStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement() {
-			return GetRuleContext<StatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
-		}
-		public BlockOrStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_blockOrStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterBlockOrStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitBlockOrStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BlockOrStatementContext blockOrStatement() {
-		BlockOrStatementContext _localctx = new BlockOrStatementContext(Context, State);
-		EnterRule(_localctx, 6, RULE_blockOrStatement);
-		try {
-			State = 74;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case PROKRASTINIRUEM:
-			case VBROS:
-			case VYBROS:
-			case CITATA:
-			case RASKLAD:
-			case POLTORASHKA:
-			case DRATUTI:
-			case CIFERKA:
-			case PSHIK:
-			case HVATIT:
-			case BAZA:
-			case ESLI:
-			case CIKL:
-			case ID:
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 72;
-				statement();
-				}
-				break;
-			case POEHALI:
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 73;
-				block();
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class StatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public VariableDeclarationContext variableDeclaration() {
-			return GetRuleContext<VariableDeclarationContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssignmentStatementContext assignmentStatement() {
-			return GetRuleContext<AssignmentStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public IfStatementContext ifStatement() {
-			return GetRuleContext<IfStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public LoopStatementContext loopStatement() {
-			return GetRuleContext<LoopStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ReturnStatementContext returnStatement() {
-			return GetRuleContext<ReturnStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BreakStatementContext breakStatement() {
-			return GetRuleContext<BreakStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public IoStatementContext ioStatement() {
-			return GetRuleContext<IoStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallStatementContext functionCallStatement() {
-			return GetRuleContext<FunctionCallStatementContext>(0);
-		}
+	public partial class TopLevelItemContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public FunctionDeclarationContext functionDeclaration() {
 			return GetRuleContext<FunctionDeclarationContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ProcedureDeclarationContext procedureDeclaration() {
 			return GetRuleContext<ProcedureDeclarationContext>(0);
 		}
-		public StatementContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public GlobalVariableDeclarationContext globalVariableDeclaration() {
+			return GetRuleContext<GlobalVariableDeclarationContext>(0);
+		}
+		public TopLevelItemContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_statement; } }
+		public override int RuleIndex { get { return RULE_topLevelItem; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterStatement(this);
+			if (typedListener != null) typedListener.EnterTopLevelItem(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitStatement(this);
+			if (typedListener != null) typedListener.ExitTopLevelItem(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public StatementContext statement() {
-		StatementContext _localctx = new StatementContext(Context, State);
-		EnterRule(_localctx, 8, RULE_statement);
+	public TopLevelItemContext topLevelItem() {
+		TopLevelItemContext _localctx = new TopLevelItemContext(Context, State);
+		EnterRule(_localctx, 2, RULE_topLevelItem);
 		try {
-			State = 86;
+			State = 95;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,1,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 76;
-				variableDeclaration();
+				State = 92;
+				functionDeclaration();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 77;
-				assignmentStatement();
+				State = 93;
+				procedureDeclaration();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 78;
-				ifStatement();
-				}
-				break;
-			case 4:
-				EnterOuterAlt(_localctx, 4);
-				{
-				State = 79;
-				loopStatement();
-				}
-				break;
-			case 5:
-				EnterOuterAlt(_localctx, 5);
-				{
-				State = 80;
-				returnStatement();
-				}
-				break;
-			case 6:
-				EnterOuterAlt(_localctx, 6);
-				{
-				State = 81;
-				breakStatement();
-				}
-				break;
-			case 7:
-				EnterOuterAlt(_localctx, 7);
-				{
-				State = 82;
-				ioStatement();
-				}
-				break;
-			case 8:
-				EnterOuterAlt(_localctx, 8);
-				{
-				State = 83;
-				functionCallStatement();
-				}
-				break;
-			case 9:
-				EnterOuterAlt(_localctx, 9);
-				{
-				State = 84;
-				functionDeclaration();
-				}
-				break;
-			case 10:
-				EnterOuterAlt(_localctx, 10);
-				{
-				State = 85;
-				procedureDeclaration();
-				}
-				break;
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class VariableDeclarationContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public TypeNameContext typeName() {
-			return GetRuleContext<TypeNameContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BAZA() { return GetToken(VaibikParser.BAZA, 0); }
-		public VariableDeclarationContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_variableDeclaration; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterVariableDeclaration(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitVariableDeclaration(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public VariableDeclarationContext variableDeclaration() {
-		VariableDeclarationContext _localctx = new VariableDeclarationContext(Context, State);
-		EnterRule(_localctx, 10, RULE_variableDeclaration);
-		try {
-			State = 101;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case CITATA:
-			case RASKLAD:
-			case POLTORASHKA:
-			case CIFERKA:
-			case PSHIK:
-				EnterOuterAlt(_localctx, 1);
-				{
-				{
-				State = 88;
-				typeName();
-				State = 89;
-				Match(ID);
-				State = 90;
-				Match(ASSIGN);
-				State = 91;
-				expression();
-				State = 92;
-				Match(SEMI);
-				}
-				}
-				break;
-			case BAZA:
-				EnterOuterAlt(_localctx, 2);
-				{
-				{
 				State = 94;
-				Match(BAZA);
-				State = 95;
-				typeName();
-				State = 96;
-				Match(ID);
-				State = 97;
-				Match(ASSIGN);
-				State = 98;
-				expression();
-				State = 99;
-				Match(SEMI);
-				}
+				globalVariableDeclaration();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class AssignmentStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
-		public AssignmentStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_assignmentStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterAssignmentStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitAssignmentStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public AssignmentStatementContext assignmentStatement() {
-		AssignmentStatementContext _localctx = new AssignmentStatementContext(Context, State);
-		EnterRule(_localctx, 12, RULE_assignmentStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 103;
-			Match(ID);
-			State = 104;
-			Match(ASSIGN);
-			State = 105;
-			expression();
-			State = 106;
-			Match(SEMI);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class IfStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ESLI() { return GetToken(VaibikParser.ESLI, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(VaibikParser.TO, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public BlockOrStatementContext[] blockOrStatement() {
-			return GetRuleContexts<BlockOrStatementContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BlockOrStatementContext blockOrStatement(int i) {
-			return GetRuleContext<BlockOrStatementContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INACHE() { return GetToken(VaibikParser.INACHE, 0); }
-		public IfStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_ifStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterIfStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitIfStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public IfStatementContext ifStatement() {
-		IfStatementContext _localctx = new IfStatementContext(Context, State);
-		EnterRule(_localctx, 14, RULE_ifStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 108;
-			Match(ESLI);
-			State = 109;
-			Match(LPAREN);
-			State = 110;
-			expression();
-			State = 111;
-			Match(RPAREN);
-			State = 112;
-			Match(TO);
-			State = 113;
-			blockOrStatement();
-			State = 116;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,4,Context) ) {
-			case 1:
-				{
-				State = 114;
-				Match(INACHE);
-				State = 115;
-				blockOrStatement();
-				}
-				break;
-			}
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class LoopStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CIKL() { return GetToken(VaibikParser.CIKL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssignmentStatementContext[] assignmentStatement() {
-			return GetRuleContexts<AssignmentStatementContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssignmentStatementContext assignmentStatement(int i) {
-			return GetRuleContext<AssignmentStatementContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] SEMI() { return GetTokens(VaibikParser.SEMI); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI(int i) {
-			return GetToken(VaibikParser.SEMI, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public LoopStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_loopStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterLoopStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitLoopStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public LoopStatementContext loopStatement() {
-		LoopStatementContext _localctx = new LoopStatementContext(Context, State);
-		EnterRule(_localctx, 16, RULE_loopStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 118;
-			Match(CIKL);
-			State = 119;
-			Match(LPAREN);
-			State = 127;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,5,Context) ) {
-			case 1:
-				{
-				State = 120;
-				assignmentStatement();
-				State = 121;
-				Match(SEMI);
-				State = 122;
-				expression();
-				State = 123;
-				Match(SEMI);
-				State = 124;
-				assignmentStatement();
-				}
-				break;
-			case 2:
-				{
-				State = 126;
-				expression();
-				}
-				break;
-			}
-			State = 129;
-			Match(RPAREN);
-			State = 130;
-			block();
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class ReturnStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRATUTI() { return GetToken(VaibikParser.DRATUTI, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
-		public ReturnStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_returnStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterReturnStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitReturnStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public ReturnStatementContext returnStatement() {
-		ReturnStatementContext _localctx = new ReturnStatementContext(Context, State);
-		EnterRule(_localctx, 18, RULE_returnStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 132;
-			Match(DRATUTI);
-			State = 133;
-			expression();
-			State = 134;
-			Match(SEMI);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class BreakStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HVATIT() { return GetToken(VaibikParser.HVATIT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
-		public BreakStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_breakStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterBreakStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitBreakStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public BreakStatementContext breakStatement() {
-		BreakStatementContext _localctx = new BreakStatementContext(Context, State);
-		EnterRule(_localctx, 20, RULE_breakStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 136;
-			Match(HVATIT);
-			State = 137;
-			Match(SEMI);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class IoStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VYBROS() { return GetToken(VaibikParser.VYBROS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ArgumentListContext argumentList() {
-			return GetRuleContext<ArgumentListContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VBROS() { return GetToken(VaibikParser.VBROS, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] ID() { return GetTokens(VaibikParser.ID); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID(int i) {
-			return GetToken(VaibikParser.ID, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(VaibikParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(VaibikParser.COMMA, i);
-		}
-		public IoStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_ioStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterIoStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitIoStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public IoStatementContext ioStatement() {
-		IoStatementContext _localctx = new IoStatementContext(Context, State);
-		EnterRule(_localctx, 22, RULE_ioStatement);
-		int _la;
-		try {
-			State = 157;
-			ErrorHandler.Sync(this);
-			switch (TokenStream.LA(1)) {
-			case VYBROS:
-				EnterOuterAlt(_localctx, 1);
-				{
-				{
-				State = 139;
-				Match(VYBROS);
-				State = 140;
-				Match(LPAREN);
-				State = 141;
-				argumentList();
-				State = 142;
-				Match(RPAREN);
-				State = 143;
-				Match(SEMI);
-				}
-				}
-				break;
-			case VBROS:
-				EnterOuterAlt(_localctx, 2);
-				{
-				{
-				State = 145;
-				Match(VBROS);
-				State = 146;
-				Match(LPAREN);
-				State = 147;
-				Match(ID);
-				State = 152;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-				while (_la==COMMA) {
-					{
-					{
-					State = 148;
-					Match(COMMA);
-					State = 149;
-					Match(ID);
-					}
-					}
-					State = 154;
-					ErrorHandler.Sync(this);
-					_la = TokenStream.LA(1);
-				}
-				State = 155;
-				Match(RPAREN);
-				State = 156;
-				Match(SEMI);
-				}
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
-	public partial class FunctionCallStatementContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallContext functionCall() {
-			return GetRuleContext<FunctionCallContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
-		public FunctionCallStatementContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_functionCallStatement; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterFunctionCallStatement(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitFunctionCallStatement(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public FunctionCallStatementContext functionCallStatement() {
-		FunctionCallStatementContext _localctx = new FunctionCallStatementContext(Context, State);
-		EnterRule(_localctx, 24, RULE_functionCallStatement);
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 159;
-			functionCall();
-			State = 160;
-			Match(SEMI);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1086,30 +300,30 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public FunctionDeclarationContext functionDeclaration() {
 		FunctionDeclarationContext _localctx = new FunctionDeclarationContext(Context, State);
-		EnterRule(_localctx, 26, RULE_functionDeclaration);
+		EnterRule(_localctx, 4, RULE_functionDeclaration);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 162;
+			State = 97;
 			typeName();
-			State = 163;
+			State = 98;
 			Match(ID);
-			State = 164;
+			State = 99;
 			Match(LPAREN);
-			State = 166;
+			State = 101;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ID) {
 				{
-				State = 165;
+				State = 100;
 				parameterList();
 				}
 			}
 
-			State = 168;
+			State = 103;
 			Match(RPAREN);
-			State = 169;
+			State = 104;
 			block();
 			}
 		}
@@ -1155,30 +369,30 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ProcedureDeclarationContext procedureDeclaration() {
 		ProcedureDeclarationContext _localctx = new ProcedureDeclarationContext(Context, State);
-		EnterRule(_localctx, 28, RULE_procedureDeclaration);
+		EnterRule(_localctx, 6, RULE_procedureDeclaration);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 171;
+			State = 106;
 			Match(PROKRASTINIRUEM);
-			State = 172;
+			State = 107;
 			Match(ID);
-			State = 173;
+			State = 108;
 			Match(LPAREN);
-			State = 175;
+			State = 110;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ID) {
 				{
-				State = 174;
+				State = 109;
 				parameterList();
 				}
 			}
 
-			State = 177;
+			State = 112;
 			Match(RPAREN);
-			State = 178;
+			State = 113;
 			block();
 			}
 		}
@@ -1194,19 +408,11 @@ public partial class VaibikParser : Parser {
 	}
 
 	public partial class ParameterListContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] ID() { return GetTokens(VaibikParser.ID); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID(int i) {
-			return GetToken(VaibikParser.ID, i);
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext[] parameter() {
+			return GetRuleContexts<ParameterContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COLON() { return GetTokens(VaibikParser.COLON); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON(int i) {
-			return GetToken(VaibikParser.COLON, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public TypeNameContext[] typeName() {
-			return GetRuleContexts<TypeNameContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public TypeNameContext typeName(int i) {
-			return GetRuleContext<TypeNameContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public ParameterContext parameter(int i) {
+			return GetRuleContext<ParameterContext>(i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(VaibikParser.COMMA); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
@@ -1232,34 +438,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ParameterListContext parameterList() {
 		ParameterListContext _localctx = new ParameterListContext(Context, State);
-		EnterRule(_localctx, 30, RULE_parameterList);
+		EnterRule(_localctx, 8, RULE_parameterList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 180;
-			Match(ID);
-			State = 181;
-			Match(COLON);
-			State = 182;
-			typeName();
-			State = 189;
+			State = 115;
+			parameter();
+			State = 120;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 183;
+				State = 116;
 				Match(COMMA);
-				State = 184;
-				Match(ID);
-				State = 185;
-				Match(COLON);
-				State = 186;
-				typeName();
+				State = 117;
+				parameter();
 				}
 				}
-				State = 191;
+				State = 122;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1276,10 +474,124 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
+	public partial class ParameterContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COLON() { return GetToken(VaibikParser.COLON, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public FullTypeContext fullType() {
+			return GetRuleContext<FullTypeContext>(0);
+		}
+		public ParameterContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_parameter; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterParameter(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitParameter(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ParameterContext parameter() {
+		ParameterContext _localctx = new ParameterContext(Context, State);
+		EnterRule(_localctx, 10, RULE_parameter);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 123;
+			Match(ID);
+			State = 124;
+			Match(COLON);
+			State = 125;
+			fullType();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class FullTypeContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public TypeNameContext typeName() {
+			return GetRuleContext<TypeNameContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayTypeContext arrayType() {
+			return GetRuleContext<ArrayTypeContext>(0);
+		}
+		public FullTypeContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_fullType; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterFullType(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitFullType(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public FullTypeContext fullType() {
+		FullTypeContext _localctx = new FullTypeContext(Context, State);
+		EnterRule(_localctx, 12, RULE_fullType);
+		try {
+			State = 129;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case CITATA_TYPE:
+			case RASKLAD:
+			case POLTORASHKA:
+			case CIFERKA:
+			case PSHIK:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 127;
+				typeName();
+				}
+				break;
+			case PACHKA:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 128;
+				arrayType();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
 	public partial class TypeNameContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CIFERKA() { return GetToken(VaibikParser.CIFERKA, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POLTORASHKA() { return GetToken(VaibikParser.POLTORASHKA, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CITATA() { return GetToken(VaibikParser.CITATA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CITATA_TYPE() { return GetToken(VaibikParser.CITATA_TYPE, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RASKLAD() { return GetToken(VaibikParser.RASKLAD, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PSHIK() { return GetToken(VaibikParser.PSHIK, 0); }
 		public TypeNameContext(ParserRuleContext parent, int invokingState)
@@ -1302,14 +614,14 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public TypeNameContext typeName() {
 		TypeNameContext _localctx = new TypeNameContext(Context, State);
-		EnterRule(_localctx, 32, RULE_typeName);
+		EnterRule(_localctx, 14, RULE_typeName);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 192;
+			State = 131;
 			_la = TokenStream.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 27776L) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 7936L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
 			}
 			else {
@@ -1329,57 +641,1132 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ArgumentListContext : ParserRuleContext {
+	public partial class ArrayTypeContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PACHKA() { return GetToken(VaibikParser.PACHKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LBRACK() { return GetToken(VaibikParser.LBRACK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RBRACK() { return GetToken(VaibikParser.RBRACK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public TypeNameContext typeName() {
+			return GetRuleContext<TypeNameContext>(0);
+		}
+		public ArrayTypeContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_arrayType; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterArrayType(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitArrayType(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ArrayTypeContext arrayType() {
+		ArrayTypeContext _localctx = new ArrayTypeContext(Context, State);
+		EnterRule(_localctx, 16, RULE_arrayType);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 133;
+			Match(PACHKA);
+			State = 134;
+			Match(LBRACK);
+			State = 135;
+			expression();
+			State = 136;
+			Match(RBRACK);
+			State = 137;
+			typeName();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class GlobalVariableDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public FullTypeContext fullType() {
+			return GetRuleContext<FullTypeContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode BAZA() { return GetToken(VaibikParser.BAZA, 0); }
+		public GlobalVariableDeclarationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_globalVariableDeclaration; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterGlobalVariableDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitGlobalVariableDeclaration(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public GlobalVariableDeclarationContext globalVariableDeclaration() {
+		GlobalVariableDeclarationContext _localctx = new GlobalVariableDeclarationContext(Context, State);
+		EnterRule(_localctx, 18, RULE_globalVariableDeclaration);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 140;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==BAZA) {
+				{
+				State = 139;
+				Match(BAZA);
+				}
+			}
+
+			State = 142;
+			fullType();
+			State = 143;
+			Match(ID);
+			State = 144;
+			Match(ASSIGN);
+			State = 145;
+			expression();
+			State = 146;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class VariableDeclarationContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public FullTypeContext fullType() {
+			return GetRuleContext<FullTypeContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public VariableDeclarationContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_variableDeclaration; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterVariableDeclaration(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitVariableDeclaration(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public VariableDeclarationContext variableDeclaration() {
+		VariableDeclarationContext _localctx = new VariableDeclarationContext(Context, State);
+		EnterRule(_localctx, 20, RULE_variableDeclaration);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 148;
+			fullType();
+			State = 149;
+			Match(ID);
+			State = 152;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==ASSIGN) {
+				{
+				State = 150;
+				Match(ASSIGN);
+				State = 151;
+				expression();
+				}
+			}
+
+			State = 154;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BlockContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POEHALI() { return GetToken(VaibikParser.POEHALI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public StatementListContext statementList() {
+			return GetRuleContext<StatementListContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FINALOCHKA() { return GetToken(VaibikParser.FINALOCHKA, 0); }
+		public BlockContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_block; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterBlock(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitBlock(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BlockContext block() {
+		BlockContext _localctx = new BlockContext(Context, State);
+		EnterRule(_localctx, 22, RULE_block);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 156;
+			Match(POEHALI);
+			State = 157;
+			statementList();
+			State = 158;
+			Match(FINALOCHKA);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class StatementListContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
+			return GetRuleContexts<StatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
+			return GetRuleContext<StatementContext>(i);
+		}
+		public StatementListContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_statementList; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterStatementList(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitStatementList(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public StatementListContext statementList() {
+		StatementListContext _localctx = new StatementListContext(Context, State);
+		EnterRule(_localctx, 24, RULE_statementList);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 163;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081497297777582066L) != 0)) {
+				{
+				{
+				State = 160;
+				statement();
+				}
+				}
+				State = 165;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class StatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public VariableDeclarationContext variableDeclaration() {
+			return GetRuleContext<VariableDeclarationContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionStatementContext expressionStatement() {
+			return GetRuleContext<ExpressionStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayAssignmentStatementContext arrayAssignmentStatement() {
+			return GetRuleContext<ArrayAssignmentStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IfStatementContext ifStatement() {
+			return GetRuleContext<IfStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public LoopStatementContext loopStatement() {
+			return GetRuleContext<LoopStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ReturnStatementContext returnStatement() {
+			return GetRuleContext<ReturnStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BreakStatementContext breakStatement() {
+			return GetRuleContext<BreakStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public IoStatementContext ioStatement() {
+			return GetRuleContext<IoStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public SideEffectStatementContext sideEffectStatement() {
+			return GetRuleContext<SideEffectStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
+			return GetRuleContext<BlockContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		public StatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_statement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public StatementContext statement() {
+		StatementContext _localctx = new StatementContext(Context, State);
+		EnterRule(_localctx, 26, RULE_statement);
+		try {
+			State = 177;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,9,Context) ) {
+			case 1:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 166;
+				variableDeclaration();
+				}
+				break;
+			case 2:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 167;
+				expressionStatement();
+				}
+				break;
+			case 3:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 168;
+				arrayAssignmentStatement();
+				}
+				break;
+			case 4:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 169;
+				ifStatement();
+				}
+				break;
+			case 5:
+				EnterOuterAlt(_localctx, 5);
+				{
+				State = 170;
+				loopStatement();
+				}
+				break;
+			case 6:
+				EnterOuterAlt(_localctx, 6);
+				{
+				State = 171;
+				returnStatement();
+				}
+				break;
+			case 7:
+				EnterOuterAlt(_localctx, 7);
+				{
+				State = 172;
+				breakStatement();
+				}
+				break;
+			case 8:
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 173;
+				ioStatement();
+				}
+				break;
+			case 9:
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 174;
+				sideEffectStatement();
+				}
+				break;
+			case 10:
+				EnterOuterAlt(_localctx, 10);
+				{
+				State = 175;
+				block();
+				}
+				break;
+			case 11:
+				EnterOuterAlt(_localctx, 11);
+				{
+				State = 176;
+				Match(SEMI);
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ExpressionStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		public ExpressionStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_expressionStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterExpressionStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitExpressionStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ExpressionStatementContext expressionStatement() {
+		ExpressionStatementContext _localctx = new ExpressionStatementContext(Context, State);
+		EnterRule(_localctx, 28, RULE_expressionStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 179;
+			expression();
+			State = 180;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ArrayAssignmentStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LBRACK() { return GetToken(VaibikParser.LBRACK, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
 			return GetRuleContexts<ExpressionContext>();
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
 			return GetRuleContext<ExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(VaibikParser.COMMA); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
-			return GetToken(VaibikParser.COMMA, i);
-		}
-		public ArgumentListContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RBRACK() { return GetToken(VaibikParser.RBRACK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		public ArrayAssignmentStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_argumentList; } }
+		public override int RuleIndex { get { return RULE_arrayAssignmentStatement; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterArgumentList(this);
+			if (typedListener != null) typedListener.EnterArrayAssignmentStatement(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitArgumentList(this);
+			if (typedListener != null) typedListener.ExitArrayAssignmentStatement(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ArgumentListContext argumentList() {
-		ArgumentListContext _localctx = new ArgumentListContext(Context, State);
-		EnterRule(_localctx, 34, RULE_argumentList);
+	public ArrayAssignmentStatementContext arrayAssignmentStatement() {
+		ArrayAssignmentStatementContext _localctx = new ArrayAssignmentStatementContext(Context, State);
+		EnterRule(_localctx, 30, RULE_arrayAssignmentStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 182;
+			Match(ID);
+			State = 183;
+			Match(LBRACK);
+			State = 184;
+			expression();
+			State = 185;
+			Match(RBRACK);
+			State = 186;
+			Match(ASSIGN);
+			State = 187;
+			expression();
+			State = 188;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class SideEffectStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallContext functionCall() {
+			return GetRuleContext<FunctionCallContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		public SideEffectStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_sideEffectStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterSideEffectStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitSideEffectStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public SideEffectStatementContext sideEffectStatement() {
+		SideEffectStatementContext _localctx = new SideEffectStatementContext(Context, State);
+		EnterRule(_localctx, 32, RULE_sideEffectStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 190;
+			functionCall();
+			State = 191;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IfStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ESLI() { return GetToken(VaibikParser.ESLI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TO() { return GetToken(VaibikParser.TO, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
+			return GetRuleContexts<StatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
+			return GetRuleContext<StatementContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INACHE() { return GetToken(VaibikParser.INACHE, 0); }
+		public IfStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_ifStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterIfStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitIfStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IfStatementContext ifStatement() {
+		IfStatementContext _localctx = new IfStatementContext(Context, State);
+		EnterRule(_localctx, 34, RULE_ifStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 193;
+			Match(ESLI);
+			State = 194;
+			Match(LPAREN);
+			State = 195;
+			expression();
+			State = 196;
+			Match(RPAREN);
+			State = 197;
+			Match(TO);
+			State = 198;
+			statement();
+			State = 201;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,10,Context) ) {
+			case 1:
+				{
+				State = 199;
+				Match(INACHE);
+				State = 200;
+				statement();
+				}
+				break;
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LoopStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CIKL() { return GetToken(VaibikParser.CIKL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public LoopControlContext loopControl() {
+			return GetRuleContext<LoopControlContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
+			return GetRuleContext<BlockContext>(0);
+		}
+		public LoopStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_loopStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterLoopStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitLoopStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LoopStatementContext loopStatement() {
+		LoopStatementContext _localctx = new LoopStatementContext(Context, State);
+		EnterRule(_localctx, 36, RULE_loopStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 203;
+			Match(CIKL);
+			State = 204;
+			Match(LPAREN);
+			State = 205;
+			loopControl();
+			State = 206;
+			Match(RPAREN);
+			State = 207;
+			block();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LoopControlContext : ParserRuleContext {
+		public LoopControlContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_loopControl; } }
+	 
+		public LoopControlContext() { }
+		public virtual void CopyFrom(LoopControlContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class WhileLoopContext : LoopControlContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public WhileLoopContext(LoopControlContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterWhileLoop(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitWhileLoop(this);
+		}
+	}
+	public partial class ForLoopContext : LoopControlContext {
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExprContext[] assignmentExpr() {
+			return GetRuleContexts<AssignmentExprContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExprContext assignmentExpr(int i) {
+			return GetRuleContext<AssignmentExprContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] SEMI() { return GetTokens(VaibikParser.SEMI); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI(int i) {
+			return GetToken(VaibikParser.SEMI, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ForLoopContext(LoopControlContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterForLoop(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitForLoop(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LoopControlContext loopControl() {
+		LoopControlContext _localctx = new LoopControlContext(Context, State);
+		EnterRule(_localctx, 38, RULE_loopControl);
+		try {
+			State = 216;
+			ErrorHandler.Sync(this);
+			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
+			case 1:
+				_localctx = new WhileLoopContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 209;
+				expression();
+				}
+				break;
+			case 2:
+				_localctx = new ForLoopContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 210;
+				assignmentExpr();
+				State = 211;
+				Match(SEMI);
+				State = 212;
+				expression();
+				State = 213;
+				Match(SEMI);
+				State = 214;
+				assignmentExpr();
+				}
+				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class AssignmentExprContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public AssignmentExprContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_assignmentExpr; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterAssignmentExpr(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitAssignmentExpr(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public AssignmentExprContext assignmentExpr() {
+		AssignmentExprContext _localctx = new AssignmentExprContext(Context, State);
+		EnterRule(_localctx, 40, RULE_assignmentExpr);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 218;
+			Match(ID);
+			State = 219;
+			Match(ASSIGN);
+			State = 220;
+			expression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ReturnStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode DRATUTI() { return GetToken(VaibikParser.DRATUTI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		public ReturnStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_returnStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterReturnStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitReturnStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ReturnStatementContext returnStatement() {
+		ReturnStatementContext _localctx = new ReturnStatementContext(Context, State);
+		EnterRule(_localctx, 42, RULE_returnStatement);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 194;
-			expression();
-			State = 199;
+			State = 222;
+			Match(DRATUTI);
+			State = 224;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426929032151040L) != 0)) {
+				{
+				State = 223;
+				expression();
+				}
+			}
+
+			State = 226;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BreakStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode HVATIT() { return GetToken(VaibikParser.HVATIT, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		public BreakStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_breakStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterBreakStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitBreakStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BreakStatementContext breakStatement() {
+		BreakStatementContext _localctx = new BreakStatementContext(Context, State);
+		EnterRule(_localctx, 44, RULE_breakStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 228;
+			Match(HVATIT);
+			State = 229;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class IoStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VYBROS() { return GetToken(VaibikParser.VYBROS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ArgumentListContext argumentList() {
+			return GetRuleContext<ArgumentListContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VBROS() { return GetToken(VaibikParser.VBROS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public InputListContext inputList() {
+			return GetRuleContext<InputListContext>(0);
+		}
+		public IoStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_ioStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterIoStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitIoStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public IoStatementContext ioStatement() {
+		IoStatementContext _localctx = new IoStatementContext(Context, State);
+		EnterRule(_localctx, 46, RULE_ioStatement);
+		int _la;
+		try {
+			State = 244;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case VYBROS:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 231;
+				Match(VYBROS);
+				State = 232;
+				Match(LPAREN);
+				State = 234;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426929032151040L) != 0)) {
+					{
+					State = 233;
+					argumentList();
+					}
+				}
+
+				State = 236;
+				Match(RPAREN);
+				State = 237;
+				Match(SEMI);
+				}
+				break;
+			case VBROS:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 238;
+				Match(VBROS);
+				State = 239;
+				Match(LPAREN);
+				State = 240;
+				inputList();
+				State = 241;
+				Match(RPAREN);
+				State = 242;
+				Match(SEMI);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class InputListContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] ID() { return GetTokens(VaibikParser.ID); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID(int i) {
+			return GetToken(VaibikParser.ID, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(VaibikParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(VaibikParser.COMMA, i);
+		}
+		public InputListContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_inputList; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterInputList(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitInputList(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public InputListContext inputList() {
+		InputListContext _localctx = new InputListContext(Context, State);
+		EnterRule(_localctx, 48, RULE_inputList);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 246;
+			Match(ID);
+			State = 251;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 195;
+				State = 247;
 				Match(COMMA);
-				State = 196;
-				expression();
+				State = 248;
+				Match(ID);
 				}
 				}
-				State = 201;
+				State = 253;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1397,8 +1784,8 @@ public partial class VaibikParser : Parser {
 	}
 
 	public partial class ExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public LogicalOrExpressionContext logicalOrExpression() {
-			return GetRuleContext<LogicalOrExpressionContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExpressionContext assignmentExpression() {
+			return GetRuleContext<AssignmentExpressionContext>(0);
 		}
 		public ExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1420,12 +1807,72 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ExpressionContext expression() {
 		ExpressionContext _localctx = new ExpressionContext(Context, State);
-		EnterRule(_localctx, 36, RULE_expression);
+		EnterRule(_localctx, 50, RULE_expression);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 202;
+			State = 254;
+			assignmentExpression();
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class AssignmentExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public LogicalOrExpressionContext logicalOrExpression() {
+			return GetRuleContext<LogicalOrExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASSIGN() { return GetToken(VaibikParser.ASSIGN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExpressionContext assignmentExpression() {
+			return GetRuleContext<AssignmentExpressionContext>(0);
+		}
+		public AssignmentExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_assignmentExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterAssignmentExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitAssignmentExpression(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public AssignmentExpressionContext assignmentExpression() {
+		AssignmentExpressionContext _localctx = new AssignmentExpressionContext(Context, State);
+		EnterRule(_localctx, 52, RULE_assignmentExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 256;
 			logicalOrExpression();
+			State = 259;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if (_la==ASSIGN) {
+				{
+				State = 257;
+				Match(ASSIGN);
+				State = 258;
+				assignmentExpression();
+				}
+			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -1470,26 +1917,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LogicalOrExpressionContext logicalOrExpression() {
 		LogicalOrExpressionContext _localctx = new LogicalOrExpressionContext(Context, State);
-		EnterRule(_localctx, 38, RULE_logicalOrExpression);
+		EnterRule(_localctx, 54, RULE_logicalOrExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 204;
+			State = 261;
 			logicalAndExpression();
-			State = 209;
+			State = 266;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==ILI) {
 				{
 				{
-				State = 205;
+				State = 262;
 				Match(ILI);
-				State = 206;
+				State = 263;
 				logicalAndExpression();
 				}
 				}
-				State = 211;
+				State = 268;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1507,11 +1954,11 @@ public partial class VaibikParser : Parser {
 	}
 
 	public partial class LogicalAndExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ComparisonExpressionContext[] comparisonExpression() {
-			return GetRuleContexts<ComparisonExpressionContext>();
+		[System.Diagnostics.DebuggerNonUserCode] public EqualityExpressionContext[] equalityExpression() {
+			return GetRuleContexts<EqualityExpressionContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ComparisonExpressionContext comparisonExpression(int i) {
-			return GetRuleContext<ComparisonExpressionContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public EqualityExpressionContext equalityExpression(int i) {
+			return GetRuleContext<EqualityExpressionContext>(i);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] I() { return GetTokens(VaibikParser.I); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode I(int i) {
@@ -1537,26 +1984,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LogicalAndExpressionContext logicalAndExpression() {
 		LogicalAndExpressionContext _localctx = new LogicalAndExpressionContext(Context, State);
-		EnterRule(_localctx, 40, RULE_logicalAndExpression);
+		EnterRule(_localctx, 56, RULE_logicalAndExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 212;
-			comparisonExpression();
-			State = 217;
+			State = 269;
+			equalityExpression();
+			State = 274;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==I) {
 				{
 				{
-				State = 213;
+				State = 270;
 				Match(I);
-				State = 214;
-				comparisonExpression();
+				State = 271;
+				equalityExpression();
 				}
 				}
-				State = 219;
+				State = 276;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1573,65 +2020,157 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
-	public partial class ComparisonExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext[] additiveExpression() {
-			return GetRuleContexts<AdditiveExpressionContext>();
+	public partial class EqualityExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public RelationalExpressionContext[] relationalExpression() {
+			return GetRuleContexts<RelationalExpressionContext>();
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext additiveExpression(int i) {
-			return GetRuleContext<AdditiveExpressionContext>(i);
+		[System.Diagnostics.DebuggerNonUserCode] public RelationalExpressionContext relationalExpression(int i) {
+			return GetRuleContext<RelationalExpressionContext>(i);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQ() { return GetToken(VaibikParser.EQ, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEQ() { return GetToken(VaibikParser.NEQ, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LT() { return GetToken(VaibikParser.LT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GT() { return GetToken(VaibikParser.GT, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LTE() { return GetToken(VaibikParser.LTE, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GTE() { return GetToken(VaibikParser.GTE, 0); }
-		public ComparisonExpressionContext(ParserRuleContext parent, int invokingState)
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] EQ() { return GetTokens(VaibikParser.EQ); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode EQ(int i) {
+			return GetToken(VaibikParser.EQ, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] NEQ() { return GetTokens(VaibikParser.NEQ); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NEQ(int i) {
+			return GetToken(VaibikParser.NEQ, i);
+		}
+		public EqualityExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_comparisonExpression; } }
+		public override int RuleIndex { get { return RULE_equalityExpression; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterComparisonExpression(this);
+			if (typedListener != null) typedListener.EnterEqualityExpression(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitComparisonExpression(this);
+			if (typedListener != null) typedListener.ExitEqualityExpression(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public ComparisonExpressionContext comparisonExpression() {
-		ComparisonExpressionContext _localctx = new ComparisonExpressionContext(Context, State);
-		EnterRule(_localctx, 42, RULE_comparisonExpression);
+	public EqualityExpressionContext equalityExpression() {
+		EqualityExpressionContext _localctx = new EqualityExpressionContext(Context, State);
+		EnterRule(_localctx, 58, RULE_equalityExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 220;
-			additiveExpression();
-			State = 223;
+			State = 277;
+			relationalExpression();
+			State = 282;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 34634616274944L) != 0)) {
+			while (_la==EQ || _la==NEQ) {
 				{
-				State = 221;
+				{
+				State = 278;
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 34634616274944L) != 0)) ) {
+				if ( !(_la==EQ || _la==NEQ) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 222;
+				State = 279;
+				relationalExpression();
+				}
+				}
+				State = 284;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class RelationalExpressionContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext[] additiveExpression() {
+			return GetRuleContexts<AdditiveExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AdditiveExpressionContext additiveExpression(int i) {
+			return GetRuleContext<AdditiveExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] LT() { return GetTokens(VaibikParser.LT); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LT(int i) {
+			return GetToken(VaibikParser.LT, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] GT() { return GetTokens(VaibikParser.GT); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GT(int i) {
+			return GetToken(VaibikParser.GT, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] LTE() { return GetTokens(VaibikParser.LTE); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LTE(int i) {
+			return GetToken(VaibikParser.LTE, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] GTE() { return GetTokens(VaibikParser.GTE); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode GTE(int i) {
+			return GetToken(VaibikParser.GTE, i);
+		}
+		public RelationalExpressionContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_relationalExpression; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterRelationalExpression(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitRelationalExpression(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public RelationalExpressionContext relationalExpression() {
+		RelationalExpressionContext _localctx = new RelationalExpressionContext(Context, State);
+		EnterRule(_localctx, 60, RULE_relationalExpression);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 285;
+			additiveExpression();
+			State = 290;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 32985348833280L) != 0)) {
+				{
+				{
+				State = 286;
+				_la = TokenStream.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 32985348833280L) != 0)) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 287;
 				additiveExpression();
 				}
+				}
+				State = 292;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
 			}
-
 			}
 		}
 		catch (RecognitionException re) {
@@ -1680,20 +2219,20 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public AdditiveExpressionContext additiveExpression() {
 		AdditiveExpressionContext _localctx = new AdditiveExpressionContext(Context, State);
-		EnterRule(_localctx, 44, RULE_additiveExpression);
+		EnterRule(_localctx, 62, RULE_additiveExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 225;
+			State = 293;
 			multiplicativeExpression();
-			State = 230;
+			State = 298;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==PLUS || _la==MINUS) {
 				{
 				{
-				State = 226;
+				State = 294;
 				_la = TokenStream.LA(1);
 				if ( !(_la==PLUS || _la==MINUS) ) {
 				ErrorHandler.RecoverInline(this);
@@ -1702,11 +2241,11 @@ public partial class VaibikParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 227;
+				State = 295;
 				multiplicativeExpression();
 				}
 				}
-				State = 232;
+				State = 300;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1762,20 +2301,20 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public MultiplicativeExpressionContext multiplicativeExpression() {
 		MultiplicativeExpressionContext _localctx = new MultiplicativeExpressionContext(Context, State);
-		EnterRule(_localctx, 46, RULE_multiplicativeExpression);
+		EnterRule(_localctx, 64, RULE_multiplicativeExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 233;
+			State = 301;
 			unaryExpression();
-			State = 238;
+			State = 306;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 481036337152L) != 0)) {
 				{
 				{
-				State = 234;
+				State = 302;
 				_la = TokenStream.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 481036337152L) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
@@ -1784,11 +2323,11 @@ public partial class VaibikParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 235;
+				State = 303;
 				unaryExpression();
 				}
 				}
-				State = 240;
+				State = 308;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1806,53 +2345,69 @@ public partial class VaibikParser : Parser {
 	}
 
 	public partial class UnaryExpressionContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public PrimaryContext primary() {
-			return GetRuleContext<PrimaryContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] PLUS() { return GetTokens(VaibikParser.PLUS); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PLUS(int i) {
-			return GetToken(VaibikParser.PLUS, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] MINUS() { return GetTokens(VaibikParser.MINUS); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MINUS(int i) {
-			return GetToken(VaibikParser.MINUS, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] NE() { return GetTokens(VaibikParser.NE); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NE(int i) {
-			return GetToken(VaibikParser.NE, i);
-		}
 		public UnaryExpressionContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_unaryExpression; } }
+	 
+		public UnaryExpressionContext() { }
+		public virtual void CopyFrom(UnaryExpressionContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class PrimaryAtomContext : UnaryExpressionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public PrimaryContext primary() {
+			return GetRuleContext<PrimaryContext>(0);
+		}
+		public PrimaryAtomContext(UnaryExpressionContext context) { CopyFrom(context); }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterUnaryExpression(this);
+			if (typedListener != null) typedListener.EnterPrimaryAtom(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitUnaryExpression(this);
+			if (typedListener != null) typedListener.ExitPrimaryAtom(this);
+		}
+	}
+	public partial class UnaryOpContext : UnaryExpressionContext {
+		[System.Diagnostics.DebuggerNonUserCode] public UnaryExpressionContext unaryExpression() {
+			return GetRuleContext<UnaryExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PLUS() { return GetToken(VaibikParser.PLUS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MINUS() { return GetToken(VaibikParser.MINUS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode NE() { return GetToken(VaibikParser.NE, 0); }
+		public UnaryOpContext(UnaryExpressionContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterUnaryOp(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitUnaryOp(this);
 		}
 	}
 
 	[RuleVersion(0)]
 	public UnaryExpressionContext unaryExpression() {
 		UnaryExpressionContext _localctx = new UnaryExpressionContext(Context, State);
-		EnterRule(_localctx, 48, RULE_unaryExpression);
+		EnterRule(_localctx, 66, RULE_unaryExpression);
 		int _la;
 		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 244;
+			State = 312;
 			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 51547996160L) != 0)) {
+			switch (TokenStream.LA(1)) {
+			case NE:
+			case PLUS:
+			case MINUS:
+				_localctx = new UnaryOpContext(_localctx);
+				EnterOuterAlt(_localctx, 1);
 				{
-				{
-				State = 241;
+				State = 309;
 				_la = TokenStream.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 51547996160L) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
@@ -1861,14 +2416,34 @@ public partial class VaibikParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
+				State = 310;
+				unaryExpression();
 				}
+				break;
+			case HAIP:
+			case KRINZH:
+			case PI:
+			case ESHKA:
+			case MODUL:
+			case MINIMUM:
+			case MAXIMUM:
+			case SINUS:
+			case KOSINUS:
+			case TANGENS:
+			case LPAREN:
+			case ID:
+			case INTEGER:
+			case REAL:
+			case STRING:
+				_localctx = new PrimaryAtomContext(_localctx);
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 311;
+				primary();
 				}
-				State = 246;
-				ErrorHandler.Sync(this);
-				_la = TokenStream.LA(1);
-			}
-			State = 247;
-			primary();
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -1883,11 +2458,8 @@ public partial class VaibikParser : Parser {
 	}
 
 	public partial class PrimaryContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER() { return GetToken(VaibikParser.INTEGER, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL() { return GetToken(VaibikParser.REAL, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(VaibikParser.STRING, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public LogicalLiteralContext logicalLiteral() {
-			return GetRuleContext<LogicalLiteralContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public LiteralContext literal() {
+			return GetRuleContext<LiteralContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext constant() {
 			return GetRuleContext<ConstantContext>(0);
@@ -1895,7 +2467,13 @@ public partial class VaibikParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallContext functionCall() {
 			return GetRuleContext<FunctionCallContext>(0);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public ArrayAccessContext arrayAccess() {
+			return GetRuleContext<ArrayAccessContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public BuiltinFunctionCallContext builtinFunctionCall() {
+			return GetRuleContext<BuiltinFunctionCallContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
 			return GetRuleContext<ExpressionContext>(0);
@@ -1921,71 +2499,420 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public PrimaryContext primary() {
 		PrimaryContext _localctx = new PrimaryContext(Context, State);
-		EnterRule(_localctx, 50, RULE_primary);
+		EnterRule(_localctx, 68, RULE_primary);
 		try {
-			State = 260;
+			State = 324;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,18,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,24,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 249;
-				Match(INTEGER);
+				State = 314;
+				literal();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 250;
-				Match(REAL);
+				State = 315;
+				constant();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 251;
-				Match(STRING);
+				State = 316;
+				functionCall();
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 252;
-				logicalLiteral();
+				State = 317;
+				arrayAccess();
 				}
 				break;
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 253;
-				constant();
+				State = 318;
+				Match(ID);
 				}
 				break;
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 254;
-				functionCall();
+				State = 319;
+				builtinFunctionCall();
 				}
 				break;
 			case 7:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 255;
-				Match(ID);
-				}
-				break;
-			case 8:
-				EnterOuterAlt(_localctx, 8);
-				{
-				State = 256;
+				State = 320;
 				Match(LPAREN);
-				State = 257;
+				State = 321;
 				expression();
-				State = 258;
+				State = 322;
 				Match(RPAREN);
 				}
 				break;
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ArrayAccessContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LBRACK() { return GetToken(VaibikParser.LBRACK, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RBRACK() { return GetToken(VaibikParser.RBRACK, 0); }
+		public ArrayAccessContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_arrayAccess; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterArrayAccess(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitArrayAccess(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ArrayAccessContext arrayAccess() {
+		ArrayAccessContext _localctx = new ArrayAccessContext(Context, State);
+		EnterRule(_localctx, 70, RULE_arrayAccess);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 326;
+			Match(ID);
+			State = 327;
+			Match(LBRACK);
+			State = 328;
+			expression();
+			State = 329;
+			Match(RBRACK);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class FunctionCallContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ArgumentListContext argumentList() {
+			return GetRuleContext<ArgumentListContext>(0);
+		}
+		public FunctionCallContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_functionCall; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterFunctionCall(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitFunctionCall(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public FunctionCallContext functionCall() {
+		FunctionCallContext _localctx = new FunctionCallContext(Context, State);
+		EnterRule(_localctx, 72, RULE_functionCall);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 331;
+			Match(ID);
+			State = 332;
+			Match(LPAREN);
+			State = 334;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426929032151040L) != 0)) {
+				{
+				State = 333;
+				argumentList();
+				}
+			}
+
+			State = 336;
+			Match(RPAREN);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class BuiltinFunctionCallContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MODUL() { return GetToken(VaibikParser.MODUL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SINUS() { return GetToken(VaibikParser.SINUS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode KOSINUS() { return GetToken(VaibikParser.KOSINUS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode TANGENS() { return GetToken(VaibikParser.TANGENS, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ArgumentListContext argumentList() {
+			return GetRuleContext<ArgumentListContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MINIMUM() { return GetToken(VaibikParser.MINIMUM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MAXIMUM() { return GetToken(VaibikParser.MAXIMUM, 0); }
+		public BuiltinFunctionCallContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_builtinFunctionCall; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterBuiltinFunctionCall(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitBuiltinFunctionCall(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public BuiltinFunctionCallContext builtinFunctionCall() {
+		BuiltinFunctionCallContext _localctx = new BuiltinFunctionCallContext(Context, State);
+		EnterRule(_localctx, 74, RULE_builtinFunctionCall);
+		int _la;
+		try {
+			State = 348;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case MODUL:
+			case SINUS:
+			case KOSINUS:
+			case TANGENS:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 338;
+				_la = TokenStream.LA(1);
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 15300820992L) != 0)) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 339;
+				Match(LPAREN);
+				State = 340;
+				expression();
+				State = 341;
+				Match(RPAREN);
+				}
+				break;
+			case MINIMUM:
+			case MAXIMUM:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 343;
+				_la = TokenStream.LA(1);
+				if ( !(_la==MINIMUM || _la==MAXIMUM) ) {
+				ErrorHandler.RecoverInline(this);
+				}
+				else {
+					ErrorHandler.ReportMatch(this);
+				    Consume();
+				}
+				State = 344;
+				Match(LPAREN);
+				State = 345;
+				argumentList();
+				State = 346;
+				Match(RPAREN);
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ArgumentListContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext[] expression() {
+			return GetRuleContexts<ExpressionContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression(int i) {
+			return GetRuleContext<ExpressionContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] COMMA() { return GetTokens(VaibikParser.COMMA); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode COMMA(int i) {
+			return GetToken(VaibikParser.COMMA, i);
+		}
+		public ArgumentListContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_argumentList; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterArgumentList(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitArgumentList(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ArgumentListContext argumentList() {
+		ArgumentListContext _localctx = new ArgumentListContext(Context, State);
+		EnterRule(_localctx, 76, RULE_argumentList);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 350;
+			expression();
+			State = 355;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				State = 351;
+				Match(COMMA);
+				State = 352;
+				expression();
+				}
+				}
+				State = 357;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LiteralContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER() { return GetToken(VaibikParser.INTEGER, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode REAL() { return GetToken(VaibikParser.REAL, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode STRING() { return GetToken(VaibikParser.STRING, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public LogicalLiteralContext logicalLiteral() {
+			return GetRuleContext<LogicalLiteralContext>(0);
+		}
+		public LiteralContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_literal; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterLiteral(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitLiteral(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LiteralContext literal() {
+		LiteralContext _localctx = new LiteralContext(Context, State);
+		EnterRule(_localctx, 78, RULE_literal);
+		try {
+			State = 362;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case INTEGER:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 358;
+				Match(INTEGER);
+				}
+				break;
+			case REAL:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 359;
+				Match(REAL);
+				}
+				break;
+			case STRING:
+				EnterOuterAlt(_localctx, 3);
+				{
+				State = 360;
+				Match(STRING);
+				}
+				break;
+			case HAIP:
+			case KRINZH:
+				EnterOuterAlt(_localctx, 4);
+				{
+				State = 361;
+				logicalLiteral();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2022,12 +2949,12 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LogicalLiteralContext logicalLiteral() {
 		LogicalLiteralContext _localctx = new LogicalLiteralContext(Context, State);
-		EnterRule(_localctx, 52, RULE_logicalLiteral);
+		EnterRule(_localctx, 80, RULE_logicalLiteral);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 262;
+			State = 364;
 			_la = TokenStream.LA(1);
 			if ( !(_la==HAIP || _la==KRINZH) ) {
 			ErrorHandler.RecoverInline(this);
@@ -2072,12 +2999,12 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ConstantContext constant() {
 		ConstantContext _localctx = new ConstantContext(Context, State);
-		EnterRule(_localctx, 54, RULE_constant);
+		EnterRule(_localctx, 82, RULE_constant);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 264;
+			State = 366;
 			_la = TokenStream.LA(1);
 			if ( !(_la==PI || _la==ESHKA) ) {
 			ErrorHandler.RecoverInline(this);
@@ -2099,154 +3026,125 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
-	public partial class FunctionCallContext : ParserRuleContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public ArgumentListContext argumentList() {
-			return GetRuleContext<ArgumentListContext>(0);
-		}
-		public FunctionCallContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_functionCall; } }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterFunctionCall(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitFunctionCall(this);
-		}
-	}
-
-	[RuleVersion(0)]
-	public FunctionCallContext functionCall() {
-		FunctionCallContext _localctx = new FunctionCallContext(Context, State);
-		EnterRule(_localctx, 56, RULE_functionCall);
-		int _la;
-		try {
-			EnterOuterAlt(_localctx, 1);
-			{
-			State = 266;
-			Match(ID);
-			State = 267;
-			Match(LPAREN);
-			State = 269;
-			ErrorHandler.Sync(this);
-			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426912271663872L) != 0)) {
-				{
-				State = 268;
-				argumentList();
-				}
-			}
-
-			State = 271;
-			Match(RPAREN);
-			}
-		}
-		catch (RecognitionException re) {
-			_localctx.exception = re;
-			ErrorHandler.ReportError(this, re);
-			ErrorHandler.Recover(this, re);
-		}
-		finally {
-			ExitRule();
-		}
-		return _localctx;
-	}
-
 	private static int[] _serializedATN = {
-		4,1,62,274,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,62,369,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
-		1,0,1,0,1,0,1,0,1,1,5,1,64,8,1,10,1,12,1,67,9,1,1,2,1,2,1,2,1,2,1,3,1,
-		3,3,3,75,8,3,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,1,4,3,4,87,8,4,1,5,1,
-		5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,3,5,102,8,5,1,6,1,6,1,6,
-		1,6,1,6,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,3,7,117,8,7,1,8,1,8,1,8,1,8,1,
-		8,1,8,1,8,1,8,1,8,3,8,128,8,8,1,8,1,8,1,8,1,9,1,9,1,9,1,9,1,10,1,10,1,
-		10,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,1,11,5,11,151,8,11,
-		10,11,12,11,154,9,11,1,11,1,11,3,11,158,8,11,1,12,1,12,1,12,1,13,1,13,
-		1,13,1,13,3,13,167,8,13,1,13,1,13,1,13,1,14,1,14,1,14,1,14,3,14,176,8,
-		14,1,14,1,14,1,14,1,15,1,15,1,15,1,15,1,15,1,15,1,15,5,15,188,8,15,10,
-		15,12,15,191,9,15,1,16,1,16,1,17,1,17,1,17,5,17,198,8,17,10,17,12,17,201,
-		9,17,1,18,1,18,1,19,1,19,1,19,5,19,208,8,19,10,19,12,19,211,9,19,1,20,
-		1,20,1,20,5,20,216,8,20,10,20,12,20,219,9,20,1,21,1,21,1,21,3,21,224,8,
-		21,1,22,1,22,1,22,5,22,229,8,22,10,22,12,22,232,9,22,1,23,1,23,1,23,5,
-		23,237,8,23,10,23,12,23,240,9,23,1,24,5,24,243,8,24,10,24,12,24,246,9,
-		24,1,24,1,24,1,25,1,25,1,25,1,25,1,25,1,25,1,25,1,25,1,25,1,25,1,25,3,
-		25,261,8,25,1,26,1,26,1,27,1,27,1,28,1,28,1,28,3,28,270,8,28,1,28,1,28,
-		1,28,0,0,29,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,
-		42,44,46,48,50,52,54,56,0,7,3,0,7,7,10,11,13,14,1,0,39,44,1,0,34,35,1,
-		0,36,38,2,0,23,23,34,35,1,0,8,9,1,0,26,27,278,0,58,1,0,0,0,2,65,1,0,0,
-		0,4,68,1,0,0,0,6,74,1,0,0,0,8,86,1,0,0,0,10,101,1,0,0,0,12,103,1,0,0,0,
-		14,108,1,0,0,0,16,118,1,0,0,0,18,132,1,0,0,0,20,136,1,0,0,0,22,157,1,0,
-		0,0,24,159,1,0,0,0,26,162,1,0,0,0,28,171,1,0,0,0,30,180,1,0,0,0,32,192,
-		1,0,0,0,34,194,1,0,0,0,36,202,1,0,0,0,38,204,1,0,0,0,40,212,1,0,0,0,42,
-		220,1,0,0,0,44,225,1,0,0,0,46,233,1,0,0,0,48,244,1,0,0,0,50,260,1,0,0,
-		0,52,262,1,0,0,0,54,264,1,0,0,0,56,266,1,0,0,0,58,59,5,1,0,0,59,60,3,2,
-		1,0,60,61,5,2,0,0,61,1,1,0,0,0,62,64,3,8,4,0,63,62,1,0,0,0,64,67,1,0,0,
-		0,65,63,1,0,0,0,65,66,1,0,0,0,66,3,1,0,0,0,67,65,1,0,0,0,68,69,5,1,0,0,
-		69,70,3,2,1,0,70,71,5,2,0,0,71,5,1,0,0,0,72,75,3,8,4,0,73,75,3,4,2,0,74,
-		72,1,0,0,0,74,73,1,0,0,0,75,7,1,0,0,0,76,87,3,10,5,0,77,87,3,12,6,0,78,
-		87,3,14,7,0,79,87,3,16,8,0,80,87,3,18,9,0,81,87,3,20,10,0,82,87,3,22,11,
-		0,83,87,3,24,12,0,84,87,3,26,13,0,85,87,3,28,14,0,86,76,1,0,0,0,86,77,
-		1,0,0,0,86,78,1,0,0,0,86,79,1,0,0,0,86,80,1,0,0,0,86,81,1,0,0,0,86,82,
-		1,0,0,0,86,83,1,0,0,0,86,84,1,0,0,0,86,85,1,0,0,0,87,9,1,0,0,0,88,89,3,
-		32,16,0,89,90,5,56,0,0,90,91,5,45,0,0,91,92,3,36,18,0,92,93,5,46,0,0,93,
-		102,1,0,0,0,94,95,5,16,0,0,95,96,3,32,16,0,96,97,5,56,0,0,97,98,5,45,0,
-		0,98,99,3,36,18,0,99,100,5,46,0,0,100,102,1,0,0,0,101,88,1,0,0,0,101,94,
-		1,0,0,0,102,11,1,0,0,0,103,104,5,56,0,0,104,105,5,45,0,0,105,106,3,36,
-		18,0,106,107,5,46,0,0,107,13,1,0,0,0,108,109,5,17,0,0,109,110,5,49,0,0,
-		110,111,3,36,18,0,111,112,5,50,0,0,112,113,5,18,0,0,113,116,3,6,3,0,114,
-		115,5,19,0,0,115,117,3,6,3,0,116,114,1,0,0,0,116,117,1,0,0,0,117,15,1,
-		0,0,0,118,119,5,20,0,0,119,127,5,49,0,0,120,121,3,12,6,0,121,122,5,46,
-		0,0,122,123,3,36,18,0,123,124,5,46,0,0,124,125,3,12,6,0,125,128,1,0,0,
-		0,126,128,3,36,18,0,127,120,1,0,0,0,127,126,1,0,0,0,128,129,1,0,0,0,129,
-		130,5,50,0,0,130,131,3,4,2,0,131,17,1,0,0,0,132,133,5,12,0,0,133,134,3,
-		36,18,0,134,135,5,46,0,0,135,19,1,0,0,0,136,137,5,15,0,0,137,138,5,46,
-		0,0,138,21,1,0,0,0,139,140,5,5,0,0,140,141,5,49,0,0,141,142,3,34,17,0,
-		142,143,5,50,0,0,143,144,5,46,0,0,144,158,1,0,0,0,145,146,5,4,0,0,146,
-		147,5,49,0,0,147,152,5,56,0,0,148,149,5,47,0,0,149,151,5,56,0,0,150,148,
-		1,0,0,0,151,154,1,0,0,0,152,150,1,0,0,0,152,153,1,0,0,0,153,155,1,0,0,
-		0,154,152,1,0,0,0,155,156,5,50,0,0,156,158,5,46,0,0,157,139,1,0,0,0,157,
-		145,1,0,0,0,158,23,1,0,0,0,159,160,3,56,28,0,160,161,5,46,0,0,161,25,1,
-		0,0,0,162,163,3,32,16,0,163,164,5,56,0,0,164,166,5,49,0,0,165,167,3,30,
-		15,0,166,165,1,0,0,0,166,167,1,0,0,0,167,168,1,0,0,0,168,169,5,50,0,0,
-		169,170,3,4,2,0,170,27,1,0,0,0,171,172,5,3,0,0,172,173,5,56,0,0,173,175,
-		5,49,0,0,174,176,3,30,15,0,175,174,1,0,0,0,175,176,1,0,0,0,176,177,1,0,
-		0,0,177,178,5,50,0,0,178,179,3,4,2,0,179,29,1,0,0,0,180,181,5,56,0,0,181,
-		182,5,55,0,0,182,189,3,32,16,0,183,184,5,47,0,0,184,185,5,56,0,0,185,186,
-		5,55,0,0,186,188,3,32,16,0,187,183,1,0,0,0,188,191,1,0,0,0,189,187,1,0,
-		0,0,189,190,1,0,0,0,190,31,1,0,0,0,191,189,1,0,0,0,192,193,7,0,0,0,193,
-		33,1,0,0,0,194,199,3,36,18,0,195,196,5,47,0,0,196,198,3,36,18,0,197,195,
-		1,0,0,0,198,201,1,0,0,0,199,197,1,0,0,0,199,200,1,0,0,0,200,35,1,0,0,0,
-		201,199,1,0,0,0,202,203,3,38,19,0,203,37,1,0,0,0,204,209,3,40,20,0,205,
-		206,5,22,0,0,206,208,3,40,20,0,207,205,1,0,0,0,208,211,1,0,0,0,209,207,
-		1,0,0,0,209,210,1,0,0,0,210,39,1,0,0,0,211,209,1,0,0,0,212,217,3,42,21,
-		0,213,214,5,21,0,0,214,216,3,42,21,0,215,213,1,0,0,0,216,219,1,0,0,0,217,
-		215,1,0,0,0,217,218,1,0,0,0,218,41,1,0,0,0,219,217,1,0,0,0,220,223,3,44,
-		22,0,221,222,7,1,0,0,222,224,3,44,22,0,223,221,1,0,0,0,223,224,1,0,0,0,
-		224,43,1,0,0,0,225,230,3,46,23,0,226,227,7,2,0,0,227,229,3,46,23,0,228,
-		226,1,0,0,0,229,232,1,0,0,0,230,228,1,0,0,0,230,231,1,0,0,0,231,45,1,0,
-		0,0,232,230,1,0,0,0,233,238,3,48,24,0,234,235,7,3,0,0,235,237,3,48,24,
-		0,236,234,1,0,0,0,237,240,1,0,0,0,238,236,1,0,0,0,238,239,1,0,0,0,239,
-		47,1,0,0,0,240,238,1,0,0,0,241,243,7,4,0,0,242,241,1,0,0,0,243,246,1,0,
-		0,0,244,242,1,0,0,0,244,245,1,0,0,0,245,247,1,0,0,0,246,244,1,0,0,0,247,
-		248,3,50,25,0,248,49,1,0,0,0,249,261,5,57,0,0,250,261,5,58,0,0,251,261,
-		5,59,0,0,252,261,3,52,26,0,253,261,3,54,27,0,254,261,3,56,28,0,255,261,
-		5,56,0,0,256,257,5,49,0,0,257,258,3,36,18,0,258,259,5,50,0,0,259,261,1,
-		0,0,0,260,249,1,0,0,0,260,250,1,0,0,0,260,251,1,0,0,0,260,252,1,0,0,0,
-		260,253,1,0,0,0,260,254,1,0,0,0,260,255,1,0,0,0,260,256,1,0,0,0,261,51,
-		1,0,0,0,262,263,7,5,0,0,263,53,1,0,0,0,264,265,7,6,0,0,265,55,1,0,0,0,
-		266,267,5,56,0,0,267,269,5,49,0,0,268,270,3,34,17,0,269,268,1,0,0,0,269,
-		270,1,0,0,0,270,271,1,0,0,0,271,272,5,50,0,0,272,57,1,0,0,0,20,65,74,86,
-		101,116,127,152,157,166,175,189,199,209,217,223,230,238,244,260,269
+		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,
+		2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,1,0,5,0,86,
+		8,0,10,0,12,0,89,9,0,1,0,1,0,1,1,1,1,1,1,3,1,96,8,1,1,2,1,2,1,2,1,2,3,
+		2,102,8,2,1,2,1,2,1,2,1,3,1,3,1,3,1,3,3,3,111,8,3,1,3,1,3,1,3,1,4,1,4,
+		1,4,5,4,119,8,4,10,4,12,4,122,9,4,1,5,1,5,1,5,1,5,1,6,1,6,3,6,130,8,6,
+		1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,9,3,9,141,8,9,1,9,1,9,1,9,1,9,1,9,1,
+		9,1,10,1,10,1,10,1,10,3,10,153,8,10,1,10,1,10,1,11,1,11,1,11,1,11,1,12,
+		5,12,162,8,12,10,12,12,12,165,9,12,1,13,1,13,1,13,1,13,1,13,1,13,1,13,
+		1,13,1,13,1,13,1,13,3,13,178,8,13,1,14,1,14,1,14,1,15,1,15,1,15,1,15,1,
+		15,1,15,1,15,1,15,1,16,1,16,1,16,1,17,1,17,1,17,1,17,1,17,1,17,1,17,1,
+		17,3,17,202,8,17,1,18,1,18,1,18,1,18,1,18,1,18,1,19,1,19,1,19,1,19,1,19,
+		1,19,1,19,3,19,217,8,19,1,20,1,20,1,20,1,20,1,21,1,21,3,21,225,8,21,1,
+		21,1,21,1,22,1,22,1,22,1,23,1,23,1,23,3,23,235,8,23,1,23,1,23,1,23,1,23,
+		1,23,1,23,1,23,1,23,3,23,245,8,23,1,24,1,24,1,24,5,24,250,8,24,10,24,12,
+		24,253,9,24,1,25,1,25,1,26,1,26,1,26,3,26,260,8,26,1,27,1,27,1,27,5,27,
+		265,8,27,10,27,12,27,268,9,27,1,28,1,28,1,28,5,28,273,8,28,10,28,12,28,
+		276,9,28,1,29,1,29,1,29,5,29,281,8,29,10,29,12,29,284,9,29,1,30,1,30,1,
+		30,5,30,289,8,30,10,30,12,30,292,9,30,1,31,1,31,1,31,5,31,297,8,31,10,
+		31,12,31,300,9,31,1,32,1,32,1,32,5,32,305,8,32,10,32,12,32,308,9,32,1,
+		33,1,33,1,33,3,33,313,8,33,1,34,1,34,1,34,1,34,1,34,1,34,1,34,1,34,1,34,
+		1,34,3,34,325,8,34,1,35,1,35,1,35,1,35,1,35,1,36,1,36,1,36,3,36,335,8,
+		36,1,36,1,36,1,37,1,37,1,37,1,37,1,37,1,37,1,37,1,37,1,37,1,37,3,37,349,
+		8,37,1,38,1,38,1,38,5,38,354,8,38,10,38,12,38,357,9,38,1,39,1,39,1,39,
+		1,39,3,39,363,8,39,1,40,1,40,1,41,1,41,1,41,0,0,42,0,2,4,6,8,10,12,14,
+		16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,
+		64,66,68,70,72,74,76,78,80,82,0,10,1,0,8,12,1,0,39,40,1,0,41,44,1,0,34,
+		35,1,0,36,38,2,0,23,23,34,35,2,0,28,28,31,33,1,0,29,30,1,0,14,15,1,0,24,
+		25,372,0,87,1,0,0,0,2,95,1,0,0,0,4,97,1,0,0,0,6,106,1,0,0,0,8,115,1,0,
+		0,0,10,123,1,0,0,0,12,129,1,0,0,0,14,131,1,0,0,0,16,133,1,0,0,0,18,140,
+		1,0,0,0,20,148,1,0,0,0,22,156,1,0,0,0,24,163,1,0,0,0,26,177,1,0,0,0,28,
+		179,1,0,0,0,30,182,1,0,0,0,32,190,1,0,0,0,34,193,1,0,0,0,36,203,1,0,0,
+		0,38,216,1,0,0,0,40,218,1,0,0,0,42,222,1,0,0,0,44,228,1,0,0,0,46,244,1,
+		0,0,0,48,246,1,0,0,0,50,254,1,0,0,0,52,256,1,0,0,0,54,261,1,0,0,0,56,269,
+		1,0,0,0,58,277,1,0,0,0,60,285,1,0,0,0,62,293,1,0,0,0,64,301,1,0,0,0,66,
+		312,1,0,0,0,68,324,1,0,0,0,70,326,1,0,0,0,72,331,1,0,0,0,74,348,1,0,0,
+		0,76,350,1,0,0,0,78,362,1,0,0,0,80,364,1,0,0,0,82,366,1,0,0,0,84,86,3,
+		2,1,0,85,84,1,0,0,0,86,89,1,0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,90,1,
+		0,0,0,89,87,1,0,0,0,90,91,5,0,0,1,91,1,1,0,0,0,92,96,3,4,2,0,93,96,3,6,
+		3,0,94,96,3,18,9,0,95,92,1,0,0,0,95,93,1,0,0,0,95,94,1,0,0,0,96,3,1,0,
+		0,0,97,98,3,14,7,0,98,99,5,56,0,0,99,101,5,49,0,0,100,102,3,8,4,0,101,
+		100,1,0,0,0,101,102,1,0,0,0,102,103,1,0,0,0,103,104,5,50,0,0,104,105,3,
+		22,11,0,105,5,1,0,0,0,106,107,5,3,0,0,107,108,5,56,0,0,108,110,5,49,0,
+		0,109,111,3,8,4,0,110,109,1,0,0,0,110,111,1,0,0,0,111,112,1,0,0,0,112,
+		113,5,50,0,0,113,114,3,22,11,0,114,7,1,0,0,0,115,120,3,10,5,0,116,117,
+		5,47,0,0,117,119,3,10,5,0,118,116,1,0,0,0,119,122,1,0,0,0,120,118,1,0,
+		0,0,120,121,1,0,0,0,121,9,1,0,0,0,122,120,1,0,0,0,123,124,5,56,0,0,124,
+		125,5,55,0,0,125,126,3,12,6,0,126,11,1,0,0,0,127,130,3,14,7,0,128,130,
+		3,16,8,0,129,127,1,0,0,0,129,128,1,0,0,0,130,13,1,0,0,0,131,132,7,0,0,
+		0,132,15,1,0,0,0,133,134,5,7,0,0,134,135,5,53,0,0,135,136,3,50,25,0,136,
+		137,5,54,0,0,137,138,3,14,7,0,138,17,1,0,0,0,139,141,5,13,0,0,140,139,
+		1,0,0,0,140,141,1,0,0,0,141,142,1,0,0,0,142,143,3,12,6,0,143,144,5,56,
+		0,0,144,145,5,45,0,0,145,146,3,50,25,0,146,147,5,46,0,0,147,19,1,0,0,0,
+		148,149,3,12,6,0,149,152,5,56,0,0,150,151,5,45,0,0,151,153,3,50,25,0,152,
+		150,1,0,0,0,152,153,1,0,0,0,153,154,1,0,0,0,154,155,5,46,0,0,155,21,1,
+		0,0,0,156,157,5,1,0,0,157,158,3,24,12,0,158,159,5,2,0,0,159,23,1,0,0,0,
+		160,162,3,26,13,0,161,160,1,0,0,0,162,165,1,0,0,0,163,161,1,0,0,0,163,
+		164,1,0,0,0,164,25,1,0,0,0,165,163,1,0,0,0,166,178,3,20,10,0,167,178,3,
+		28,14,0,168,178,3,30,15,0,169,178,3,34,17,0,170,178,3,36,18,0,171,178,
+		3,42,21,0,172,178,3,44,22,0,173,178,3,46,23,0,174,178,3,32,16,0,175,178,
+		3,22,11,0,176,178,5,46,0,0,177,166,1,0,0,0,177,167,1,0,0,0,177,168,1,0,
+		0,0,177,169,1,0,0,0,177,170,1,0,0,0,177,171,1,0,0,0,177,172,1,0,0,0,177,
+		173,1,0,0,0,177,174,1,0,0,0,177,175,1,0,0,0,177,176,1,0,0,0,178,27,1,0,
+		0,0,179,180,3,50,25,0,180,181,5,46,0,0,181,29,1,0,0,0,182,183,5,56,0,0,
+		183,184,5,53,0,0,184,185,3,50,25,0,185,186,5,54,0,0,186,187,5,45,0,0,187,
+		188,3,50,25,0,188,189,5,46,0,0,189,31,1,0,0,0,190,191,3,72,36,0,191,192,
+		5,46,0,0,192,33,1,0,0,0,193,194,5,17,0,0,194,195,5,49,0,0,195,196,3,50,
+		25,0,196,197,5,50,0,0,197,198,5,18,0,0,198,201,3,26,13,0,199,200,5,19,
+		0,0,200,202,3,26,13,0,201,199,1,0,0,0,201,202,1,0,0,0,202,35,1,0,0,0,203,
+		204,5,20,0,0,204,205,5,49,0,0,205,206,3,38,19,0,206,207,5,50,0,0,207,208,
+		3,22,11,0,208,37,1,0,0,0,209,217,3,50,25,0,210,211,3,40,20,0,211,212,5,
+		46,0,0,212,213,3,50,25,0,213,214,5,46,0,0,214,215,3,40,20,0,215,217,1,
+		0,0,0,216,209,1,0,0,0,216,210,1,0,0,0,217,39,1,0,0,0,218,219,5,56,0,0,
+		219,220,5,45,0,0,220,221,3,50,25,0,221,41,1,0,0,0,222,224,5,4,0,0,223,
+		225,3,50,25,0,224,223,1,0,0,0,224,225,1,0,0,0,225,226,1,0,0,0,226,227,
+		5,46,0,0,227,43,1,0,0,0,228,229,5,16,0,0,229,230,5,46,0,0,230,45,1,0,0,
+		0,231,232,5,6,0,0,232,234,5,49,0,0,233,235,3,76,38,0,234,233,1,0,0,0,234,
+		235,1,0,0,0,235,236,1,0,0,0,236,237,5,50,0,0,237,245,5,46,0,0,238,239,
+		5,5,0,0,239,240,5,49,0,0,240,241,3,48,24,0,241,242,5,50,0,0,242,243,5,
+		46,0,0,243,245,1,0,0,0,244,231,1,0,0,0,244,238,1,0,0,0,245,47,1,0,0,0,
+		246,251,5,56,0,0,247,248,5,47,0,0,248,250,5,56,0,0,249,247,1,0,0,0,250,
+		253,1,0,0,0,251,249,1,0,0,0,251,252,1,0,0,0,252,49,1,0,0,0,253,251,1,0,
+		0,0,254,255,3,52,26,0,255,51,1,0,0,0,256,259,3,54,27,0,257,258,5,45,0,
+		0,258,260,3,52,26,0,259,257,1,0,0,0,259,260,1,0,0,0,260,53,1,0,0,0,261,
+		266,3,56,28,0,262,263,5,22,0,0,263,265,3,56,28,0,264,262,1,0,0,0,265,268,
+		1,0,0,0,266,264,1,0,0,0,266,267,1,0,0,0,267,55,1,0,0,0,268,266,1,0,0,0,
+		269,274,3,58,29,0,270,271,5,21,0,0,271,273,3,58,29,0,272,270,1,0,0,0,273,
+		276,1,0,0,0,274,272,1,0,0,0,274,275,1,0,0,0,275,57,1,0,0,0,276,274,1,0,
+		0,0,277,282,3,60,30,0,278,279,7,1,0,0,279,281,3,60,30,0,280,278,1,0,0,
+		0,281,284,1,0,0,0,282,280,1,0,0,0,282,283,1,0,0,0,283,59,1,0,0,0,284,282,
+		1,0,0,0,285,290,3,62,31,0,286,287,7,2,0,0,287,289,3,62,31,0,288,286,1,
+		0,0,0,289,292,1,0,0,0,290,288,1,0,0,0,290,291,1,0,0,0,291,61,1,0,0,0,292,
+		290,1,0,0,0,293,298,3,64,32,0,294,295,7,3,0,0,295,297,3,64,32,0,296,294,
+		1,0,0,0,297,300,1,0,0,0,298,296,1,0,0,0,298,299,1,0,0,0,299,63,1,0,0,0,
+		300,298,1,0,0,0,301,306,3,66,33,0,302,303,7,4,0,0,303,305,3,66,33,0,304,
+		302,1,0,0,0,305,308,1,0,0,0,306,304,1,0,0,0,306,307,1,0,0,0,307,65,1,0,
+		0,0,308,306,1,0,0,0,309,310,7,5,0,0,310,313,3,66,33,0,311,313,3,68,34,
+		0,312,309,1,0,0,0,312,311,1,0,0,0,313,67,1,0,0,0,314,325,3,78,39,0,315,
+		325,3,82,41,0,316,325,3,72,36,0,317,325,3,70,35,0,318,325,5,56,0,0,319,
+		325,3,74,37,0,320,321,5,49,0,0,321,322,3,50,25,0,322,323,5,50,0,0,323,
+		325,1,0,0,0,324,314,1,0,0,0,324,315,1,0,0,0,324,316,1,0,0,0,324,317,1,
+		0,0,0,324,318,1,0,0,0,324,319,1,0,0,0,324,320,1,0,0,0,325,69,1,0,0,0,326,
+		327,5,56,0,0,327,328,5,53,0,0,328,329,3,50,25,0,329,330,5,54,0,0,330,71,
+		1,0,0,0,331,332,5,56,0,0,332,334,5,49,0,0,333,335,3,76,38,0,334,333,1,
+		0,0,0,334,335,1,0,0,0,335,336,1,0,0,0,336,337,5,50,0,0,337,73,1,0,0,0,
+		338,339,7,6,0,0,339,340,5,49,0,0,340,341,3,50,25,0,341,342,5,50,0,0,342,
+		349,1,0,0,0,343,344,7,7,0,0,344,345,5,49,0,0,345,346,3,76,38,0,346,347,
+		5,50,0,0,347,349,1,0,0,0,348,338,1,0,0,0,348,343,1,0,0,0,349,75,1,0,0,
+		0,350,355,3,50,25,0,351,352,5,47,0,0,352,354,3,50,25,0,353,351,1,0,0,0,
+		354,357,1,0,0,0,355,353,1,0,0,0,355,356,1,0,0,0,356,77,1,0,0,0,357,355,
+		1,0,0,0,358,363,5,57,0,0,359,363,5,58,0,0,360,363,5,59,0,0,361,363,3,80,
+		40,0,362,358,1,0,0,0,362,359,1,0,0,0,362,360,1,0,0,0,362,361,1,0,0,0,363,
+		79,1,0,0,0,364,365,7,8,0,0,365,81,1,0,0,0,366,367,7,9,0,0,367,83,1,0,0,
+		0,29,87,95,101,110,120,129,140,152,163,177,201,216,224,234,244,251,259,
+		266,274,282,290,298,306,312,324,334,348,355,362
 	};
 
 	public static readonly ATN _ATN =
