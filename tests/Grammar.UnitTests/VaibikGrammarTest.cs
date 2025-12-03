@@ -204,7 +204,7 @@ public class VaibikGrammarTest
                 а = б = Значение * 2;
                 ВЫБРОС(а, б);
             ФИНАЛОЧКА
-        """
+        """,
         };
     }
 
@@ -239,7 +239,7 @@ public class VaibikGrammarTest
         """,
         """
             ЦИФЕРКА число = 42
-        """
+        """,
         };
     }
 }
