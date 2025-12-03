@@ -13,6 +13,7 @@
 * Встроенные константы
 * Круглые скобки `()` для группировки
 * Вызовы встроенных функций (напр. `abs(x)`)
+* При вызове функции `имя(арг1, арг2, ...)` аргументы вычисляются строго слева направо перед передачей в тело функции
 
 ## Операторы
 
@@ -150,12 +151,11 @@ primary =
     | stringLiteral
     | logicalLiteral
     | constant
-    | functionCall
-    | identifier
+    | identifier, [ callSuffix ]
     | "(", expression, ")"
     ;
 
-functionCall = identifier, "(", [ argumentList ], ")" ;
+callSuffix = "(", [ argumentList ], ")" ;
 
 argumentList = expression, { ",", expression } ;
 ```

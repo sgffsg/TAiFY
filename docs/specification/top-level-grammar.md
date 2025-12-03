@@ -80,19 +80,32 @@
 Используется символ **«;»** (точка с запятой).
 Это упрощает разбор и позволяет писать несколько инструкций в одну строку, игнорируя переносы строк.
 
+### 3.4. Ветвления 
+В конструкции `ЕСЛИ ... ТО ... ИНАЧЕ ...` ветка `ИНАЧЕ` связывается с ближайшим предшествующим `ЕСЛИ`. 
+Это решает проблему неоднозначности (dangling else).
+
 ## 4. Грамматика EBNF
 
 ```
 program = { topLevelItem } , EOF ;
 
 topLevelItem 
-    = functionDeclaration 
-    | procedureDeclaration 
-    | globalVariableDeclaration 
+    = procedureDeclaration 
+    | constantDeclaration
+    | typedDeclaration 
     ;
 
-functionDeclaration = 
-    typeName, identifier, "(", [ parameterList ], ")", block ;
+constantDeclaration = 
+    "БАЗА", typeName, identifier, "=", expression, ";" ;
+
+typedDeclaration = 
+    typeName, identifier, ( functionTail | variableTail ) ;
+
+functionTail = 
+    "(", [ parameterList ], ")", block ;
+
+variableTail = 
+    "=", expression, ";" ;
 
 procedureDeclaration = 
     "ПРОКРАСТИНИРУЕМ", identifier, "(", [ parameterList ], ")", block ;
@@ -100,42 +113,40 @@ procedureDeclaration =
 parameterList = 
     identifier, ":", typeName, { ",", identifier, ":", typeName } ;
 
-globalVariableDeclaration = 
-      ( typeName, identifier, "=", expression, ";" )
-    | ( "БАЗА", typeName, identifier, "=", expression, ";" )
-    ;
-
-variableDeclaration = 
-    typeName, identifier, "=", expression, ";" ;
-    
 block = "ПОЕХАЛИ", { statement }, "ФИНАЛОЧКА" ;
 
 statement 
     = variableDeclaration
     | ifStatement
-    | loopStatement
+    | whileStatement
+    | forStatement
     | returnStatement
     | breakStatement
+    | continueStatement
     | ioStatement
     | block       
     | sideEffectStatement
     | ";"
     ;
 
+variableDeclaration = 
+    typeName, identifier, "=", expression, ";" ;
+
 ifStatement = 
     "ЕСЛИ", "(", expression, ")", "ТО", statement, 
     [ "ИНАЧЕ", statement ] ;
 
-loopStatement = 
-    "ЦИКЛ", "(", 
-      ( expression
-      | variableAssignment, ";", expression, ";", variableAssignment 
-      )
-    , ")", block ;
+whileStatement = 
+    "ПОКА", "(", expression, ")", block ;
+
+forStatement = 
+    "ЦИКЛ", "(", variableAssignment, ";", expression, ";", variableAssignment, ")", block ;
 
 returnStatement = "ДРАТУТИ", [ expression ], ";" ;
 
 breakStatement = "ХВАТИТ", ";" ;
+
+continueStatement = "ПРОДОЛЖАЕМ", ";" ;
 
 ioStatement 
     = ( "ВЫБРОС", "(", [ argumentList ], ")", ";" )
@@ -148,7 +159,5 @@ assignmentTail = "=", expression ;
 callTail       = "(", [ argumentList ], ")" ;
 
 variableAssignment = identifier, "=", expression ;
-
-argumentList = expression, { ",", expression } ;
 ```
 
