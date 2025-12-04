@@ -28,6 +28,7 @@ using IToken = Antlr4.Runtime.IToken;
 /// <see cref="VaibikParser"/>.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.13.2")]
+[System.CLSCompliant(false)]
 public interface IVaibikParserListener : IParseTreeListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.program"/>.
@@ -210,6 +211,36 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitIfStatement([NotNull] VaibikParser.IfStatementContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.loopOnlyStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoopOnlyStatement([NotNull] VaibikParser.LoopOnlyStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.loopOnlyStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoopOnlyStatement([NotNull] VaibikParser.LoopOnlyStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.loopBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLoopBody([NotNull] VaibikParser.LoopBodyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.loopBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLoopBody([NotNull] VaibikParser.LoopBodyContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.whileBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterWhileBody([NotNull] VaibikParser.WhileBodyContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.whileBody"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitWhileBody([NotNull] VaibikParser.WhileBodyContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.loopStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -220,29 +251,15 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitLoopStatement([NotNull] VaibikParser.LoopStatementContext context);
 	/// <summary>
-	/// Enter a parse tree produced by the <c>whileLoop</c>
-	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
+	/// Enter a parse tree produced by <see cref="VaibikParser.whileStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterWhileLoop([NotNull] VaibikParser.WhileLoopContext context);
+	void EnterWhileStatement([NotNull] VaibikParser.WhileStatementContext context);
 	/// <summary>
-	/// Exit a parse tree produced by the <c>whileLoop</c>
-	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
+	/// Exit a parse tree produced by <see cref="VaibikParser.whileStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitWhileLoop([NotNull] VaibikParser.WhileLoopContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>forLoop</c>
-	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterForLoop([NotNull] VaibikParser.ForLoopContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>forLoop</c>
-	/// labeled alternative in <see cref="VaibikParser.loopControl"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitForLoop([NotNull] VaibikParser.ForLoopContext context);
+	void ExitWhileStatement([NotNull] VaibikParser.WhileStatementContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.assignmentExpr"/>.
 	/// </summary>
@@ -273,6 +290,16 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitBreakStatement([NotNull] VaibikParser.BreakStatementContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.continueStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterContinueStatement([NotNull] VaibikParser.ContinueStatementContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.continueStatement"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitContinueStatement([NotNull] VaibikParser.ContinueStatementContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.ioStatement"/>.
 	/// </summary>
@@ -417,6 +444,16 @@ public interface IVaibikParserListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitArrayAccess([NotNull] VaibikParser.ArrayAccessContext context);
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="VaibikParser.callSuffix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterCallSuffix([NotNull] VaibikParser.CallSuffixContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="VaibikParser.callSuffix"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitCallSuffix([NotNull] VaibikParser.CallSuffixContext context);
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.functionCall"/>.
 	/// </summary>
