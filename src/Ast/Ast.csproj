@@ -8,9 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Declarations\" />
-    <Folder Include="Expressions\" />
-    <Folder Include="Statements\" />
+    <Compile Remove="Declarations\**" />
+    <Compile Remove="Expressions\**" />
+    <Compile Remove="Statements\**" />
+    <EmbeddedResource Remove="Declarations\**" />
+    <EmbeddedResource Remove="Expressions\**" />
+    <EmbeddedResource Remove="Statements\**" />
+    <None Remove="Declarations\**" />
+    <None Remove="Expressions\**" />
+    <None Remove="Statements\**" />
   </ItemGroup>
 
 </Project>
