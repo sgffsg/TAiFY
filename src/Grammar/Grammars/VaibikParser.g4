@@ -62,8 +62,8 @@ statement:
     | arrayAssignmentStatement
     | ifStatement
     | loopStatement
+    | whileStatement
     | returnStatement
-    | breakStatement
     | ioStatement
     | sideEffectStatement
     | block
@@ -84,13 +84,22 @@ sideEffectStatement: functionCall SEMI;
 ifStatement:
     ESLI LPAREN expression RPAREN TO statement (INACHE statement)?;
 
-loopStatement:
-    CIKL LPAREN loopControl RPAREN block;
-
-loopControl:
-      expression                                                # whileLoop
-    | assignmentExpr SEMI expression SEMI assignmentExpr        # forLoop
+// Инструкции, которые могут быть только внутри циклов
+loopOnlyStatement:
+      breakStatement
+    | continueStatement
     ;
+
+// Специальные блоки для циклов, которые разрешают break/continue
+loopBody: POEHALI (statement | loopOnlyStatement)* FINALOCHKA;
+
+whileBody: POEHALI (statement | loopOnlyStatement)* FINALOCHKA;
+
+loopStatement:
+    CIKL LPAREN assignmentExpr SEMI expression SEMI assignmentExpr RPAREN loopBody;
+
+whileStatement:
+    POKA LPAREN expression RPAREN whileBody;
 
 // Вспомогательное правило для выражений присваивания внутри заголовка цикла (без точки с запятой)
 assignmentExpr: ID ASSIGN expression;
@@ -98,6 +107,8 @@ assignmentExpr: ID ASSIGN expression;
 returnStatement: DRATUTI expression? SEMI;
 
 breakStatement: HVATIT SEMI;
+
+continueStatement: PRODOLZHAEM SEMI;
 
 // --- Ввод / Вывод ---
 
@@ -143,15 +154,16 @@ unaryExpression:
 primary:
       literal
     | constant
-    | functionCall
     | arrayAccess
-    | ID
+    | ID callSuffix?
     | builtinFunctionCall
     | LPAREN expression RPAREN
     ;
 
 // Доступ к массиву: arr[i]
 arrayAccess: ID LBRACK expression RBRACK;
+
+callSuffix: LPAREN argumentList? RPAREN;
 
 functionCall: ID LPAREN argumentList? RPAREN;
 

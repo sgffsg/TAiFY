@@ -38,37 +38,40 @@ public partial class VaibikParser : Parser {
 	public const int
 		POEHALI=1, FINALOCHKA=2, PROKRASTINIRUEM=3, DRATUTI=4, VBROS=5, VYBROS=6, 
 		PACHKA=7, CITATA_TYPE=8, RASKLAD=9, POLTORASHKA=10, CIFERKA=11, PSHIK=12, 
-		BAZA=13, HAIP=14, KRINZH=15, HVATIT=16, ESLI=17, TO=18, INACHE=19, CIKL=20, 
-		I=21, ILI=22, NE=23, PI=24, ESHKA=25, POYASNITELNAYA_BRIGADA=26, FINALOCHKA_KOMMENTARIYA=27, 
-		MODUL=28, MINIMUM=29, MAXIMUM=30, SINUS=31, KOSINUS=32, TANGENS=33, PLUS=34, 
-		MINUS=35, MULT=36, DIV=37, MOD=38, EQ=39, NEQ=40, LT=41, GT=42, LTE=43, 
-		GTE=44, ASSIGN=45, SEMI=46, COMMA=47, DOT=48, LPAREN=49, RPAREN=50, LBRACE=51, 
-		RBRACE=52, LBRACK=53, RBRACK=54, COLON=55, ID=56, INTEGER=57, REAL=58, 
-		STRING=59, WS=60, COMMENT=61, SINGLE_LINE_COMMENT=62;
+		BAZA=13, HAIP=14, KRINZH=15, HVATIT=16, ESLI=17, TO=18, PRODOLZHAEM=19, 
+		INACHE=20, CIKL=21, POKA=22, I=23, ILI=24, NE=25, PI=26, ESHKA=27, POYASNITELNAYA_BRIGADA=28, 
+		FINALOCHKA_KOMMENTARIYA=29, MODUL=30, MINIMUM=31, MAXIMUM=32, SINUS=33, 
+		KOSINUS=34, TANGENS=35, PLUS=36, MINUS=37, MULT=38, DIV=39, MOD=40, EQ=41, 
+		NEQ=42, LT=43, GT=44, LTE=45, GTE=46, ASSIGN=47, SEMI=48, COMMA=49, DOT=50, 
+		LPAREN=51, RPAREN=52, LBRACE=53, RBRACE=54, LBRACK=55, RBRACK=56, COLON=57, 
+		ID=58, INTEGER=59, REAL=60, STRING=61, WS=62, COMMENT=63, SINGLE_LINE_COMMENT=64;
 	public const int
 		RULE_program = 0, RULE_topLevelItem = 1, RULE_functionDeclaration = 2, 
 		RULE_procedureDeclaration = 3, RULE_parameterList = 4, RULE_parameter = 5, 
 		RULE_fullType = 6, RULE_typeName = 7, RULE_arrayType = 8, RULE_globalVariableDeclaration = 9, 
 		RULE_variableDeclaration = 10, RULE_block = 11, RULE_statementList = 12, 
 		RULE_statement = 13, RULE_expressionStatement = 14, RULE_arrayAssignmentStatement = 15, 
-		RULE_sideEffectStatement = 16, RULE_ifStatement = 17, RULE_loopStatement = 18, 
-		RULE_loopControl = 19, RULE_assignmentExpr = 20, RULE_returnStatement = 21, 
-		RULE_breakStatement = 22, RULE_ioStatement = 23, RULE_inputList = 24, 
-		RULE_expression = 25, RULE_assignmentExpression = 26, RULE_logicalOrExpression = 27, 
-		RULE_logicalAndExpression = 28, RULE_equalityExpression = 29, RULE_relationalExpression = 30, 
-		RULE_additiveExpression = 31, RULE_multiplicativeExpression = 32, RULE_unaryExpression = 33, 
-		RULE_primary = 34, RULE_arrayAccess = 35, RULE_functionCall = 36, RULE_builtinFunctionCall = 37, 
-		RULE_argumentList = 38, RULE_literal = 39, RULE_logicalLiteral = 40, RULE_constant = 41;
+		RULE_sideEffectStatement = 16, RULE_ifStatement = 17, RULE_loopOnlyStatement = 18, 
+		RULE_loopBody = 19, RULE_whileBody = 20, RULE_loopStatement = 21, RULE_whileStatement = 22, 
+		RULE_assignmentExpr = 23, RULE_returnStatement = 24, RULE_breakStatement = 25, 
+		RULE_continueStatement = 26, RULE_ioStatement = 27, RULE_inputList = 28, 
+		RULE_expression = 29, RULE_assignmentExpression = 30, RULE_logicalOrExpression = 31, 
+		RULE_logicalAndExpression = 32, RULE_equalityExpression = 33, RULE_relationalExpression = 34, 
+		RULE_additiveExpression = 35, RULE_multiplicativeExpression = 36, RULE_unaryExpression = 37, 
+		RULE_primary = 38, RULE_arrayAccess = 39, RULE_callSuffix = 40, RULE_functionCall = 41, 
+		RULE_builtinFunctionCall = 42, RULE_argumentList = 43, RULE_literal = 44, 
+		RULE_logicalLiteral = 45, RULE_constant = 46;
 	public static readonly string[] ruleNames = {
 		"program", "topLevelItem", "functionDeclaration", "procedureDeclaration", 
 		"parameterList", "parameter", "fullType", "typeName", "arrayType", "globalVariableDeclaration", 
 		"variableDeclaration", "block", "statementList", "statement", "expressionStatement", 
-		"arrayAssignmentStatement", "sideEffectStatement", "ifStatement", "loopStatement", 
-		"loopControl", "assignmentExpr", "returnStatement", "breakStatement", 
-		"ioStatement", "inputList", "expression", "assignmentExpression", "logicalOrExpression", 
+		"arrayAssignmentStatement", "sideEffectStatement", "ifStatement", "loopOnlyStatement", 
+		"loopBody", "whileBody", "loopStatement", "whileStatement", "assignmentExpr", 
+		"returnStatement", "breakStatement", "continueStatement", "ioStatement", 
+		"inputList", "expression", "assignmentExpression", "logicalOrExpression", 
 		"logicalAndExpression", "equalityExpression", "relationalExpression", 
 		"additiveExpression", "multiplicativeExpression", "unaryExpression", "primary", 
-		"arrayAccess", "functionCall", "builtinFunctionCall", "argumentList", 
+		"arrayAccess", "callSuffix", "functionCall", "builtinFunctionCall", "argumentList", 
 		"literal", "logicalLiteral", "constant"
 	};
 
@@ -82,9 +85,11 @@ public partial class VaibikParser : Parser {
 		"'\\u0426\\u0418\\u0424\\u0415\\u0420\\u041A\\u0410'", "'\\u041F\\u0428\\u0418\\u041A'", 
 		"'\\u0411\\u0410\\u0417\\u0410'", "'\\u0425\\u0410\\u0419\\u041F'", "'\\u041A\\u0420\\u0418\\u041D\\u0416'", 
 		"'\\u0425\\u0412\\u0410\\u0422\\u0418\\u0422'", "'\\u0415\\u0421\\u041B\\u0418'", 
-		"'\\u0422\\u041E'", "'\\u0418\\u041D\\u0410\\u0427\\u0415'", "'\\u0426\\u0418\\u041A\\u041B'", 
-		"'\\u0418'", "'\\u0418\\u041B\\u0418'", "'\\u041D\\u0415'", "'\\u041F\\u0418'", 
-		"'\\u0415\\u0428\\u041A\\u0410'", "'(\\u041F\\u041E\\u042F\\u0421\\u041D\\u0418\\u0422\\u0415\\u041B\\u042C\\u041D\\u0410\\u042F-\\u0411\\u0420\\u0418\\u0413\\u0410\\u0414\\u0410:'", 
+		"'\\u0422\\u041E'", "'\\u041F\\u0420\\u041E\\u0414\\u041E\\u041B\\u0416\\u0410\\u0415\\u041C'", 
+		"'\\u0418\\u041D\\u0410\\u0427\\u0415'", "'\\u0426\\u0418\\u041A\\u041B'", 
+		"'\\u041F\\u041E\\u041A\\u0410'", "'\\u0418'", "'\\u0418\\u041B\\u0418'", 
+		"'\\u041D\\u0415'", "'\\u041F\\u0418'", "'\\u0415\\u0428\\u041A\\u0410'", 
+		"'(\\u041F\\u041E\\u042F\\u0421\\u041D\\u0418\\u0422\\u0415\\u041B\\u042C\\u041D\\u0410\\u042F-\\u0411\\u0420\\u0418\\u0413\\u0410\\u0414\\u0410:'", 
 		"'\\u0424\\u0418\\u041D\\u0410\\u041B\\u041E\\u0427\\u041A\\u0410-\\u041A\\u041E\\u041C\\u041C\\u0415\\u041D\\u0422\\u0410\\u0420\\u0418\\u042F)'", 
 		"'\\u041C\\u041E\\u0414\\u0423\\u041B\\u042C'", "'\\u041C\\u0418\\u041D\\u0418\\u041C\\u0423\\u041C'", 
 		"'\\u041C\\u0410\\u041A\\u0421\\u0418\\u041C\\u0423\\u041C'", "'\\u0421\\u0418\\u041D\\u0423\\u0421'", 
@@ -96,13 +101,13 @@ public partial class VaibikParser : Parser {
 	private static readonly string[] _SymbolicNames = {
 		null, "POEHALI", "FINALOCHKA", "PROKRASTINIRUEM", "DRATUTI", "VBROS", 
 		"VYBROS", "PACHKA", "CITATA_TYPE", "RASKLAD", "POLTORASHKA", "CIFERKA", 
-		"PSHIK", "BAZA", "HAIP", "KRINZH", "HVATIT", "ESLI", "TO", "INACHE", "CIKL", 
-		"I", "ILI", "NE", "PI", "ESHKA", "POYASNITELNAYA_BRIGADA", "FINALOCHKA_KOMMENTARIYA", 
-		"MODUL", "MINIMUM", "MAXIMUM", "SINUS", "KOSINUS", "TANGENS", "PLUS", 
-		"MINUS", "MULT", "DIV", "MOD", "EQ", "NEQ", "LT", "GT", "LTE", "GTE", 
-		"ASSIGN", "SEMI", "COMMA", "DOT", "LPAREN", "RPAREN", "LBRACE", "RBRACE", 
-		"LBRACK", "RBRACK", "COLON", "ID", "INTEGER", "REAL", "STRING", "WS", 
-		"COMMENT", "SINGLE_LINE_COMMENT"
+		"PSHIK", "BAZA", "HAIP", "KRINZH", "HVATIT", "ESLI", "TO", "PRODOLZHAEM", 
+		"INACHE", "CIKL", "POKA", "I", "ILI", "NE", "PI", "ESHKA", "POYASNITELNAYA_BRIGADA", 
+		"FINALOCHKA_KOMMENTARIYA", "MODUL", "MINIMUM", "MAXIMUM", "SINUS", "KOSINUS", 
+		"TANGENS", "PLUS", "MINUS", "MULT", "DIV", "MOD", "EQ", "NEQ", "LT", "GT", 
+		"LTE", "GTE", "ASSIGN", "SEMI", "COMMA", "DOT", "LPAREN", "RPAREN", "LBRACE", 
+		"RBRACE", "LBRACK", "RBRACK", "COLON", "ID", "INTEGER", "REAL", "STRING", 
+		"WS", "COMMENT", "SINGLE_LINE_COMMENT"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -169,21 +174,21 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 87;
+			State = 97;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 16264L) != 0)) {
 				{
 				{
-				State = 84;
+				State = 94;
 				topLevelItem();
 				}
 				}
-				State = 89;
+				State = 99;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
-			State = 90;
+			State = 100;
 			Match(Eof);
 			}
 		}
@@ -230,27 +235,27 @@ public partial class VaibikParser : Parser {
 		TopLevelItemContext _localctx = new TopLevelItemContext(Context, State);
 		EnterRule(_localctx, 2, RULE_topLevelItem);
 		try {
-			State = 95;
+			State = 105;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,1,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 92;
+				State = 102;
 				functionDeclaration();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 93;
+				State = 103;
 				procedureDeclaration();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 94;
+				State = 104;
 				globalVariableDeclaration();
 				}
 				break;
@@ -305,25 +310,25 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 97;
+			State = 107;
 			typeName();
-			State = 98;
+			State = 108;
 			Match(ID);
-			State = 99;
+			State = 109;
 			Match(LPAREN);
-			State = 101;
+			State = 111;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ID) {
 				{
-				State = 100;
+				State = 110;
 				parameterList();
 				}
 			}
 
-			State = 103;
+			State = 113;
 			Match(RPAREN);
-			State = 104;
+			State = 114;
 			block();
 			}
 		}
@@ -374,25 +379,25 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 106;
+			State = 116;
 			Match(PROKRASTINIRUEM);
-			State = 107;
+			State = 117;
 			Match(ID);
-			State = 108;
+			State = 118;
 			Match(LPAREN);
-			State = 110;
+			State = 120;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ID) {
 				{
-				State = 109;
+				State = 119;
 				parameterList();
 				}
 			}
 
-			State = 112;
+			State = 122;
 			Match(RPAREN);
-			State = 113;
+			State = 123;
 			block();
 			}
 		}
@@ -443,21 +448,21 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 115;
+			State = 125;
 			parameter();
-			State = 120;
+			State = 130;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 116;
+				State = 126;
 				Match(COMMA);
-				State = 117;
+				State = 127;
 				parameter();
 				}
 				}
-				State = 122;
+				State = 132;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -504,11 +509,11 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 123;
+			State = 133;
 			Match(ID);
-			State = 124;
+			State = 134;
 			Match(COLON);
-			State = 125;
+			State = 135;
 			fullType();
 			}
 		}
@@ -552,7 +557,7 @@ public partial class VaibikParser : Parser {
 		FullTypeContext _localctx = new FullTypeContext(Context, State);
 		EnterRule(_localctx, 12, RULE_fullType);
 		try {
-			State = 129;
+			State = 139;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case CITATA_TYPE:
@@ -562,14 +567,14 @@ public partial class VaibikParser : Parser {
 			case PSHIK:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 127;
+				State = 137;
 				typeName();
 				}
 				break;
 			case PACHKA:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 128;
+				State = 138;
 				arrayType();
 				}
 				break;
@@ -619,7 +624,7 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 131;
+			State = 141;
 			_la = TokenStream.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 7936L) != 0)) ) {
 			ErrorHandler.RecoverInline(this);
@@ -675,15 +680,15 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 133;
+			State = 143;
 			Match(PACHKA);
-			State = 134;
+			State = 144;
 			Match(LBRACK);
-			State = 135;
+			State = 145;
 			expression();
-			State = 136;
+			State = 146;
 			Match(RBRACK);
-			State = 137;
+			State = 147;
 			typeName();
 			}
 		}
@@ -734,25 +739,25 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 140;
+			State = 150;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==BAZA) {
 				{
-				State = 139;
+				State = 149;
 				Match(BAZA);
 				}
 			}
 
-			State = 142;
+			State = 152;
 			fullType();
-			State = 143;
+			State = 153;
 			Match(ID);
-			State = 144;
+			State = 154;
 			Match(ASSIGN);
-			State = 145;
+			State = 155;
 			expression();
-			State = 146;
+			State = 156;
 			Match(SEMI);
 			}
 		}
@@ -802,23 +807,23 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 148;
+			State = 158;
 			fullType();
-			State = 149;
+			State = 159;
 			Match(ID);
-			State = 152;
+			State = 162;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ASSIGN) {
 				{
-				State = 150;
+				State = 160;
 				Match(ASSIGN);
-				State = 151;
+				State = 161;
 				expression();
 				}
 			}
 
-			State = 154;
+			State = 164;
 			Match(SEMI);
 			}
 		}
@@ -863,11 +868,11 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 156;
+			State = 166;
 			Match(POEHALI);
-			State = 157;
+			State = 167;
 			statementList();
-			State = 158;
+			State = 168;
 			Match(FINALOCHKA);
 			}
 		}
@@ -914,17 +919,17 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 163;
+			State = 173;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081497297777582066L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325989191111598066L) != 0)) {
 				{
 				{
-				State = 160;
+				State = 170;
 				statement();
 				}
 				}
-				State = 165;
+				State = 175;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -957,11 +962,11 @@ public partial class VaibikParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public LoopStatementContext loopStatement() {
 			return GetRuleContext<LoopStatementContext>(0);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] public WhileStatementContext whileStatement() {
+			return GetRuleContext<WhileStatementContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public ReturnStatementContext returnStatement() {
 			return GetRuleContext<ReturnStatementContext>(0);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public BreakStatementContext breakStatement() {
-			return GetRuleContext<BreakStatementContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public IoStatementContext ioStatement() {
 			return GetRuleContext<IoStatementContext>(0);
@@ -995,83 +1000,83 @@ public partial class VaibikParser : Parser {
 		StatementContext _localctx = new StatementContext(Context, State);
 		EnterRule(_localctx, 26, RULE_statement);
 		try {
-			State = 177;
+			State = 187;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,9,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 166;
+				State = 176;
 				variableDeclaration();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 167;
+				State = 177;
 				expressionStatement();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 168;
+				State = 178;
 				arrayAssignmentStatement();
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 169;
+				State = 179;
 				ifStatement();
 				}
 				break;
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 170;
+				State = 180;
 				loopStatement();
 				}
 				break;
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 171;
-				returnStatement();
+				State = 181;
+				whileStatement();
 				}
 				break;
 			case 7:
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 172;
-				breakStatement();
+				State = 182;
+				returnStatement();
 				}
 				break;
 			case 8:
 				EnterOuterAlt(_localctx, 8);
 				{
-				State = 173;
+				State = 183;
 				ioStatement();
 				}
 				break;
 			case 9:
 				EnterOuterAlt(_localctx, 9);
 				{
-				State = 174;
+				State = 184;
 				sideEffectStatement();
 				}
 				break;
 			case 10:
 				EnterOuterAlt(_localctx, 10);
 				{
-				State = 175;
+				State = 185;
 				block();
 				}
 				break;
 			case 11:
 				EnterOuterAlt(_localctx, 11);
 				{
-				State = 176;
+				State = 186;
 				Match(SEMI);
 				}
 				break;
@@ -1117,9 +1122,9 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 179;
+			State = 189;
 			expression();
-			State = 180;
+			State = 190;
 			Match(SEMI);
 			}
 		}
@@ -1170,19 +1175,19 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 182;
+			State = 192;
 			Match(ID);
-			State = 183;
+			State = 193;
 			Match(LBRACK);
-			State = 184;
+			State = 194;
 			expression();
-			State = 185;
+			State = 195;
 			Match(RBRACK);
-			State = 186;
+			State = 196;
 			Match(ASSIGN);
-			State = 187;
+			State = 197;
 			expression();
-			State = 188;
+			State = 198;
 			Match(SEMI);
 			}
 		}
@@ -1226,9 +1231,9 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 190;
+			State = 200;
 			functionCall();
-			State = 191;
+			State = 201;
 			Match(SEMI);
 			}
 		}
@@ -1282,26 +1287,26 @@ public partial class VaibikParser : Parser {
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 193;
+			State = 203;
 			Match(ESLI);
-			State = 194;
+			State = 204;
 			Match(LPAREN);
-			State = 195;
+			State = 205;
 			expression();
-			State = 196;
+			State = 206;
 			Match(RPAREN);
-			State = 197;
+			State = 207;
 			Match(TO);
-			State = 198;
+			State = 208;
 			statement();
-			State = 201;
+			State = 211;
 			ErrorHandler.Sync(this);
 			switch ( Interpreter.AdaptivePredict(TokenStream,10,Context) ) {
 			case 1:
 				{
-				State = 199;
+				State = 209;
 				Match(INACHE);
-				State = 200;
+				State = 210;
 				statement();
 				}
 				break;
@@ -1319,15 +1324,320 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
+	public partial class LoopOnlyStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public BreakStatementContext breakStatement() {
+			return GetRuleContext<BreakStatementContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ContinueStatementContext continueStatement() {
+			return GetRuleContext<ContinueStatementContext>(0);
+		}
+		public LoopOnlyStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_loopOnlyStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterLoopOnlyStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitLoopOnlyStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LoopOnlyStatementContext loopOnlyStatement() {
+		LoopOnlyStatementContext _localctx = new LoopOnlyStatementContext(Context, State);
+		EnterRule(_localctx, 36, RULE_loopOnlyStatement);
+		try {
+			State = 215;
+			ErrorHandler.Sync(this);
+			switch (TokenStream.LA(1)) {
+			case HVATIT:
+				EnterOuterAlt(_localctx, 1);
+				{
+				State = 213;
+				breakStatement();
+				}
+				break;
+			case PRODOLZHAEM:
+				EnterOuterAlt(_localctx, 2);
+				{
+				State = 214;
+				continueStatement();
+				}
+				break;
+			default:
+				throw new NoViableAltException(this);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class LoopBodyContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POEHALI() { return GetToken(VaibikParser.POEHALI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FINALOCHKA() { return GetToken(VaibikParser.FINALOCHKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
+			return GetRuleContexts<StatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
+			return GetRuleContext<StatementContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public LoopOnlyStatementContext[] loopOnlyStatement() {
+			return GetRuleContexts<LoopOnlyStatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public LoopOnlyStatementContext loopOnlyStatement(int i) {
+			return GetRuleContext<LoopOnlyStatementContext>(i);
+		}
+		public LoopBodyContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_loopBody; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterLoopBody(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitLoopBody(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public LoopBodyContext loopBody() {
+		LoopBodyContext _localctx = new LoopBodyContext(Context, State);
+		EnterRule(_localctx, 38, RULE_loopBody);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 217;
+			Match(POEHALI);
+			State = 222;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325989191112187890L) != 0)) {
+				{
+				State = 220;
+				ErrorHandler.Sync(this);
+				switch (TokenStream.LA(1)) {
+				case POEHALI:
+				case DRATUTI:
+				case VBROS:
+				case VYBROS:
+				case PACHKA:
+				case CITATA_TYPE:
+				case RASKLAD:
+				case POLTORASHKA:
+				case CIFERKA:
+				case PSHIK:
+				case HAIP:
+				case KRINZH:
+				case ESLI:
+				case CIKL:
+				case POKA:
+				case NE:
+				case PI:
+				case ESHKA:
+				case MODUL:
+				case MINIMUM:
+				case MAXIMUM:
+				case SINUS:
+				case KOSINUS:
+				case TANGENS:
+				case PLUS:
+				case MINUS:
+				case SEMI:
+				case LPAREN:
+				case ID:
+				case INTEGER:
+				case REAL:
+				case STRING:
+					{
+					State = 218;
+					statement();
+					}
+					break;
+				case HVATIT:
+				case PRODOLZHAEM:
+					{
+					State = 219;
+					loopOnlyStatement();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				State = 224;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 225;
+			Match(FINALOCHKA);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class WhileBodyContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POEHALI() { return GetToken(VaibikParser.POEHALI, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FINALOCHKA() { return GetToken(VaibikParser.FINALOCHKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext[] statement() {
+			return GetRuleContexts<StatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public StatementContext statement(int i) {
+			return GetRuleContext<StatementContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public LoopOnlyStatementContext[] loopOnlyStatement() {
+			return GetRuleContexts<LoopOnlyStatementContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public LoopOnlyStatementContext loopOnlyStatement(int i) {
+			return GetRuleContext<LoopOnlyStatementContext>(i);
+		}
+		public WhileBodyContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_whileBody; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterWhileBody(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitWhileBody(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public WhileBodyContext whileBody() {
+		WhileBodyContext _localctx = new WhileBodyContext(Context, State);
+		EnterRule(_localctx, 40, RULE_whileBody);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 227;
+			Match(POEHALI);
+			State = 232;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325989191112187890L) != 0)) {
+				{
+				State = 230;
+				ErrorHandler.Sync(this);
+				switch (TokenStream.LA(1)) {
+				case POEHALI:
+				case DRATUTI:
+				case VBROS:
+				case VYBROS:
+				case PACHKA:
+				case CITATA_TYPE:
+				case RASKLAD:
+				case POLTORASHKA:
+				case CIFERKA:
+				case PSHIK:
+				case HAIP:
+				case KRINZH:
+				case ESLI:
+				case CIKL:
+				case POKA:
+				case NE:
+				case PI:
+				case ESHKA:
+				case MODUL:
+				case MINIMUM:
+				case MAXIMUM:
+				case SINUS:
+				case KOSINUS:
+				case TANGENS:
+				case PLUS:
+				case MINUS:
+				case SEMI:
+				case LPAREN:
+				case ID:
+				case INTEGER:
+				case REAL:
+				case STRING:
+					{
+					State = 228;
+					statement();
+					}
+					break;
+				case HVATIT:
+				case PRODOLZHAEM:
+					{
+					State = 229;
+					loopOnlyStatement();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
+				}
+				}
+				State = 234;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+			}
+			State = 235;
+			Match(FINALOCHKA);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
 	public partial class LoopStatementContext : ParserRuleContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CIKL() { return GetToken(VaibikParser.CIKL, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public LoopControlContext loopControl() {
-			return GetRuleContext<LoopControlContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExprContext[] assignmentExpr() {
+			return GetRuleContexts<AssignmentExprContext>();
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExprContext assignmentExpr(int i) {
+			return GetRuleContext<AssignmentExprContext>(i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] SEMI() { return GetTokens(VaibikParser.SEMI); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI(int i) {
+			return GetToken(VaibikParser.SEMI, i);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
-		[System.Diagnostics.DebuggerNonUserCode] public BlockContext block() {
-			return GetRuleContext<BlockContext>(0);
+		[System.Diagnostics.DebuggerNonUserCode] public LoopBodyContext loopBody() {
+			return GetRuleContext<LoopBodyContext>(0);
 		}
 		public LoopStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
@@ -1349,20 +1659,28 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LoopStatementContext loopStatement() {
 		LoopStatementContext _localctx = new LoopStatementContext(Context, State);
-		EnterRule(_localctx, 36, RULE_loopStatement);
+		EnterRule(_localctx, 42, RULE_loopStatement);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 203;
+			State = 237;
 			Match(CIKL);
-			State = 204;
+			State = 238;
 			Match(LPAREN);
-			State = 205;
-			loopControl();
-			State = 206;
+			State = 239;
+			assignmentExpr();
+			State = 240;
+			Match(SEMI);
+			State = 241;
+			expression();
+			State = 242;
+			Match(SEMI);
+			State = 243;
+			assignmentExpr();
+			State = 244;
 			Match(RPAREN);
-			State = 207;
-			block();
+			State = 245;
+			loopBody();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1376,93 +1694,50 @@ public partial class VaibikParser : Parser {
 		return _localctx;
 	}
 
-	public partial class LoopControlContext : ParserRuleContext {
-		public LoopControlContext(ParserRuleContext parent, int invokingState)
+	public partial class WhileStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode POKA() { return GetToken(VaibikParser.POKA, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
+			return GetRuleContext<ExpressionContext>(0);
+		}
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public WhileBodyContext whileBody() {
+			return GetRuleContext<WhileBodyContext>(0);
+		}
+		public WhileStatementContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
-		public override int RuleIndex { get { return RULE_loopControl; } }
-	 
-		public LoopControlContext() { }
-		public virtual void CopyFrom(LoopControlContext context) {
-			base.CopyFrom(context);
-		}
-	}
-	public partial class WhileLoopContext : LoopControlContext {
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public WhileLoopContext(LoopControlContext context) { CopyFrom(context); }
+		public override int RuleIndex { get { return RULE_whileStatement; } }
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void EnterRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterWhileLoop(this);
+			if (typedListener != null) typedListener.EnterWhileStatement(this);
 		}
 		[System.Diagnostics.DebuggerNonUserCode]
 		public override void ExitRule(IParseTreeListener listener) {
 			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitWhileLoop(this);
-		}
-	}
-	public partial class ForLoopContext : LoopControlContext {
-		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExprContext[] assignmentExpr() {
-			return GetRuleContexts<AssignmentExprContext>();
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public AssignmentExprContext assignmentExpr(int i) {
-			return GetRuleContext<AssignmentExprContext>(i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] SEMI() { return GetTokens(VaibikParser.SEMI); }
-		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI(int i) {
-			return GetToken(VaibikParser.SEMI, i);
-		}
-		[System.Diagnostics.DebuggerNonUserCode] public ExpressionContext expression() {
-			return GetRuleContext<ExpressionContext>(0);
-		}
-		public ForLoopContext(LoopControlContext context) { CopyFrom(context); }
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void EnterRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.EnterForLoop(this);
-		}
-		[System.Diagnostics.DebuggerNonUserCode]
-		public override void ExitRule(IParseTreeListener listener) {
-			IVaibikParserListener typedListener = listener as IVaibikParserListener;
-			if (typedListener != null) typedListener.ExitForLoop(this);
+			if (typedListener != null) typedListener.ExitWhileStatement(this);
 		}
 	}
 
 	[RuleVersion(0)]
-	public LoopControlContext loopControl() {
-		LoopControlContext _localctx = new LoopControlContext(Context, State);
-		EnterRule(_localctx, 38, RULE_loopControl);
+	public WhileStatementContext whileStatement() {
+		WhileStatementContext _localctx = new WhileStatementContext(Context, State);
+		EnterRule(_localctx, 44, RULE_whileStatement);
 		try {
-			State = 216;
-			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,11,Context) ) {
-			case 1:
-				_localctx = new WhileLoopContext(_localctx);
-				EnterOuterAlt(_localctx, 1);
-				{
-				State = 209;
-				expression();
-				}
-				break;
-			case 2:
-				_localctx = new ForLoopContext(_localctx);
-				EnterOuterAlt(_localctx, 2);
-				{
-				State = 210;
-				assignmentExpr();
-				State = 211;
-				Match(SEMI);
-				State = 212;
-				expression();
-				State = 213;
-				Match(SEMI);
-				State = 214;
-				assignmentExpr();
-				}
-				break;
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 247;
+			Match(POKA);
+			State = 248;
+			Match(LPAREN);
+			State = 249;
+			expression();
+			State = 250;
+			Match(RPAREN);
+			State = 251;
+			whileBody();
 			}
 		}
 		catch (RecognitionException re) {
@@ -1502,15 +1777,15 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public AssignmentExprContext assignmentExpr() {
 		AssignmentExprContext _localctx = new AssignmentExprContext(Context, State);
-		EnterRule(_localctx, 40, RULE_assignmentExpr);
+		EnterRule(_localctx, 46, RULE_assignmentExpr);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 218;
+			State = 253;
 			Match(ID);
-			State = 219;
+			State = 254;
 			Match(ASSIGN);
-			State = 220;
+			State = 255;
 			expression();
 			}
 		}
@@ -1551,24 +1826,24 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ReturnStatementContext returnStatement() {
 		ReturnStatementContext _localctx = new ReturnStatementContext(Context, State);
-		EnterRule(_localctx, 42, RULE_returnStatement);
+		EnterRule(_localctx, 48, RULE_returnStatement);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 222;
+			State = 257;
 			Match(DRATUTI);
-			State = 224;
+			State = 259;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426929032151040L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325707716128456704L) != 0)) {
 				{
-				State = 223;
+				State = 258;
 				expression();
 				}
 			}
 
-			State = 226;
+			State = 261;
 			Match(SEMI);
 			}
 		}
@@ -1606,13 +1881,57 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public BreakStatementContext breakStatement() {
 		BreakStatementContext _localctx = new BreakStatementContext(Context, State);
-		EnterRule(_localctx, 44, RULE_breakStatement);
+		EnterRule(_localctx, 50, RULE_breakStatement);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 228;
+			State = 263;
 			Match(HVATIT);
-			State = 229;
+			State = 264;
+			Match(SEMI);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class ContinueStatementContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PRODOLZHAEM() { return GetToken(VaibikParser.PRODOLZHAEM, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SEMI() { return GetToken(VaibikParser.SEMI, 0); }
+		public ContinueStatementContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_continueStatement; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterContinueStatement(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitContinueStatement(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public ContinueStatementContext continueStatement() {
+		ContinueStatementContext _localctx = new ContinueStatementContext(Context, State);
+		EnterRule(_localctx, 52, RULE_continueStatement);
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 266;
+			Match(PRODOLZHAEM);
+			State = 267;
 			Match(SEMI);
 			}
 		}
@@ -1659,47 +1978,47 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public IoStatementContext ioStatement() {
 		IoStatementContext _localctx = new IoStatementContext(Context, State);
-		EnterRule(_localctx, 46, RULE_ioStatement);
+		EnterRule(_localctx, 54, RULE_ioStatement);
 		int _la;
 		try {
-			State = 244;
+			State = 282;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case VYBROS:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 231;
+				State = 269;
 				Match(VYBROS);
-				State = 232;
+				State = 270;
 				Match(LPAREN);
-				State = 234;
+				State = 272;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426929032151040L) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325707716128456704L) != 0)) {
 					{
-					State = 233;
+					State = 271;
 					argumentList();
 					}
 				}
 
-				State = 236;
+				State = 274;
 				Match(RPAREN);
-				State = 237;
+				State = 275;
 				Match(SEMI);
 				}
 				break;
 			case VBROS:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 238;
+				State = 276;
 				Match(VBROS);
-				State = 239;
+				State = 277;
 				Match(LPAREN);
-				State = 240;
+				State = 278;
 				inputList();
-				State = 241;
+				State = 279;
 				Match(RPAREN);
-				State = 242;
+				State = 280;
 				Match(SEMI);
 				}
 				break;
@@ -1747,26 +2066,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public InputListContext inputList() {
 		InputListContext _localctx = new InputListContext(Context, State);
-		EnterRule(_localctx, 48, RULE_inputList);
+		EnterRule(_localctx, 56, RULE_inputList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 246;
+			State = 284;
 			Match(ID);
-			State = 251;
+			State = 289;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 247;
+				State = 285;
 				Match(COMMA);
-				State = 248;
+				State = 286;
 				Match(ID);
 				}
 				}
-				State = 253;
+				State = 291;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1807,11 +2126,11 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ExpressionContext expression() {
 		ExpressionContext _localctx = new ExpressionContext(Context, State);
-		EnterRule(_localctx, 50, RULE_expression);
+		EnterRule(_localctx, 58, RULE_expression);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 254;
+			State = 292;
 			assignmentExpression();
 			}
 		}
@@ -1854,21 +2173,21 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public AssignmentExpressionContext assignmentExpression() {
 		AssignmentExpressionContext _localctx = new AssignmentExpressionContext(Context, State);
-		EnterRule(_localctx, 52, RULE_assignmentExpression);
+		EnterRule(_localctx, 60, RULE_assignmentExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 256;
+			State = 294;
 			logicalOrExpression();
-			State = 259;
+			State = 297;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			if (_la==ASSIGN) {
 				{
-				State = 257;
+				State = 295;
 				Match(ASSIGN);
-				State = 258;
+				State = 296;
 				assignmentExpression();
 				}
 			}
@@ -1917,26 +2236,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LogicalOrExpressionContext logicalOrExpression() {
 		LogicalOrExpressionContext _localctx = new LogicalOrExpressionContext(Context, State);
-		EnterRule(_localctx, 54, RULE_logicalOrExpression);
+		EnterRule(_localctx, 62, RULE_logicalOrExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 261;
+			State = 299;
 			logicalAndExpression();
-			State = 266;
+			State = 304;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==ILI) {
 				{
 				{
-				State = 262;
+				State = 300;
 				Match(ILI);
-				State = 263;
+				State = 301;
 				logicalAndExpression();
 				}
 				}
-				State = 268;
+				State = 306;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -1984,26 +2303,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LogicalAndExpressionContext logicalAndExpression() {
 		LogicalAndExpressionContext _localctx = new LogicalAndExpressionContext(Context, State);
-		EnterRule(_localctx, 56, RULE_logicalAndExpression);
+		EnterRule(_localctx, 64, RULE_logicalAndExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 269;
+			State = 307;
 			equalityExpression();
-			State = 274;
+			State = 312;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==I) {
 				{
 				{
-				State = 270;
+				State = 308;
 				Match(I);
-				State = 271;
+				State = 309;
 				equalityExpression();
 				}
 				}
-				State = 276;
+				State = 314;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -2055,20 +2374,20 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public EqualityExpressionContext equalityExpression() {
 		EqualityExpressionContext _localctx = new EqualityExpressionContext(Context, State);
-		EnterRule(_localctx, 58, RULE_equalityExpression);
+		EnterRule(_localctx, 66, RULE_equalityExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 277;
+			State = 315;
 			relationalExpression();
-			State = 282;
+			State = 320;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==EQ || _la==NEQ) {
 				{
 				{
-				State = 278;
+				State = 316;
 				_la = TokenStream.LA(1);
 				if ( !(_la==EQ || _la==NEQ) ) {
 				ErrorHandler.RecoverInline(this);
@@ -2077,11 +2396,11 @@ public partial class VaibikParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 279;
+				State = 317;
 				relationalExpression();
 				}
 				}
-				State = 284;
+				State = 322;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -2141,33 +2460,33 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public RelationalExpressionContext relationalExpression() {
 		RelationalExpressionContext _localctx = new RelationalExpressionContext(Context, State);
-		EnterRule(_localctx, 60, RULE_relationalExpression);
+		EnterRule(_localctx, 68, RULE_relationalExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 285;
+			State = 323;
 			additiveExpression();
-			State = 290;
+			State = 328;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 32985348833280L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 131941395333120L) != 0)) {
 				{
 				{
-				State = 286;
+				State = 324;
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 32985348833280L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 131941395333120L) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 287;
+				State = 325;
 				additiveExpression();
 				}
 				}
-				State = 292;
+				State = 330;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -2219,20 +2538,20 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public AdditiveExpressionContext additiveExpression() {
 		AdditiveExpressionContext _localctx = new AdditiveExpressionContext(Context, State);
-		EnterRule(_localctx, 62, RULE_additiveExpression);
+		EnterRule(_localctx, 70, RULE_additiveExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 293;
+			State = 331;
 			multiplicativeExpression();
-			State = 298;
+			State = 336;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==PLUS || _la==MINUS) {
 				{
 				{
-				State = 294;
+				State = 332;
 				_la = TokenStream.LA(1);
 				if ( !(_la==PLUS || _la==MINUS) ) {
 				ErrorHandler.RecoverInline(this);
@@ -2241,11 +2560,11 @@ public partial class VaibikParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 295;
+				State = 333;
 				multiplicativeExpression();
 				}
 				}
-				State = 300;
+				State = 338;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -2301,33 +2620,33 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public MultiplicativeExpressionContext multiplicativeExpression() {
 		MultiplicativeExpressionContext _localctx = new MultiplicativeExpressionContext(Context, State);
-		EnterRule(_localctx, 64, RULE_multiplicativeExpression);
+		EnterRule(_localctx, 72, RULE_multiplicativeExpression);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 301;
+			State = 339;
 			unaryExpression();
-			State = 306;
+			State = 344;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 481036337152L) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1924145348608L) != 0)) {
 				{
 				{
-				State = 302;
+				State = 340;
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 481036337152L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 1924145348608L) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 303;
+				State = 341;
 				unaryExpression();
 				}
 				}
-				State = 308;
+				State = 346;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -2395,10 +2714,10 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public UnaryExpressionContext unaryExpression() {
 		UnaryExpressionContext _localctx = new UnaryExpressionContext(Context, State);
-		EnterRule(_localctx, 66, RULE_unaryExpression);
+		EnterRule(_localctx, 74, RULE_unaryExpression);
 		int _la;
 		try {
-			State = 312;
+			State = 350;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case NE:
@@ -2407,16 +2726,16 @@ public partial class VaibikParser : Parser {
 				_localctx = new UnaryOpContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 309;
+				State = 347;
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 51547996160L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 206191984640L) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 310;
+				State = 348;
 				unaryExpression();
 				}
 				break;
@@ -2438,7 +2757,7 @@ public partial class VaibikParser : Parser {
 				_localctx = new PrimaryAtomContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 311;
+				State = 349;
 				primary();
 				}
 				break;
@@ -2464,13 +2783,13 @@ public partial class VaibikParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ConstantContext constant() {
 			return GetRuleContext<ConstantContext>(0);
 		}
-		[System.Diagnostics.DebuggerNonUserCode] public FunctionCallContext functionCall() {
-			return GetRuleContext<FunctionCallContext>(0);
-		}
 		[System.Diagnostics.DebuggerNonUserCode] public ArrayAccessContext arrayAccess() {
 			return GetRuleContext<ArrayAccessContext>(0);
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ID() { return GetToken(VaibikParser.ID, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public CallSuffixContext callSuffix() {
+			return GetRuleContext<CallSuffixContext>(0);
+		}
 		[System.Diagnostics.DebuggerNonUserCode] public BuiltinFunctionCallContext builtinFunctionCall() {
 			return GetRuleContext<BuiltinFunctionCallContext>(0);
 		}
@@ -2499,61 +2818,65 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public PrimaryContext primary() {
 		PrimaryContext _localctx = new PrimaryContext(Context, State);
-		EnterRule(_localctx, 68, RULE_primary);
+		EnterRule(_localctx, 76, RULE_primary);
+		int _la;
 		try {
-			State = 324;
+			State = 364;
 			ErrorHandler.Sync(this);
-			switch ( Interpreter.AdaptivePredict(TokenStream,24,Context) ) {
+			switch ( Interpreter.AdaptivePredict(TokenStream,29,Context) ) {
 			case 1:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 314;
+				State = 352;
 				literal();
 				}
 				break;
 			case 2:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 315;
+				State = 353;
 				constant();
 				}
 				break;
 			case 3:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 316;
-				functionCall();
+				State = 354;
+				arrayAccess();
 				}
 				break;
 			case 4:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 317;
-				arrayAccess();
+				State = 355;
+				Match(ID);
+				State = 357;
+				ErrorHandler.Sync(this);
+				_la = TokenStream.LA(1);
+				if (_la==LPAREN) {
+					{
+					State = 356;
+					callSuffix();
+					}
+				}
+
 				}
 				break;
 			case 5:
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 318;
-				Match(ID);
+				State = 359;
+				builtinFunctionCall();
 				}
 				break;
 			case 6:
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 319;
-				builtinFunctionCall();
-				}
-				break;
-			case 7:
-				EnterOuterAlt(_localctx, 7);
-				{
-				State = 320;
+				State = 360;
 				Match(LPAREN);
-				State = 321;
+				State = 361;
 				expression();
-				State = 322;
+				State = 362;
 				Match(RPAREN);
 				}
 				break;
@@ -2597,18 +2920,76 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ArrayAccessContext arrayAccess() {
 		ArrayAccessContext _localctx = new ArrayAccessContext(Context, State);
-		EnterRule(_localctx, 70, RULE_arrayAccess);
+		EnterRule(_localctx, 78, RULE_arrayAccess);
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 326;
+			State = 366;
 			Match(ID);
-			State = 327;
+			State = 367;
 			Match(LBRACK);
-			State = 328;
+			State = 368;
 			expression();
-			State = 329;
+			State = 369;
 			Match(RBRACK);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			ErrorHandler.ReportError(this, re);
+			ErrorHandler.Recover(this, re);
+		}
+		finally {
+			ExitRule();
+		}
+		return _localctx;
+	}
+
+	public partial class CallSuffixContext : ParserRuleContext {
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode LPAREN() { return GetToken(VaibikParser.LPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode RPAREN() { return GetToken(VaibikParser.RPAREN, 0); }
+		[System.Diagnostics.DebuggerNonUserCode] public ArgumentListContext argumentList() {
+			return GetRuleContext<ArgumentListContext>(0);
+		}
+		public CallSuffixContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_callSuffix; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void EnterRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.EnterCallSuffix(this);
+		}
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override void ExitRule(IParseTreeListener listener) {
+			IVaibikParserListener typedListener = listener as IVaibikParserListener;
+			if (typedListener != null) typedListener.ExitCallSuffix(this);
+		}
+	}
+
+	[RuleVersion(0)]
+	public CallSuffixContext callSuffix() {
+		CallSuffixContext _localctx = new CallSuffixContext(Context, State);
+		EnterRule(_localctx, 80, RULE_callSuffix);
+		int _la;
+		try {
+			EnterOuterAlt(_localctx, 1);
+			{
+			State = 371;
+			Match(LPAREN);
+			State = 373;
+			ErrorHandler.Sync(this);
+			_la = TokenStream.LA(1);
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325707716128456704L) != 0)) {
+				{
+				State = 372;
+				argumentList();
+				}
+			}
+
+			State = 375;
+			Match(RPAREN);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2649,26 +3030,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public FunctionCallContext functionCall() {
 		FunctionCallContext _localctx = new FunctionCallContext(Context, State);
-		EnterRule(_localctx, 72, RULE_functionCall);
+		EnterRule(_localctx, 82, RULE_functionCall);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 331;
+			State = 377;
 			Match(ID);
-			State = 332;
+			State = 378;
 			Match(LPAREN);
-			State = 334;
+			State = 380;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 1081426929032151040L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 4325707716128456704L) != 0)) {
 				{
-				State = 333;
+				State = 379;
 				argumentList();
 				}
 			}
 
-			State = 336;
+			State = 382;
 			Match(RPAREN);
 			}
 		}
@@ -2718,10 +3099,10 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public BuiltinFunctionCallContext builtinFunctionCall() {
 		BuiltinFunctionCallContext _localctx = new BuiltinFunctionCallContext(Context, State);
-		EnterRule(_localctx, 74, RULE_builtinFunctionCall);
+		EnterRule(_localctx, 84, RULE_builtinFunctionCall);
 		int _la;
 		try {
-			State = 348;
+			State = 394;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case MODUL:
@@ -2730,20 +3111,20 @@ public partial class VaibikParser : Parser {
 			case TANGENS:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 338;
+				State = 384;
 				_la = TokenStream.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 15300820992L) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 61203283968L) != 0)) ) {
 				ErrorHandler.RecoverInline(this);
 				}
 				else {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 339;
+				State = 385;
 				Match(LPAREN);
-				State = 340;
+				State = 386;
 				expression();
-				State = 341;
+				State = 387;
 				Match(RPAREN);
 				}
 				break;
@@ -2751,7 +3132,7 @@ public partial class VaibikParser : Parser {
 			case MAXIMUM:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 343;
+				State = 389;
 				_la = TokenStream.LA(1);
 				if ( !(_la==MINIMUM || _la==MAXIMUM) ) {
 				ErrorHandler.RecoverInline(this);
@@ -2760,11 +3141,11 @@ public partial class VaibikParser : Parser {
 					ErrorHandler.ReportMatch(this);
 				    Consume();
 				}
-				State = 344;
+				State = 390;
 				Match(LPAREN);
-				State = 345;
+				State = 391;
 				argumentList();
-				State = 346;
+				State = 392;
 				Match(RPAREN);
 				}
 				break;
@@ -2814,26 +3195,26 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ArgumentListContext argumentList() {
 		ArgumentListContext _localctx = new ArgumentListContext(Context, State);
-		EnterRule(_localctx, 76, RULE_argumentList);
+		EnterRule(_localctx, 86, RULE_argumentList);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 350;
+			State = 396;
 			expression();
-			State = 355;
+			State = 401;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.LA(1);
 			while (_la==COMMA) {
 				{
 				{
-				State = 351;
+				State = 397;
 				Match(COMMA);
-				State = 352;
+				State = 398;
 				expression();
 				}
 				}
-				State = 357;
+				State = 403;
 				ErrorHandler.Sync(this);
 				_la = TokenStream.LA(1);
 			}
@@ -2877,29 +3258,29 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LiteralContext literal() {
 		LiteralContext _localctx = new LiteralContext(Context, State);
-		EnterRule(_localctx, 78, RULE_literal);
+		EnterRule(_localctx, 88, RULE_literal);
 		try {
-			State = 362;
+			State = 408;
 			ErrorHandler.Sync(this);
 			switch (TokenStream.LA(1)) {
 			case INTEGER:
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 358;
+				State = 404;
 				Match(INTEGER);
 				}
 				break;
 			case REAL:
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 359;
+				State = 405;
 				Match(REAL);
 				}
 				break;
 			case STRING:
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 360;
+				State = 406;
 				Match(STRING);
 				}
 				break;
@@ -2907,7 +3288,7 @@ public partial class VaibikParser : Parser {
 			case KRINZH:
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 361;
+				State = 407;
 				logicalLiteral();
 				}
 				break;
@@ -2949,12 +3330,12 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public LogicalLiteralContext logicalLiteral() {
 		LogicalLiteralContext _localctx = new LogicalLiteralContext(Context, State);
-		EnterRule(_localctx, 80, RULE_logicalLiteral);
+		EnterRule(_localctx, 90, RULE_logicalLiteral);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 364;
+			State = 410;
 			_la = TokenStream.LA(1);
 			if ( !(_la==HAIP || _la==KRINZH) ) {
 			ErrorHandler.RecoverInline(this);
@@ -2999,12 +3380,12 @@ public partial class VaibikParser : Parser {
 	[RuleVersion(0)]
 	public ConstantContext constant() {
 		ConstantContext _localctx = new ConstantContext(Context, State);
-		EnterRule(_localctx, 82, RULE_constant);
+		EnterRule(_localctx, 92, RULE_constant);
 		int _la;
 		try {
 			EnterOuterAlt(_localctx, 1);
 			{
-			State = 366;
+			State = 412;
 			_la = TokenStream.LA(1);
 			if ( !(_la==PI || _la==ESHKA) ) {
 			ErrorHandler.RecoverInline(this);
@@ -3027,124 +3408,139 @@ public partial class VaibikParser : Parser {
 	}
 
 	private static int[] _serializedATN = {
-		4,1,62,369,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
+		4,1,64,415,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,6,2,7,
 		7,7,2,8,7,8,2,9,7,9,2,10,7,10,2,11,7,11,2,12,7,12,2,13,7,13,2,14,7,14,
 		2,15,7,15,2,16,7,16,2,17,7,17,2,18,7,18,2,19,7,19,2,20,7,20,2,21,7,21,
 		2,22,7,22,2,23,7,23,2,24,7,24,2,25,7,25,2,26,7,26,2,27,7,27,2,28,7,28,
 		2,29,7,29,2,30,7,30,2,31,7,31,2,32,7,32,2,33,7,33,2,34,7,34,2,35,7,35,
-		2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,1,0,5,0,86,
-		8,0,10,0,12,0,89,9,0,1,0,1,0,1,1,1,1,1,1,3,1,96,8,1,1,2,1,2,1,2,1,2,3,
-		2,102,8,2,1,2,1,2,1,2,1,3,1,3,1,3,1,3,3,3,111,8,3,1,3,1,3,1,3,1,4,1,4,
-		1,4,5,4,119,8,4,10,4,12,4,122,9,4,1,5,1,5,1,5,1,5,1,6,1,6,3,6,130,8,6,
-		1,7,1,7,1,8,1,8,1,8,1,8,1,8,1,8,1,9,3,9,141,8,9,1,9,1,9,1,9,1,9,1,9,1,
-		9,1,10,1,10,1,10,1,10,3,10,153,8,10,1,10,1,10,1,11,1,11,1,11,1,11,1,12,
-		5,12,162,8,12,10,12,12,12,165,9,12,1,13,1,13,1,13,1,13,1,13,1,13,1,13,
-		1,13,1,13,1,13,1,13,3,13,178,8,13,1,14,1,14,1,14,1,15,1,15,1,15,1,15,1,
-		15,1,15,1,15,1,15,1,16,1,16,1,16,1,17,1,17,1,17,1,17,1,17,1,17,1,17,1,
-		17,3,17,202,8,17,1,18,1,18,1,18,1,18,1,18,1,18,1,19,1,19,1,19,1,19,1,19,
-		1,19,1,19,3,19,217,8,19,1,20,1,20,1,20,1,20,1,21,1,21,3,21,225,8,21,1,
-		21,1,21,1,22,1,22,1,22,1,23,1,23,1,23,3,23,235,8,23,1,23,1,23,1,23,1,23,
-		1,23,1,23,1,23,1,23,3,23,245,8,23,1,24,1,24,1,24,5,24,250,8,24,10,24,12,
-		24,253,9,24,1,25,1,25,1,26,1,26,1,26,3,26,260,8,26,1,27,1,27,1,27,5,27,
-		265,8,27,10,27,12,27,268,9,27,1,28,1,28,1,28,5,28,273,8,28,10,28,12,28,
-		276,9,28,1,29,1,29,1,29,5,29,281,8,29,10,29,12,29,284,9,29,1,30,1,30,1,
-		30,5,30,289,8,30,10,30,12,30,292,9,30,1,31,1,31,1,31,5,31,297,8,31,10,
-		31,12,31,300,9,31,1,32,1,32,1,32,5,32,305,8,32,10,32,12,32,308,9,32,1,
-		33,1,33,1,33,3,33,313,8,33,1,34,1,34,1,34,1,34,1,34,1,34,1,34,1,34,1,34,
-		1,34,3,34,325,8,34,1,35,1,35,1,35,1,35,1,35,1,36,1,36,1,36,3,36,335,8,
-		36,1,36,1,36,1,37,1,37,1,37,1,37,1,37,1,37,1,37,1,37,1,37,1,37,3,37,349,
-		8,37,1,38,1,38,1,38,5,38,354,8,38,10,38,12,38,357,9,38,1,39,1,39,1,39,
-		1,39,3,39,363,8,39,1,40,1,40,1,41,1,41,1,41,0,0,42,0,2,4,6,8,10,12,14,
-		16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,
-		64,66,68,70,72,74,76,78,80,82,0,10,1,0,8,12,1,0,39,40,1,0,41,44,1,0,34,
-		35,1,0,36,38,2,0,23,23,34,35,2,0,28,28,31,33,1,0,29,30,1,0,14,15,1,0,24,
-		25,372,0,87,1,0,0,0,2,95,1,0,0,0,4,97,1,0,0,0,6,106,1,0,0,0,8,115,1,0,
-		0,0,10,123,1,0,0,0,12,129,1,0,0,0,14,131,1,0,0,0,16,133,1,0,0,0,18,140,
-		1,0,0,0,20,148,1,0,0,0,22,156,1,0,0,0,24,163,1,0,0,0,26,177,1,0,0,0,28,
-		179,1,0,0,0,30,182,1,0,0,0,32,190,1,0,0,0,34,193,1,0,0,0,36,203,1,0,0,
-		0,38,216,1,0,0,0,40,218,1,0,0,0,42,222,1,0,0,0,44,228,1,0,0,0,46,244,1,
-		0,0,0,48,246,1,0,0,0,50,254,1,0,0,0,52,256,1,0,0,0,54,261,1,0,0,0,56,269,
-		1,0,0,0,58,277,1,0,0,0,60,285,1,0,0,0,62,293,1,0,0,0,64,301,1,0,0,0,66,
-		312,1,0,0,0,68,324,1,0,0,0,70,326,1,0,0,0,72,331,1,0,0,0,74,348,1,0,0,
-		0,76,350,1,0,0,0,78,362,1,0,0,0,80,364,1,0,0,0,82,366,1,0,0,0,84,86,3,
-		2,1,0,85,84,1,0,0,0,86,89,1,0,0,0,87,85,1,0,0,0,87,88,1,0,0,0,88,90,1,
-		0,0,0,89,87,1,0,0,0,90,91,5,0,0,1,91,1,1,0,0,0,92,96,3,4,2,0,93,96,3,6,
-		3,0,94,96,3,18,9,0,95,92,1,0,0,0,95,93,1,0,0,0,95,94,1,0,0,0,96,3,1,0,
-		0,0,97,98,3,14,7,0,98,99,5,56,0,0,99,101,5,49,0,0,100,102,3,8,4,0,101,
-		100,1,0,0,0,101,102,1,0,0,0,102,103,1,0,0,0,103,104,5,50,0,0,104,105,3,
-		22,11,0,105,5,1,0,0,0,106,107,5,3,0,0,107,108,5,56,0,0,108,110,5,49,0,
-		0,109,111,3,8,4,0,110,109,1,0,0,0,110,111,1,0,0,0,111,112,1,0,0,0,112,
-		113,5,50,0,0,113,114,3,22,11,0,114,7,1,0,0,0,115,120,3,10,5,0,116,117,
-		5,47,0,0,117,119,3,10,5,0,118,116,1,0,0,0,119,122,1,0,0,0,120,118,1,0,
-		0,0,120,121,1,0,0,0,121,9,1,0,0,0,122,120,1,0,0,0,123,124,5,56,0,0,124,
-		125,5,55,0,0,125,126,3,12,6,0,126,11,1,0,0,0,127,130,3,14,7,0,128,130,
-		3,16,8,0,129,127,1,0,0,0,129,128,1,0,0,0,130,13,1,0,0,0,131,132,7,0,0,
-		0,132,15,1,0,0,0,133,134,5,7,0,0,134,135,5,53,0,0,135,136,3,50,25,0,136,
-		137,5,54,0,0,137,138,3,14,7,0,138,17,1,0,0,0,139,141,5,13,0,0,140,139,
-		1,0,0,0,140,141,1,0,0,0,141,142,1,0,0,0,142,143,3,12,6,0,143,144,5,56,
-		0,0,144,145,5,45,0,0,145,146,3,50,25,0,146,147,5,46,0,0,147,19,1,0,0,0,
-		148,149,3,12,6,0,149,152,5,56,0,0,150,151,5,45,0,0,151,153,3,50,25,0,152,
-		150,1,0,0,0,152,153,1,0,0,0,153,154,1,0,0,0,154,155,5,46,0,0,155,21,1,
-		0,0,0,156,157,5,1,0,0,157,158,3,24,12,0,158,159,5,2,0,0,159,23,1,0,0,0,
-		160,162,3,26,13,0,161,160,1,0,0,0,162,165,1,0,0,0,163,161,1,0,0,0,163,
-		164,1,0,0,0,164,25,1,0,0,0,165,163,1,0,0,0,166,178,3,20,10,0,167,178,3,
-		28,14,0,168,178,3,30,15,0,169,178,3,34,17,0,170,178,3,36,18,0,171,178,
-		3,42,21,0,172,178,3,44,22,0,173,178,3,46,23,0,174,178,3,32,16,0,175,178,
-		3,22,11,0,176,178,5,46,0,0,177,166,1,0,0,0,177,167,1,0,0,0,177,168,1,0,
-		0,0,177,169,1,0,0,0,177,170,1,0,0,0,177,171,1,0,0,0,177,172,1,0,0,0,177,
-		173,1,0,0,0,177,174,1,0,0,0,177,175,1,0,0,0,177,176,1,0,0,0,178,27,1,0,
-		0,0,179,180,3,50,25,0,180,181,5,46,0,0,181,29,1,0,0,0,182,183,5,56,0,0,
-		183,184,5,53,0,0,184,185,3,50,25,0,185,186,5,54,0,0,186,187,5,45,0,0,187,
-		188,3,50,25,0,188,189,5,46,0,0,189,31,1,0,0,0,190,191,3,72,36,0,191,192,
-		5,46,0,0,192,33,1,0,0,0,193,194,5,17,0,0,194,195,5,49,0,0,195,196,3,50,
-		25,0,196,197,5,50,0,0,197,198,5,18,0,0,198,201,3,26,13,0,199,200,5,19,
-		0,0,200,202,3,26,13,0,201,199,1,0,0,0,201,202,1,0,0,0,202,35,1,0,0,0,203,
-		204,5,20,0,0,204,205,5,49,0,0,205,206,3,38,19,0,206,207,5,50,0,0,207,208,
-		3,22,11,0,208,37,1,0,0,0,209,217,3,50,25,0,210,211,3,40,20,0,211,212,5,
-		46,0,0,212,213,3,50,25,0,213,214,5,46,0,0,214,215,3,40,20,0,215,217,1,
-		0,0,0,216,209,1,0,0,0,216,210,1,0,0,0,217,39,1,0,0,0,218,219,5,56,0,0,
-		219,220,5,45,0,0,220,221,3,50,25,0,221,41,1,0,0,0,222,224,5,4,0,0,223,
-		225,3,50,25,0,224,223,1,0,0,0,224,225,1,0,0,0,225,226,1,0,0,0,226,227,
-		5,46,0,0,227,43,1,0,0,0,228,229,5,16,0,0,229,230,5,46,0,0,230,45,1,0,0,
-		0,231,232,5,6,0,0,232,234,5,49,0,0,233,235,3,76,38,0,234,233,1,0,0,0,234,
-		235,1,0,0,0,235,236,1,0,0,0,236,237,5,50,0,0,237,245,5,46,0,0,238,239,
-		5,5,0,0,239,240,5,49,0,0,240,241,3,48,24,0,241,242,5,50,0,0,242,243,5,
-		46,0,0,243,245,1,0,0,0,244,231,1,0,0,0,244,238,1,0,0,0,245,47,1,0,0,0,
-		246,251,5,56,0,0,247,248,5,47,0,0,248,250,5,56,0,0,249,247,1,0,0,0,250,
-		253,1,0,0,0,251,249,1,0,0,0,251,252,1,0,0,0,252,49,1,0,0,0,253,251,1,0,
-		0,0,254,255,3,52,26,0,255,51,1,0,0,0,256,259,3,54,27,0,257,258,5,45,0,
-		0,258,260,3,52,26,0,259,257,1,0,0,0,259,260,1,0,0,0,260,53,1,0,0,0,261,
-		266,3,56,28,0,262,263,5,22,0,0,263,265,3,56,28,0,264,262,1,0,0,0,265,268,
-		1,0,0,0,266,264,1,0,0,0,266,267,1,0,0,0,267,55,1,0,0,0,268,266,1,0,0,0,
-		269,274,3,58,29,0,270,271,5,21,0,0,271,273,3,58,29,0,272,270,1,0,0,0,273,
-		276,1,0,0,0,274,272,1,0,0,0,274,275,1,0,0,0,275,57,1,0,0,0,276,274,1,0,
-		0,0,277,282,3,60,30,0,278,279,7,1,0,0,279,281,3,60,30,0,280,278,1,0,0,
-		0,281,284,1,0,0,0,282,280,1,0,0,0,282,283,1,0,0,0,283,59,1,0,0,0,284,282,
-		1,0,0,0,285,290,3,62,31,0,286,287,7,2,0,0,287,289,3,62,31,0,288,286,1,
-		0,0,0,289,292,1,0,0,0,290,288,1,0,0,0,290,291,1,0,0,0,291,61,1,0,0,0,292,
-		290,1,0,0,0,293,298,3,64,32,0,294,295,7,3,0,0,295,297,3,64,32,0,296,294,
-		1,0,0,0,297,300,1,0,0,0,298,296,1,0,0,0,298,299,1,0,0,0,299,63,1,0,0,0,
-		300,298,1,0,0,0,301,306,3,66,33,0,302,303,7,4,0,0,303,305,3,66,33,0,304,
-		302,1,0,0,0,305,308,1,0,0,0,306,304,1,0,0,0,306,307,1,0,0,0,307,65,1,0,
-		0,0,308,306,1,0,0,0,309,310,7,5,0,0,310,313,3,66,33,0,311,313,3,68,34,
-		0,312,309,1,0,0,0,312,311,1,0,0,0,313,67,1,0,0,0,314,325,3,78,39,0,315,
-		325,3,82,41,0,316,325,3,72,36,0,317,325,3,70,35,0,318,325,5,56,0,0,319,
-		325,3,74,37,0,320,321,5,49,0,0,321,322,3,50,25,0,322,323,5,50,0,0,323,
-		325,1,0,0,0,324,314,1,0,0,0,324,315,1,0,0,0,324,316,1,0,0,0,324,317,1,
-		0,0,0,324,318,1,0,0,0,324,319,1,0,0,0,324,320,1,0,0,0,325,69,1,0,0,0,326,
-		327,5,56,0,0,327,328,5,53,0,0,328,329,3,50,25,0,329,330,5,54,0,0,330,71,
-		1,0,0,0,331,332,5,56,0,0,332,334,5,49,0,0,333,335,3,76,38,0,334,333,1,
-		0,0,0,334,335,1,0,0,0,335,336,1,0,0,0,336,337,5,50,0,0,337,73,1,0,0,0,
-		338,339,7,6,0,0,339,340,5,49,0,0,340,341,3,50,25,0,341,342,5,50,0,0,342,
-		349,1,0,0,0,343,344,7,7,0,0,344,345,5,49,0,0,345,346,3,76,38,0,346,347,
-		5,50,0,0,347,349,1,0,0,0,348,338,1,0,0,0,348,343,1,0,0,0,349,75,1,0,0,
-		0,350,355,3,50,25,0,351,352,5,47,0,0,352,354,3,50,25,0,353,351,1,0,0,0,
-		354,357,1,0,0,0,355,353,1,0,0,0,355,356,1,0,0,0,356,77,1,0,0,0,357,355,
-		1,0,0,0,358,363,5,57,0,0,359,363,5,58,0,0,360,363,5,59,0,0,361,363,3,80,
-		40,0,362,358,1,0,0,0,362,359,1,0,0,0,362,360,1,0,0,0,362,361,1,0,0,0,363,
-		79,1,0,0,0,364,365,7,8,0,0,365,81,1,0,0,0,366,367,7,9,0,0,367,83,1,0,0,
-		0,29,87,95,101,110,120,129,140,152,163,177,201,216,224,234,244,251,259,
-		266,274,282,290,298,306,312,324,334,348,355,362
+		2,36,7,36,2,37,7,37,2,38,7,38,2,39,7,39,2,40,7,40,2,41,7,41,2,42,7,42,
+		2,43,7,43,2,44,7,44,2,45,7,45,2,46,7,46,1,0,5,0,96,8,0,10,0,12,0,99,9,
+		0,1,0,1,0,1,1,1,1,1,1,3,1,106,8,1,1,2,1,2,1,2,1,2,3,2,112,8,2,1,2,1,2,
+		1,2,1,3,1,3,1,3,1,3,3,3,121,8,3,1,3,1,3,1,3,1,4,1,4,1,4,5,4,129,8,4,10,
+		4,12,4,132,9,4,1,5,1,5,1,5,1,5,1,6,1,6,3,6,140,8,6,1,7,1,7,1,8,1,8,1,8,
+		1,8,1,8,1,8,1,9,3,9,151,8,9,1,9,1,9,1,9,1,9,1,9,1,9,1,10,1,10,1,10,1,10,
+		3,10,163,8,10,1,10,1,10,1,11,1,11,1,11,1,11,1,12,5,12,172,8,12,10,12,12,
+		12,175,9,12,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,1,13,3,13,
+		188,8,13,1,14,1,14,1,14,1,15,1,15,1,15,1,15,1,15,1,15,1,15,1,15,1,16,1,
+		16,1,16,1,17,1,17,1,17,1,17,1,17,1,17,1,17,1,17,3,17,212,8,17,1,18,1,18,
+		3,18,216,8,18,1,19,1,19,1,19,5,19,221,8,19,10,19,12,19,224,9,19,1,19,1,
+		19,1,20,1,20,1,20,5,20,231,8,20,10,20,12,20,234,9,20,1,20,1,20,1,21,1,
+		21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,21,1,22,1,22,1,22,1,22,1,22,1,
+		22,1,23,1,23,1,23,1,23,1,24,1,24,3,24,260,8,24,1,24,1,24,1,25,1,25,1,25,
+		1,26,1,26,1,26,1,27,1,27,1,27,3,27,273,8,27,1,27,1,27,1,27,1,27,1,27,1,
+		27,1,27,1,27,3,27,283,8,27,1,28,1,28,1,28,5,28,288,8,28,10,28,12,28,291,
+		9,28,1,29,1,29,1,30,1,30,1,30,3,30,298,8,30,1,31,1,31,1,31,5,31,303,8,
+		31,10,31,12,31,306,9,31,1,32,1,32,1,32,5,32,311,8,32,10,32,12,32,314,9,
+		32,1,33,1,33,1,33,5,33,319,8,33,10,33,12,33,322,9,33,1,34,1,34,1,34,5,
+		34,327,8,34,10,34,12,34,330,9,34,1,35,1,35,1,35,5,35,335,8,35,10,35,12,
+		35,338,9,35,1,36,1,36,1,36,5,36,343,8,36,10,36,12,36,346,9,36,1,37,1,37,
+		1,37,3,37,351,8,37,1,38,1,38,1,38,1,38,1,38,3,38,358,8,38,1,38,1,38,1,
+		38,1,38,1,38,3,38,365,8,38,1,39,1,39,1,39,1,39,1,39,1,40,1,40,3,40,374,
+		8,40,1,40,1,40,1,41,1,41,1,41,3,41,381,8,41,1,41,1,41,1,42,1,42,1,42,1,
+		42,1,42,1,42,1,42,1,42,1,42,1,42,3,42,395,8,42,1,43,1,43,1,43,5,43,400,
+		8,43,10,43,12,43,403,9,43,1,44,1,44,1,44,1,44,3,44,409,8,44,1,45,1,45,
+		1,46,1,46,1,46,0,0,47,0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,
+		36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,
+		84,86,88,90,92,0,10,1,0,8,12,1,0,41,42,1,0,43,46,1,0,36,37,1,0,38,40,2,
+		0,25,25,36,37,2,0,30,30,33,35,1,0,31,32,1,0,14,15,1,0,26,27,418,0,97,1,
+		0,0,0,2,105,1,0,0,0,4,107,1,0,0,0,6,116,1,0,0,0,8,125,1,0,0,0,10,133,1,
+		0,0,0,12,139,1,0,0,0,14,141,1,0,0,0,16,143,1,0,0,0,18,150,1,0,0,0,20,158,
+		1,0,0,0,22,166,1,0,0,0,24,173,1,0,0,0,26,187,1,0,0,0,28,189,1,0,0,0,30,
+		192,1,0,0,0,32,200,1,0,0,0,34,203,1,0,0,0,36,215,1,0,0,0,38,217,1,0,0,
+		0,40,227,1,0,0,0,42,237,1,0,0,0,44,247,1,0,0,0,46,253,1,0,0,0,48,257,1,
+		0,0,0,50,263,1,0,0,0,52,266,1,0,0,0,54,282,1,0,0,0,56,284,1,0,0,0,58,292,
+		1,0,0,0,60,294,1,0,0,0,62,299,1,0,0,0,64,307,1,0,0,0,66,315,1,0,0,0,68,
+		323,1,0,0,0,70,331,1,0,0,0,72,339,1,0,0,0,74,350,1,0,0,0,76,364,1,0,0,
+		0,78,366,1,0,0,0,80,371,1,0,0,0,82,377,1,0,0,0,84,394,1,0,0,0,86,396,1,
+		0,0,0,88,408,1,0,0,0,90,410,1,0,0,0,92,412,1,0,0,0,94,96,3,2,1,0,95,94,
+		1,0,0,0,96,99,1,0,0,0,97,95,1,0,0,0,97,98,1,0,0,0,98,100,1,0,0,0,99,97,
+		1,0,0,0,100,101,5,0,0,1,101,1,1,0,0,0,102,106,3,4,2,0,103,106,3,6,3,0,
+		104,106,3,18,9,0,105,102,1,0,0,0,105,103,1,0,0,0,105,104,1,0,0,0,106,3,
+		1,0,0,0,107,108,3,14,7,0,108,109,5,58,0,0,109,111,5,51,0,0,110,112,3,8,
+		4,0,111,110,1,0,0,0,111,112,1,0,0,0,112,113,1,0,0,0,113,114,5,52,0,0,114,
+		115,3,22,11,0,115,5,1,0,0,0,116,117,5,3,0,0,117,118,5,58,0,0,118,120,5,
+		51,0,0,119,121,3,8,4,0,120,119,1,0,0,0,120,121,1,0,0,0,121,122,1,0,0,0,
+		122,123,5,52,0,0,123,124,3,22,11,0,124,7,1,0,0,0,125,130,3,10,5,0,126,
+		127,5,49,0,0,127,129,3,10,5,0,128,126,1,0,0,0,129,132,1,0,0,0,130,128,
+		1,0,0,0,130,131,1,0,0,0,131,9,1,0,0,0,132,130,1,0,0,0,133,134,5,58,0,0,
+		134,135,5,57,0,0,135,136,3,12,6,0,136,11,1,0,0,0,137,140,3,14,7,0,138,
+		140,3,16,8,0,139,137,1,0,0,0,139,138,1,0,0,0,140,13,1,0,0,0,141,142,7,
+		0,0,0,142,15,1,0,0,0,143,144,5,7,0,0,144,145,5,55,0,0,145,146,3,58,29,
+		0,146,147,5,56,0,0,147,148,3,14,7,0,148,17,1,0,0,0,149,151,5,13,0,0,150,
+		149,1,0,0,0,150,151,1,0,0,0,151,152,1,0,0,0,152,153,3,12,6,0,153,154,5,
+		58,0,0,154,155,5,47,0,0,155,156,3,58,29,0,156,157,5,48,0,0,157,19,1,0,
+		0,0,158,159,3,12,6,0,159,162,5,58,0,0,160,161,5,47,0,0,161,163,3,58,29,
+		0,162,160,1,0,0,0,162,163,1,0,0,0,163,164,1,0,0,0,164,165,5,48,0,0,165,
+		21,1,0,0,0,166,167,5,1,0,0,167,168,3,24,12,0,168,169,5,2,0,0,169,23,1,
+		0,0,0,170,172,3,26,13,0,171,170,1,0,0,0,172,175,1,0,0,0,173,171,1,0,0,
+		0,173,174,1,0,0,0,174,25,1,0,0,0,175,173,1,0,0,0,176,188,3,20,10,0,177,
+		188,3,28,14,0,178,188,3,30,15,0,179,188,3,34,17,0,180,188,3,42,21,0,181,
+		188,3,44,22,0,182,188,3,48,24,0,183,188,3,54,27,0,184,188,3,32,16,0,185,
+		188,3,22,11,0,186,188,5,48,0,0,187,176,1,0,0,0,187,177,1,0,0,0,187,178,
+		1,0,0,0,187,179,1,0,0,0,187,180,1,0,0,0,187,181,1,0,0,0,187,182,1,0,0,
+		0,187,183,1,0,0,0,187,184,1,0,0,0,187,185,1,0,0,0,187,186,1,0,0,0,188,
+		27,1,0,0,0,189,190,3,58,29,0,190,191,5,48,0,0,191,29,1,0,0,0,192,193,5,
+		58,0,0,193,194,5,55,0,0,194,195,3,58,29,0,195,196,5,56,0,0,196,197,5,47,
+		0,0,197,198,3,58,29,0,198,199,5,48,0,0,199,31,1,0,0,0,200,201,3,82,41,
+		0,201,202,5,48,0,0,202,33,1,0,0,0,203,204,5,17,0,0,204,205,5,51,0,0,205,
+		206,3,58,29,0,206,207,5,52,0,0,207,208,5,18,0,0,208,211,3,26,13,0,209,
+		210,5,20,0,0,210,212,3,26,13,0,211,209,1,0,0,0,211,212,1,0,0,0,212,35,
+		1,0,0,0,213,216,3,50,25,0,214,216,3,52,26,0,215,213,1,0,0,0,215,214,1,
+		0,0,0,216,37,1,0,0,0,217,222,5,1,0,0,218,221,3,26,13,0,219,221,3,36,18,
+		0,220,218,1,0,0,0,220,219,1,0,0,0,221,224,1,0,0,0,222,220,1,0,0,0,222,
+		223,1,0,0,0,223,225,1,0,0,0,224,222,1,0,0,0,225,226,5,2,0,0,226,39,1,0,
+		0,0,227,232,5,1,0,0,228,231,3,26,13,0,229,231,3,36,18,0,230,228,1,0,0,
+		0,230,229,1,0,0,0,231,234,1,0,0,0,232,230,1,0,0,0,232,233,1,0,0,0,233,
+		235,1,0,0,0,234,232,1,0,0,0,235,236,5,2,0,0,236,41,1,0,0,0,237,238,5,21,
+		0,0,238,239,5,51,0,0,239,240,3,46,23,0,240,241,5,48,0,0,241,242,3,58,29,
+		0,242,243,5,48,0,0,243,244,3,46,23,0,244,245,5,52,0,0,245,246,3,38,19,
+		0,246,43,1,0,0,0,247,248,5,22,0,0,248,249,5,51,0,0,249,250,3,58,29,0,250,
+		251,5,52,0,0,251,252,3,40,20,0,252,45,1,0,0,0,253,254,5,58,0,0,254,255,
+		5,47,0,0,255,256,3,58,29,0,256,47,1,0,0,0,257,259,5,4,0,0,258,260,3,58,
+		29,0,259,258,1,0,0,0,259,260,1,0,0,0,260,261,1,0,0,0,261,262,5,48,0,0,
+		262,49,1,0,0,0,263,264,5,16,0,0,264,265,5,48,0,0,265,51,1,0,0,0,266,267,
+		5,19,0,0,267,268,5,48,0,0,268,53,1,0,0,0,269,270,5,6,0,0,270,272,5,51,
+		0,0,271,273,3,86,43,0,272,271,1,0,0,0,272,273,1,0,0,0,273,274,1,0,0,0,
+		274,275,5,52,0,0,275,283,5,48,0,0,276,277,5,5,0,0,277,278,5,51,0,0,278,
+		279,3,56,28,0,279,280,5,52,0,0,280,281,5,48,0,0,281,283,1,0,0,0,282,269,
+		1,0,0,0,282,276,1,0,0,0,283,55,1,0,0,0,284,289,5,58,0,0,285,286,5,49,0,
+		0,286,288,5,58,0,0,287,285,1,0,0,0,288,291,1,0,0,0,289,287,1,0,0,0,289,
+		290,1,0,0,0,290,57,1,0,0,0,291,289,1,0,0,0,292,293,3,60,30,0,293,59,1,
+		0,0,0,294,297,3,62,31,0,295,296,5,47,0,0,296,298,3,60,30,0,297,295,1,0,
+		0,0,297,298,1,0,0,0,298,61,1,0,0,0,299,304,3,64,32,0,300,301,5,24,0,0,
+		301,303,3,64,32,0,302,300,1,0,0,0,303,306,1,0,0,0,304,302,1,0,0,0,304,
+		305,1,0,0,0,305,63,1,0,0,0,306,304,1,0,0,0,307,312,3,66,33,0,308,309,5,
+		23,0,0,309,311,3,66,33,0,310,308,1,0,0,0,311,314,1,0,0,0,312,310,1,0,0,
+		0,312,313,1,0,0,0,313,65,1,0,0,0,314,312,1,0,0,0,315,320,3,68,34,0,316,
+		317,7,1,0,0,317,319,3,68,34,0,318,316,1,0,0,0,319,322,1,0,0,0,320,318,
+		1,0,0,0,320,321,1,0,0,0,321,67,1,0,0,0,322,320,1,0,0,0,323,328,3,70,35,
+		0,324,325,7,2,0,0,325,327,3,70,35,0,326,324,1,0,0,0,327,330,1,0,0,0,328,
+		326,1,0,0,0,328,329,1,0,0,0,329,69,1,0,0,0,330,328,1,0,0,0,331,336,3,72,
+		36,0,332,333,7,3,0,0,333,335,3,72,36,0,334,332,1,0,0,0,335,338,1,0,0,0,
+		336,334,1,0,0,0,336,337,1,0,0,0,337,71,1,0,0,0,338,336,1,0,0,0,339,344,
+		3,74,37,0,340,341,7,4,0,0,341,343,3,74,37,0,342,340,1,0,0,0,343,346,1,
+		0,0,0,344,342,1,0,0,0,344,345,1,0,0,0,345,73,1,0,0,0,346,344,1,0,0,0,347,
+		348,7,5,0,0,348,351,3,74,37,0,349,351,3,76,38,0,350,347,1,0,0,0,350,349,
+		1,0,0,0,351,75,1,0,0,0,352,365,3,88,44,0,353,365,3,92,46,0,354,365,3,78,
+		39,0,355,357,5,58,0,0,356,358,3,80,40,0,357,356,1,0,0,0,357,358,1,0,0,
+		0,358,365,1,0,0,0,359,365,3,84,42,0,360,361,5,51,0,0,361,362,3,58,29,0,
+		362,363,5,52,0,0,363,365,1,0,0,0,364,352,1,0,0,0,364,353,1,0,0,0,364,354,
+		1,0,0,0,364,355,1,0,0,0,364,359,1,0,0,0,364,360,1,0,0,0,365,77,1,0,0,0,
+		366,367,5,58,0,0,367,368,5,55,0,0,368,369,3,58,29,0,369,370,5,56,0,0,370,
+		79,1,0,0,0,371,373,5,51,0,0,372,374,3,86,43,0,373,372,1,0,0,0,373,374,
+		1,0,0,0,374,375,1,0,0,0,375,376,5,52,0,0,376,81,1,0,0,0,377,378,5,58,0,
+		0,378,380,5,51,0,0,379,381,3,86,43,0,380,379,1,0,0,0,380,381,1,0,0,0,381,
+		382,1,0,0,0,382,383,5,52,0,0,383,83,1,0,0,0,384,385,7,6,0,0,385,386,5,
+		51,0,0,386,387,3,58,29,0,387,388,5,52,0,0,388,395,1,0,0,0,389,390,7,7,
+		0,0,390,391,5,51,0,0,391,392,3,86,43,0,392,393,5,52,0,0,393,395,1,0,0,
+		0,394,384,1,0,0,0,394,389,1,0,0,0,395,85,1,0,0,0,396,401,3,58,29,0,397,
+		398,5,49,0,0,398,400,3,58,29,0,399,397,1,0,0,0,400,403,1,0,0,0,401,399,
+		1,0,0,0,401,402,1,0,0,0,402,87,1,0,0,0,403,401,1,0,0,0,404,409,5,59,0,
+		0,405,409,5,60,0,0,406,409,5,61,0,0,407,409,3,90,45,0,408,404,1,0,0,0,
+		408,405,1,0,0,0,408,406,1,0,0,0,408,407,1,0,0,0,409,89,1,0,0,0,410,411,
+		7,8,0,0,411,91,1,0,0,0,412,413,7,9,0,0,413,93,1,0,0,0,35,97,105,111,120,
+		130,139,150,162,173,187,211,215,220,222,230,232,259,272,282,289,297,304,
+		312,320,328,336,344,350,357,364,373,380,394,401,408
 	};
 
 	public static readonly ATN _ATN =
