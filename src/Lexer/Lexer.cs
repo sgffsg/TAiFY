@@ -258,14 +258,9 @@ namespace Lexer
                 return ParseNumericLiteral();
             }
 
-            if (ch == '"')
-            {
-                return ParseStringLiteral();
-            }
-            else
-            {
-                return ParseRemainTokens();
-            }
+            return ch == '"'
+                ? ParseStringLiteral()
+                : ParseRemainTokens();
         }
 
         private Token ParseIdentifierOrKeyword()
@@ -372,10 +367,11 @@ namespace Lexer
 
         private Token ParseStringLiteral()
         {
+            StringBuilder content = new();
+            bool hasError = false;
             scanner.Advance();
-            StringBuilder content = new StringBuilder();
 
-            while(!scanner.IsEnd() && scanner.Peek() != '"')
+            while (!scanner.IsEnd() && scanner.Peek() != '"')
             {
                 if (scanner.Peek() == '\n' || scanner.Peek() == '\r')
                 {
@@ -384,13 +380,10 @@ namespace Lexer
 
                 if (scanner.Peek() == '\\')
                 {
-                    if (TryParseEscapeSequence(out char escapeSequence))
+                    if (!DecodeEscapeSequence(content))
                     {
-                        content.Append(escapeSequence);
-                    }
-                    else
-                    {
-                        return new Token(TokenType.Error, new TokenValue("Invalid Escape Sequence"));
+                        hasError = true;
+                        content.Append('\\');
                     }
                 }
                 else
@@ -400,158 +393,190 @@ namespace Lexer
                 }
             }
 
-            if (scanner.IsEnd())
+            if (hasError)
             {
-                return new Token(TokenType.Error, new TokenValue("Unclosed string"));
+                return new Token(TokenType.Error, new TokenValue(content.ToString()));
             }
 
             scanner.Advance();
             return new Token(TokenType.StringLiteral, new TokenValue(content.ToString()));
         }
 
-        private bool TryParseEscapeSequence(out char escapeSequence)
+        private bool DecodeEscapeSequence(StringBuilder valueBuilder)
         {
+            // Предполагаем, что первый символ — обратный слеш "\".
             scanner.Advance();
 
-            if (scanner.IsEnd())
+            char ch1 = scanner.Peek();
+
+            // Разбор простой escape-последовательности: "\n", "\"" и так далее.
+            if (SimpleEscapes.TryGetValue(ch1, out char unescaped1))
             {
-                escapeSequence = '\0';
+                scanner.Advance();
+                valueBuilder.Append(unescaped1);
+                return true;
+            }
+
+            // Разбор escape-последовательности в каретной нотации: "\^@", "\^C" и так далее.
+            if (ch1 == '^')
+            {
+                char ch2 = scanner.Peek(1);
+                if (CaretEscapes.TryGetValue(ch2, out char unescaped2))
+                {
+                    scanner.Advance();
+                    scanner.Advance();
+                    valueBuilder.Append(unescaped2);
+                    return true;
+                }
+            }
+
+            // Разбор escape-последовательности в нотации "\DDD", где D — десятичная цифра,
+            //  а DDD — код символа ASCII (число от 0 до 127 включительно).
+            if (char.IsAsciiDigit(ch1))
+            {
+                char ch2 = scanner.Peek(1);
+                if (char.IsAsciiDigit(ch2))
+                {
+                    char ch3 = scanner.Peek(2);
+                    if (char.IsAsciiDigit(ch3))
+                    {
+                        int code = (ch1 - '0') * 100 + (ch2 - '0') * 10 + (ch3 - '0');
+                        if (code <= 127)
+                        {
+                            scanner.Advance();
+                            scanner.Advance();
+                            scanner.Advance();
+                            valueBuilder.Append((char)code);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // Пропуск любой последовательности пробельных символов между двумя обратными слэшами '\', например: "\   \"
+            if (!char.IsWhiteSpace(ch1))
+            {
                 return false;
             }
 
-            char escapeChar = scanner.Peek();
-            bool isValid = true;
-
-            switch (escapeChar)
+            int skipCount = 1;
+            while (char.IsWhiteSpace(scanner.Peek(skipCount)))
             {
-                case 'n':
-                    escapeSequence = '\n';
-                    break;
-                case 't':
-                    escapeSequence = '\t';
-                    break;
-                case '"':
-                    escapeSequence = '"';
-                    break;
-                case '\\':
-                    escapeSequence = '\\';
-                    break;
-                case 'r':
-                    escapeSequence = '\r';
-                    break;
-                default:
-                    escapeSequence = '\0';
-                    isValid = false;
-                    break;
+                ++skipCount;
             }
 
-            scanner.Advance();
-            return isValid;
+            if (scanner.Peek(skipCount) != '\\')
+            {
+                return false;
+            }
+
+            for (int i = 0; i <= skipCount; ++i)
+            {
+                scanner.Advance();
+            }
+
+            return true;
         }
 
         private Token ParseRemainTokens()
         {
             char ch = scanner.Peek();
 
+            scanner.Advance();
             switch (ch)
             {
                 case ';':
-                    scanner.Advance();
                     return new Token(TokenType.Semicolon);
                 case ',':
-                    scanner.Advance();
                     return new Token(TokenType.Comma);
                 case '.':
-                    scanner.Advance();
                     return new Token(TokenType.DotFieldAccess);
                 case ':':
-                    scanner.Advance();
                     return new Token(TokenType.ColonTypeIndication);
                 case '(':
-                    scanner.Advance();
                     return new Token(TokenType.OpenParenthesis);
                 case ')':
-                    scanner.Advance();
                     return new Token(TokenType.CloseParenthesis);
                 case '{':
-                    scanner.Advance();
                     return new Token(TokenType.OpenCurlyBrace);
                 case '}':
-                    scanner.Advance();
                     return new Token(TokenType.CloseCurlyBrace);
                 case '[':
-                    scanner.Advance();
                     return new Token(TokenType.OpenSquareBracket);
                 case ']':
-                    scanner.Advance();
                     return new Token(TokenType.CloseSquareBracket);
                 case '+':
-                    scanner.Advance();
                     return new Token(TokenType.Plus);
                 case '-':
-                    scanner.Advance();
                     return new Token(TokenType.Minus);
                 case '*':
-                    scanner.Advance();
                     return new Token(TokenType.Multiplication);
                 case '/':
-                    scanner.Advance();
                     return new Token(TokenType.Division);
                 case '%':
-                    scanner.Advance();
                     return new Token(TokenType.Remainder);
                 case '=':
-                    scanner.Advance();
-                    if (scanner.Peek() == '=')
+                    if (scanner.Peek() != '=')
                     {
-                        scanner.Advance();
-                        return new Token(TokenType.Equal);
+                        return new Token(TokenType.Assignment);
                     }
 
-                    return new Token(TokenType.Assignment);
+                    scanner.Advance();
+                    return new Token(TokenType.Equal);
+
                 case '!':
-                    scanner.Advance();
-                    if (scanner.Peek() == '=')
+                    if (scanner.Peek() != '=')
                     {
-                        scanner.Advance();
-                        return new Token(TokenType.NotEqual);
+                        return new Token(TokenType.Error, new TokenValue("Unknown operator: '!'"));
                     }
 
-                    return new Token(TokenType.Error, new TokenValue("Unknown operator: '!'"));
+                    scanner.Advance();
+                    return new Token(TokenType.NotEqual);
+
                 case '<':
-                    scanner.Advance();
-                    if (scanner.Peek() == '=')
+                    if (scanner.Peek() != '=')
                     {
-                        scanner.Advance();
-                        return new Token(TokenType.LessThanOrEqual);
+                        return new Token(TokenType.LessThan);
                     }
 
-                    return new Token(TokenType.LessThan);
+                    scanner.Advance();
+                    return new Token(TokenType.LessThanOrEqual);
+
                 case '>':
-                    scanner.Advance();
-                    if (scanner.Peek() == '=')
+                    if (scanner.Peek() != '=')
                     {
-                        scanner.Advance();
-                        return new Token(TokenType.GreaterThanOrEqual);
+                        return new Token(TokenType.GreaterThan);
                     }
 
-                    return new Token(TokenType.GreaterThan);
-                default:
                     scanner.Advance();
+                    return new Token(TokenType.GreaterThanOrEqual);
+
+                default:
                     return new Token(TokenType.Error, new TokenValue($"Unknown symbol: '{ch.ToString()}'"));
             }
         }
 
+        /// <summary>
+        /// Пропускает пробельные символы и комментарии, пока не встретит лексему.
+        /// </summary>
         private void SkipWhiteSpacesAndComments()
         {
             do
             {
-                while (!scanner.IsEnd() && char.IsWhiteSpace(scanner.Peek()))
-                {
-                    scanner.Advance();
-                }
+                SkipWhiteSpaces();
             }
             while (TryParseMultilineComment() || TryParseSingleLineComment());
+        }
+
+        /// <summary>
+        ///  Пропускает пробельные символы, пока не встретит иной символ.
+        /// </summary>
+        private void SkipWhiteSpaces()
+        {
+            while (!scanner.IsEnd() && char.IsWhiteSpace(scanner.Peek()))
+            {
+                scanner.Advance();
+            }
         }
 
         private bool TryParseMultilineComment()

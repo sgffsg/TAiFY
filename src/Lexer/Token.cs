@@ -1,4 +1,6 @@
-﻿namespace Lexer
+﻿using System.Text;
+
+namespace Lexer
 {
     public class Token(TokenType type, TokenValue? value = null)
     {
@@ -8,27 +10,35 @@
 
         public override bool Equals(object? obj)
         {
-            if (obj is not Token other)
+            if (obj is Token other)
             {
-                return false;
+                return Type == other.Type && Equals(Value, other.Value);
             }
 
-            if (Type != other.Type)
-            {
-                return false;
-            }
-
-            if (Value == null && other.Value == null)
-            {
-                return true;
-            }
-
-            return Value?.ToString() == other.Value?.ToString();
+            return false;
         }
 
+        /// <summary>
+        ///  Возвращает хеш от свойств токена.
+        /// </summary>
         public override int GetHashCode()
         {
             return HashCode.Combine((int)Type, Value);
+        }
+
+        /// <summary>
+        /// Форматирует токен в стиле "Type (Value)".
+        /// </summary>
+        public override string ToString()
+        {
+            StringBuilder sb = new();
+            sb.Append(Type.ToString());
+            if (Value != null)
+            {
+                sb.Append($" ({Value})");
+            }
+
+            return sb.ToString();
         }
     }
 }
