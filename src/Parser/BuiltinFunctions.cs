@@ -42,11 +42,21 @@ namespace Parser
 
         private static decimal Minimum(List<decimal> arguments)
         {
+            if (arguments.Count == 0)
+            {
+                throw new ArgumentException($"Builtin function МИНИМУМ requires at least 1 argument, received: {arguments.Count}");
+            }
+
             return arguments.Min();
         }
 
         private static decimal Maximum(List<decimal> arguments)
         {
+            if (arguments.Count == 0)
+            {
+                throw new ArgumentException($"Builtin function МАКСИМУМ requires at least 1 argument, received: {arguments.Count}");
+            }
+
             return arguments.Max();
         }
 
@@ -54,7 +64,7 @@ namespace Parser
         {
             if (arguments.Count != 2)
             {
-                throw new ArgumentException($"Встроенная функция СТЕПЕНЬ требует 2 аргумента, получено: {arguments.Count}");
+                throw new ArgumentException($"Builtin function СТЕПЕНЬ requires exactly 2 arguments, received: {arguments.Count}");
             }
 
             return (decimal)Math.Pow((double)arguments[0], (double)arguments[1]);
@@ -64,7 +74,7 @@ namespace Parser
         {
             if (arguments.Count != 1)
             {
-                throw new ArgumentException($"Встроенная функция КОРЕНЬ требует 1 аргумент, получено: {arguments.Count}");
+                throw new ArgumentException($"Builtin function КОРЕНЬ requires exactly 1 argument, received: {arguments.Count}");
             }
 
             return (decimal)Math.Sqrt((double)arguments[0]);
@@ -74,7 +84,7 @@ namespace Parser
         {
             if (arguments.Count != 1)
             {
-                throw new ArgumentException($"Встроенная функция СИНУС требует 1 аргумент, получено: {arguments.Count}");
+                throw new ArgumentException($"Builtin function СИНУС requires exactly 1 argument, received: {arguments.Count}");
             }
 
             return (decimal)Math.Sin((double)arguments[0]);
@@ -84,7 +94,7 @@ namespace Parser
         {
             if (arguments.Count != 1)
             {
-                throw new ArgumentException($"Встроенная функция КОСИНУС требует 1 аргумент, получено: {arguments.Count}");
+                throw new ArgumentException($"Builtin function КОСИНУС requires exactly 1 argument, received: {arguments.Count}");
             }
 
             return (decimal)Math.Cos((double)arguments[0]);
@@ -94,7 +104,7 @@ namespace Parser
         {
             if (arguments.Count != 1)
             {
-                throw new ArgumentException($"Встроенная функция ТАНГЕНС требует 1 аргумент, получено: {arguments.Count}");
+                throw new ArgumentException($"Builtin function ТАНГЕНС requires exactly 1 argument, received: {arguments.Count}");
             }
 
             return (decimal)Math.Tan((double)arguments[0]);
