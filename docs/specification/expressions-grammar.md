@@ -154,11 +154,12 @@ primary =
     | stringLiteral
     | logicalLiteral
     | constant
-    | identifier, [ callSuffix ]
+    | identifier, [ callSuffix | indexSuffix ]
     | "(", expression, ")"
     ;
 
 callSuffix = "(", [ argumentList ], ")" ;
+indexSuffix = "[", expression, "]" ;
 
 argumentList = expression, { ",", expression } ;
 ```
