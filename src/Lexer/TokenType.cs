@@ -35,6 +35,11 @@
         Hvatit,
 
         /// <summary>
+        /// Переход к след. итерации цикла ПРОДОЛЖАЕМ
+        /// </summary>
+        Prodolzhaem,
+
+        /// <summary>
         /// Возврат из функции ДРАТУТИ
         /// </summary>
         Dratuti,

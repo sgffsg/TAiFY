@@ -8,39 +8,227 @@ namespace Lexer
     {
         private static readonly Dictionary<string, TokenType> Keywords = new()
         {
-            { "ПОЕХАЛИ", TokenType.Poehali },
-            { "ФИНАЛОЧКА", TokenType.Finalochka },
-            { "ПРОКРАСТИНИРУЕМ", TokenType.Prokrastiniryem },
-            { "ВБРОС", TokenType.Vbros },
-            { "ВЫБРОС", TokenType.Vybros },
-            { "ПАЧКА", TokenType.Pachka },
-            { "ЦИТАТА", TokenType.Citata },
-            { "ХАЙП", TokenType.Hype },
-            { "КРИНЖ", TokenType.Cringe },
-            { "РАСКЛАД", TokenType.Rasklad },
-            { "ПОЛТОРАШКА", TokenType.Poltorashka },
-            { "ДРАТУТИ", TokenType.Dratuti },
-            { "ЦИФЕРКА", TokenType.Ciferka },
-            { "ПШИК", TokenType.Pshik },
-            { "ХВАТИТ", TokenType.Hvatit },
-            { "БАЗА", TokenType.Baza },
-            { "ЕСЛИ", TokenType.Esli },
-            { "ТО", TokenType.To },
-            { "ИНАЧЕ", TokenType.Inache },
-            { "ЦИКЛ", TokenType.Cikl },
-            { "И", TokenType.And },
-            { "ИЛИ", TokenType.Or },
-            { "НЕ", TokenType.Not },
-            { "ПИ", TokenType.PI },
-            { "ЕШКА", TokenType.EULER },
-            { "МОДУЛЬ", TokenType.Module },
-            { "МИНИМУМ", TokenType.Minimum },
-            { "МАКСИМУМ", TokenType.Maximum },
-            { "СТЕПЕНЬ", TokenType.Pow },
-            { "КОРЕНЬ", TokenType.Sqrt },
-            { "СИНУС", TokenType.Sinus },
-            { "КОСИНУС", TokenType.Cosinus },
-            { "ТАНГЕНС", TokenType.Tangens },
+            {
+                "ПОЕХАЛИ", TokenType.Poehali
+            },
+            {
+                "ФИНАЛОЧКА", TokenType.Finalochka
+            },
+            {
+                "ПРОКРАСТИНИРУЕМ", TokenType.Prokrastiniryem
+            },
+            {
+                "ВБРОС", TokenType.Vbros
+            },
+            {
+                "ВЫБРОС", TokenType.Vybros
+            },
+            {
+                "ПАЧКА", TokenType.Pachka
+            },
+            {
+                "ЦИТАТА", TokenType.Citata
+            },
+            {
+                "ХАЙП", TokenType.Hype
+            },
+            {
+                "КРИНЖ", TokenType.Cringe
+            },
+            {
+                "РАСКЛАД", TokenType.Rasklad
+            },
+            {
+                "ПОЛТОРАШКА", TokenType.Poltorashka
+            },
+            {
+                "ДРАТУТИ", TokenType.Dratuti
+            },
+            {
+                "ЦИФЕРКА", TokenType.Ciferka
+            },
+            {
+                "ПШИК", TokenType.Pshik
+            },
+            {
+                "ХВАТИТ", TokenType.Hvatit
+            },
+            {
+                "ПРОДОЛЖАЕМ", TokenType.Prodolzhaem
+            },
+            {
+                "БАЗА", TokenType.Baza
+            },
+            {
+                "ЕСЛИ", TokenType.Esli
+            },
+            {
+                "ТО", TokenType.To
+            },
+            {
+                "ИНАЧЕ", TokenType.Inache
+            },
+            {
+                "ЦИКЛ", TokenType.Cikl
+            },
+            {
+                "И", TokenType.And
+            },
+            {
+                "ИЛИ", TokenType.Or
+            },
+            {
+                "НЕ", TokenType.Not
+            },
+            {
+                "ПИ", TokenType.PI
+            },
+            {
+                "ЕШКА", TokenType.EULER
+            },
+            {
+                "МОДУЛЬ", TokenType.Module
+            },
+            {
+                "МИНИМУМ", TokenType.Minimum
+            },
+            {
+                "МАКСИМУМ", TokenType.Maximum
+            },
+            {
+                "СТЕПЕНЬ", TokenType.Pow
+            },
+            {
+                "КОРЕНЬ", TokenType.Sqrt
+            },
+            {
+                "СИНУС", TokenType.Sinus
+            },
+            {
+                "КОСИНУС", TokenType.Cosinus
+            },
+            {
+                "ТАНГЕНС", TokenType.Tangens
+            },
+        };
+
+        private static readonly Dictionary<char, char> SimpleEscapes = new()
+        {
+            {
+                'n', '\n'
+            },
+            {
+                't', '\t'
+            },
+            {
+                '"', '\"'
+            },
+            {
+                '\\', '\\'
+            },
+        };
+
+        private static readonly Dictionary<char, char> CaretEscapes = new()
+        {
+            {
+                '@', '\0'
+            },
+            {
+                'A', '\x01'
+            },
+            {
+                'B', '\x02'
+            },
+            {
+                'C', '\x03'
+            },
+            {
+                'D', '\x04'
+            },
+            {
+                'E', '\x05'
+            },
+            {
+                'F', '\x06'
+            },
+            {
+                'G', '\x07'
+            },
+            {
+                'H', '\x08'
+            },
+            {
+                'I', '\x09'
+            },
+            {
+                'J', '\x0A'
+            },
+            {
+                'K', '\x0B'
+            },
+            {
+                'L', '\x0C'
+            },
+            {
+                'M', '\x0D'
+            },
+            {
+                'N', '\x0E'
+            },
+            {
+                'O', '\x0F'
+            },
+            {
+                'P', '\x10'
+            },
+            {
+                'Q', '\x11'
+            },
+            {
+                'R', '\x12'
+            },
+            {
+                'S', '\x13'
+            },
+            {
+                'T', '\x14'
+            },
+            {
+                'U', '\x15'
+            },
+            {
+                'V', '\x16'
+            },
+            {
+                'W', '\x17'
+            },
+            {
+                'X', '\x18'
+            },
+            {
+                'Y', '\x19'
+            },
+            {
+                'Z', '\x1A'
+            },
+            {
+                '[', '\x1B'
+            },
+            {
+                '\\', '\x1C'
+            },
+            {
+                ']', '\x1D'
+            },
+            {
+                '^', '\x1E'
+            },
+            {
+                '_', '\x1F'
+            },
+            {
+                '?', '\x7F'
+            },
         };
 
         private readonly TextScanner scanner;
@@ -60,16 +248,17 @@ namespace Lexer
             }
 
             char ch = scanner.Peek();
-
             if (char.IsLetter(ch) || ch == '_')
             {
                 return ParseIdentifierOrKeyword();
             }
-            else if (char.IsAsciiDigit(ch) || ((ch == '-' || ch == '+' || ch == '.') && char.IsAsciiDigit(scanner.Peek(1))))
+
+            if (char.IsAsciiDigit(ch) || ((ch == '-' || ch == '+' || ch == '.') && char.IsAsciiDigit(scanner.Peek(1))))
             {
                 return ParseNumericLiteral();
             }
-            else if (ch == '"')
+
+            if (ch == '"')
             {
                 return ParseStringLiteral();
             }
