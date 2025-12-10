@@ -253,7 +253,7 @@ namespace Lexer
                 return ParseIdentifierOrKeyword();
             }
 
-            if (char.IsAsciiDigit(ch) || ((ch == '-' || ch == '+' || ch == '.') && char.IsAsciiDigit(scanner.Peek(1))))
+            if (char.IsAsciiDigit(ch))
             {
                 return ParseNumericLiteral();
             }
@@ -296,16 +296,6 @@ namespace Lexer
         {
             StringBuilder value = new StringBuilder();
             bool hasDigits = false;
-
-            if (scanner.Peek() == '-')
-            {
-                value.Append(scanner.Peek());
-                scanner.Advance();
-            }
-            else if (scanner.Peek() == '+')
-            {
-                scanner.Advance();
-            }
 
             while (char.IsAsciiDigit(scanner.Peek()))
             {
