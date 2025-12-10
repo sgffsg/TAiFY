@@ -28,7 +28,6 @@ using IToken = Antlr4.Runtime.IToken;
 /// <see cref="VaibikParser"/>.
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.13.2")]
-[System.CLSCompliant(false)]
 public interface IVaibikParserListener : IParseTreeListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="VaibikParser.program"/>.
