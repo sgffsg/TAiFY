@@ -34,7 +34,7 @@ namespace Parser
         {
             if (arguments.Count != 1)
             {
-                throw new ArgumentException($"Встроенная функция МОДУЛЬ требует 1 аргумент, получено: {arguments.Count}");
+                throw new ArgumentException($"Builtin function МОДУЛЬ requires exactly 1 argument, received: {arguments.Count}");
             }
 
             return Math.Abs(arguments[0]);

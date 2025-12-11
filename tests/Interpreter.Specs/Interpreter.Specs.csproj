@@ -10,11 +10,8 @@
 
   <ItemGroup>
     <Compile Remove="Features\**" />
-    <Compile Remove="Steps\**" />
     <EmbeddedResource Remove="Features\**" />
-    <EmbeddedResource Remove="Steps\**" />
     <None Remove="Features\**" />
-    <None Remove="Steps\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +27,11 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Execution\Execution.csproj" />
+    <ProjectReference Include="..\..\src\Parser\Parser.csproj" />
   </ItemGroup>
 
 </Project>
