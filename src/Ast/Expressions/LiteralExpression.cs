@@ -5,7 +5,7 @@
 /// </summary>
 public sealed class LiteralExpression : Expression
 {
-    public LiteralExpression(object value, string type)
+    public LiteralExpression(double value, string type)
     {
         Value = value;
         Type = type;
@@ -14,7 +14,7 @@ public sealed class LiteralExpression : Expression
     /// <summary>
     /// Значение литерала.
     /// </summary>
-    public object Value { get; }
+    public double Value { get; }
 
     /// <summary>
     /// Тип литерала.
