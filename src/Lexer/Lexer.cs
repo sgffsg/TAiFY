@@ -72,6 +72,9 @@ namespace Lexer
                 "ЦИКЛ", TokenType.Cikl
             },
             {
+                "ПОКА", TokenType.Poka
+            },
+            {
                 "И", TokenType.And
             },
             {
@@ -272,7 +275,7 @@ namespace Lexer
             while (!scanner.IsEnd())
             {
                 char c = scanner.Peek();
-                if (char.IsLetter(c) || char.IsAsciiDigit(c) || c == '_')
+                if (char.IsLetterOrDigit(c) || c == '_')
                 {
                     value.Append(c);
                     scanner.Advance();
@@ -547,18 +550,6 @@ namespace Lexer
         }
 
         /// <summary>
-        /// Пропускает пробельные символы и комментарии, пока не встретит лексему.
-        /// </summary>
-        private void SkipWhiteSpacesAndComments()
-        {
-            do
-            {
-                SkipWhiteSpaces();
-            }
-            while (TryParseMultilineComment() || TryParseSingleLineComment());
-        }
-
-        /// <summary>
         ///  Пропускает пробельные символы, пока не встретит иной символ.
         /// </summary>
         private void SkipWhiteSpaces()
@@ -569,74 +560,57 @@ namespace Lexer
             }
         }
 
-        private bool TryParseMultilineComment()
+        private void SkipWhiteSpacesAndComments()
         {
-            if (scanner.Peek() == '(')
+            while (true)
             {
-                string potentialStart = "ПОЯСНИТЕЛЬНАЯ-БРИГАДА:";
+                SkipWhiteSpaces();
 
-                for (int i = 0; i < potentialStart.Length; i++)
+                if (!TryParseComment())
                 {
-                    if (scanner.Peek(i) != potentialStart[i])
-                    {
-                        return false;
-                    }
+                    break;
                 }
-
-                for (int i = 0; i < potentialStart.Length; i++)
-                {
-                    scanner.Advance();
-                }
-
-                StringBuilder endSequence = new StringBuilder();
-                bool inComment = true;
-
-                while (!scanner.IsEnd() && inComment)
-                {
-                    char c = scanner.Peek();
-                    scanner.Advance();
-                    endSequence.Append(c);
-
-                    if (endSequence.Length > 20)
-                    {
-                        endSequence.Remove(0, 1);
-                    }
-
-                    if (endSequence.ToString().EndsWith("ФИНАЛОЧКА-КОММЕНТАРИЯ)"))
-                    {
-                        inComment = false;
-                    }
-                }
-
-                return true;
             }
-
-            return false;
         }
 
-        private bool TryParseSingleLineComment()
+        /// <summary>
+        /// Формат комментария: (ПОЯСНИТЕЛЬНАЯ-БРИГАДА: ...)
+        /// </summary>
+        private bool TryParseComment()
         {
-            if (scanner.Peek() == '(')
+            int startPos = scanner.GetPosition();
+
+            if (scanner.Peek() != '(')
             {
-                string potentialStart = "ПОЯСНИТЕЛЬНАЯ-БРИГАДА:";
-
-                for (int i = 0; i < potentialStart.Length; i++)
-                {
-                    if (scanner.Peek(i) != potentialStart[i])
-                    {
-                        return false;
-                    }
-                }
-
-                while (!scanner.IsEnd() && scanner.Peek() != '\n' && scanner.Peek() != '\r')
-                {
-                    scanner.Advance();
-                }
-
-                return true;
+                return false;
             }
 
-            return false;
+            scanner.Advance();
+
+            string commentStart = "ПОЯСНИТЕЛЬНАЯ-БРИГАДА:";
+            for (int i = 0; i < commentStart.Length; i++)
+            {
+                if (scanner.IsEnd() || scanner.Peek() != commentStart[i])
+                {
+                    scanner.SetPosition(startPos);
+                    return false;
+                }
+
+                scanner.Advance();
+            }
+
+            while (!scanner.IsEnd())
+            {
+                if (scanner.Peek() == ')')
+                {
+                    scanner.Advance();
+                    return true;
+                }
+
+                scanner.Advance();
+            }
+
+            return true;
         }
     }
 }
