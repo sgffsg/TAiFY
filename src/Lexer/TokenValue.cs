@@ -16,6 +16,16 @@
                 _ => throw new NotImplementedException()
             };
 
+        public double ToDouble() =>
+            value switch
+            {
+                string s => double.Parse(s),
+                double d => d,
+                int i => i,
+                bool b => Convert.ToDouble(b),
+                _ => throw new NotImplementedException()
+            };
+
         public decimal ToDecimal() =>
             value switch
             {

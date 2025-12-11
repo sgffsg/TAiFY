@@ -250,7 +250,8 @@ public class LexerTest
             },
             {
                 "-456", [
-                    new Token(TokenType.NumericLiteral, new TokenValue(-456))
+                    new Token(TokenType.Minus),
+                    new Token(TokenType.NumericLiteral, new TokenValue(456))
                 ]
             },
             {
@@ -265,7 +266,8 @@ public class LexerTest
             },
             {
                 "-2.5", [
-                    new Token(TokenType.NumericLiteral, new TokenValue(-2.5m))
+                    new Token(TokenType.Minus),
+                    new Token(TokenType.NumericLiteral, new TokenValue(2.5m))
                 ]
             },
             {
@@ -405,12 +407,14 @@ public class LexerTest
             },
             {
                 "+5", [
+                    new Token(TokenType.Plus),
                     new Token(TokenType.NumericLiteral, new TokenValue(5m))
                 ]
             },
             {
                 "-10", [
-                    new Token(TokenType.NumericLiteral, new TokenValue(-10m))
+                    new Token(TokenType.Minus),
+                    new Token(TokenType.NumericLiteral, new TokenValue(10m))
                 ]
             },
         };

@@ -1,6 +1,4 @@
-# Шаблон проекта на C# для студентов
-
-Шаблон предназначен для .NET 8 (C# 12): https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+# Интерпретатор языка Vaibik
 
 ## Структура проекта на C#
 
@@ -13,20 +11,33 @@
 
 Код на C# компилируется в MSIL — код виртуальной машины платформы .NET. Такой код сохраняется в файлах `.dll` для всех платформ, где работает .NET.
 
-Структура проекта создана такими командами:
+## Сборка
 
+Сборка консольной утилитой dotnet из .NET SDK:
 ```bash
-# Создаём Solution (основной проект).
-dotnet new sln
+# Очистка решения.
+dotnet clean
 
-# Создаём библиотеку ExampleLib в каталоге src/ и добавляем её в Solution
-dotnet new classlib -o src/ExampleLib
-dotnet sln add src/ExampleLib/
+# Сборка
+dotnet build
 
-# Создаём проект модульных тестов на тестовом фреймворке XUnit
-dotnet new xunit -o tests/ExampleLib.UnitTests
-dotnet sln add tests/ExampleLib.UnitTests/
-
-# Добавляем проекту тестов ссылку на проект
-dotnet add tests/ExampleLib.UnitTests/ reference src/ExampleLib/
+# Запуск тестов
+dotnet test
 ```
+
+## Архитектура
+
+Проект написан на C# 12 и .NET 8.
+
+Взаимосвязь модулей:
+
+## Покрытие тестами
+
+В проекте есть:
+
+Приёмочные интеграционные тесты: Interpreter.IntegrationTests
+Тесты модуля Grammar, содержащего валидатор синтаксиса на ANTLR4: Grammar.UnitTests
+Тесты модуля Lexer, содержащего лексический анализатор: Lexemes.UnitTests
+
+## Лицензия
+- Исходный код интерпретатора доступен под лицензией MIT.
