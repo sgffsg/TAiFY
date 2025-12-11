@@ -44,7 +44,5 @@ public interface IAstVisitor
 
     void Visit(VariableDeclaration d);
 
-    void Visit(GlobalVariableDeclaration d);
-
     void Visit(ConstantDeclaration d);
 }

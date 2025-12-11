@@ -4,6 +4,8 @@ public class Scope
 {
     private readonly Dictionary<string, double> variables = [];
 
+    public bool ContainsVariable(string name) => variables.ContainsKey(name);
+
     /// <summary>
     /// Читает переменную из этой области видимости.
     /// Возвращает false, если переменная не объявлена в этой области видимости.
