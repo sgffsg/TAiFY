@@ -36,6 +36,8 @@ public interface IAstVisitor
 
     void Visit(BlockStatement s);
 
+    void Visit(VariableDeclarationStatement s);
+
     void Visit(ParameterDeclaration d);
 
     void Visit(FunctionDeclaration d);
