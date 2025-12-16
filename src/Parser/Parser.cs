@@ -10,11 +10,16 @@ public class Parser
     private readonly Context context;
     private readonly IEnvironment environment;
 
-    private Parser(Context context, IEnvironment environment, string code)
+    public Parser(Context context, IEnvironment environment, string code)
     {
         this.context = context;
         this.environment = environment;
         tokens = new TokenStream(code);
+    }
+
+    public void ParseProgram()
+    {
+
     }
 
     /// <summary>

@@ -10,6 +10,7 @@ namespace Interpreter.Specs.Steps;
 public class InterpreterSteps
 {
     private string? programCode;
+    private Context? context;
     private FakeEnvironment? fakeEnvironment;
     private Parser.Parser? parser;
     private Exception? executionException;
@@ -17,12 +18,13 @@ public class InterpreterSteps
     [Given(@"я запустил программу:")]
     public void GivenЯЗапустилПрограмму(string multilineText)
     {
+        context = new();
         programCode = multilineText;
-        fakeEnvironment = new FakeEnvironment();
+        fakeEnvironment = new();
 
         try
         {
-            parser = new Parser.Parser(fakeEnvironment, programCode);
+            parser = new Parser.Parser(context, fakeEnvironment, programCode);
         }
         catch (Exception ex)
         {
