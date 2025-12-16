@@ -5,72 +5,94 @@
 /// </summary>
 public class Context
 {
-    private Scope? currentScope;
+    private readonly Stack<Scope> scopes = new();
+    private readonly Scope globalScope = new();
 
     public Context()
     {
-        currentScope = new Scope();
-    }
-
-    public Context(Scope scope)
-    {
-        currentScope = scope;
+        scopes.Push(globalScope);
     }
 
     /// <summary>
     /// Добавляет новую область видимости в стек.
     /// </summary>
-    public Scope PushScope()
-    {
-        currentScope = new Scope(currentScope);
-        return currentScope;
-    }
-
-    /// <summary>
-    /// Добавляет указанную область видимости в стек.
-    /// </summary>
     public void PushScope(Scope scope)
     {
-        currentScope = scope;
+        scopes.Push(scope);
+    }
+
+    public void PopScope()
+    {
+        if (scopes.Count > 1)
+        {
+            scopes.Pop();
+        }
     }
 
     /// <summary>
-    /// Удаляет текущую область видимости из стека (возвращается к родительской).
+    /// Возвращает текущую область видимости.
     /// </summary>
-    public void PopScope()
+    public Scope GetCurrentScope()
     {
-        if (currentScope == null)
+        return scopes.Peek();
+    }
+
+    /// <summary>
+    /// Возвращает значение переменной или константы.
+    /// </summary>
+    public double GetValue(string name)
+    {
+        foreach (Scope scope in scopes)
         {
-            throw new InvalidOperationException("Cannot pop scope - no scope available");
+            if (scope.TryGetVariable(name, out double variable))
+            {
+                return variable;
+            }
+
+            if (scope.TryGetConstant(name, out double constant))
+            {
+                return constant;
+            }
         }
 
-        currentScope = currentScope.GetRoot();
+        throw new ArgumentException($"Переменная или константа '{name}' не определена");
+    }
+
+    /// <summary>
+    /// Присваивает (изменяет) значение существующей переменной.
+    /// Поиск ведется от текущей области к глобальной.
+    /// </summary>
+    public void AssignVariable(string name, double value)
+    {
+        foreach (Scope scope in scopes)
+        {
+            if (scope.HasVariable(name))
+            {
+                scope.DefineVariable(name, value);
+                return;
+            }
+
+            if (scope.HasConstant(name))
+            {
+                throw new InvalidOperationException($"Невозможно изменить значение константы '{name}'");
+            }
+        }
+
+        throw new ArgumentException($"Переменная '{name}' не определена");
     }
 
     /// <summary>
     /// Определяет переменную в текущей области видимости.
     /// </summary>
-    public void DefineVariable(string name, double value)
+    public void DefineVariable(string name, double value = 0)
     {
-        if (currentScope == null)
+        Scope currentScope = scopes.Peek();
+        if (currentScope.Exists(name))
         {
-            throw new InvalidOperationException("No scope available");
+            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
         }
 
         currentScope.DefineVariable(name, value);
-    }
-
-    /// <summary>
-    /// Присваивает значение переменной.
-    /// </summary>
-    public void AssignVariable(string name, double value)
-    {
-        if (currentScope == null)
-        {
-            throw new InvalidOperationException("No scope available");
-        }
-
-        currentScope.AssignVariable(name, value);
     }
 
     /// <summary>
@@ -78,114 +100,90 @@ public class Context
     /// </summary>
     public void DefineConstant(string name, double value)
     {
-        if (currentScope == null)
+        Scope currentScope = scopes.Peek();
+        if (currentScope.Exists(name))
         {
-            throw new InvalidOperationException("No scope available");
+            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
         }
 
-        currentScope.DefineConstant(name, value);
+        currentScope.DeclareConstant(name, value);
     }
 
     /// <summary>
-    /// Получает значение переменной или константы.
+    /// Определяет константу в глобальной области видимости.
     /// </summary>
-    public double GetValue(string name)
+    public void DefineGlobalConstant(string name, double value)
     {
-        if (currentScope == null)
+        if (globalScope.Exists(name))
         {
-            throw new InvalidOperationException("No scope available");
+            throw new ArgumentException($"Константа '{name}' уже определена в глобальной области");
         }
 
-        return currentScope.GetValue(name);
-    }
-
-    /// <summary>
-    /// Проверяет, существует ли переменная или константа.
-    /// </summary>
-    public bool HasValue(string name)
-    {
-        if (currentScope == null)
-        {
-            return false;
-        }
-
-        return currentScope.HasValue(name);
-    }
-
-    /// <summary>
-    /// Проверяет, является ли переменная константой.
-    /// </summary>
-    public bool IsConstant(string name)
-    {
-        if (currentScope == null)
-        {
-            return false;
-        }
-
-        return currentScope.IsConstant(name);
-    }
-
-    /// <summary>
-    /// Проверяет, существует ли переменная или константа только в текущей области видимости (без подъема вверх).
-    /// </summary>
-    public bool HasLocalValue(string name)
-    {
-        if (currentScope == null)
-        {
-            return false;
-        }
-
-        return currentScope.HasLocalValue(name);
-    }
-
-    /// <summary>
-    /// Получает текущую область видимости.
-    /// </summary>
-    public Scope GetCurrentScope()
-    {
-        if (currentScope == null)
-        {
-            throw new InvalidOperationException("No scope available");
-        }
-
-        return currentScope;
+        globalScope.DeclareConstant(name, value);
     }
 
     /// <summary>
     /// Определяет функцию в текущей области видимости.
+    /// </summary>
     public void DefineFunction(string name)
     {
-        if (currentScope == null)
+        Scope currentScope = scopes.Peek();
+
+        if (currentScope.Exists(name))
         {
-            throw new InvalidOperationException("No scope available");
+            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
         }
 
         currentScope.DefineFunction(name);
     }
 
     /// <summary>
-    /// Проверяет, является ли имя функцией.
+    /// Регистрирует процедуру в текущей области видимости.
     /// </summary>
-    public bool IsFunction(string name)
+    public void RegisterProcedure(string name)
     {
-        if (currentScope == null)
+        Scope currentScope = scopes.Peek();
+
+        if (currentScope.Exists(name))
         {
-            return false;
+            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
         }
 
-        return currentScope.IsFunction(name);
+        currentScope.RegisterProcedure(name);
     }
 
     /// <summary>
-    /// Проверяет, является ли имя функцией только в текущей области видимости (без подъема вверх).
+    /// Проверяет существование идентификатора в текущей и родительских областях.
     /// </summary>
-    public bool IsFunctionLocal(string name)
+    public bool Exists(string name)
     {
-        if (currentScope == null)
+        foreach (Scope scope in scopes)
         {
-            return false;
+            if (scope.Exists(name))
+            {
+                return true;
+            }
         }
 
-        return currentScope.IsFunctionLocal(name);
+        return false;
+    }
+
+    /// <summary>
+    /// Проверяет существование идентификатора только в текущей области видимости.
+    /// </summary>
+    public bool ExistsInCurrentScope(string name)
+    {
+        return scopes.Peek().Exists(name);
+    }
+
+    /// <summary>
+    /// Очищает текущую область видимости (кроме глобальной).
+    /// </summary>
+    public void CleanCurrentScope()
+    {
+        if (scopes.Count > 1)
+        {
+            scopes.Peek().Clean();
+        }
     }
 }

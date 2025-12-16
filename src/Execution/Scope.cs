@@ -1,4 +1,6 @@
-﻿namespace Execution;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Execution;
 
 /// <summary>
 /// Представляет область видимости для выполнения программы.
@@ -7,158 +9,103 @@
 public class Scope
 {
     private readonly Dictionary<string, double> variables = new();
-    private readonly HashSet<string> constants = new();
+    private readonly Dictionary<string, double> constants = new();
     private readonly HashSet<string> functions = new();
-    private readonly Scope? root;
+    private readonly HashSet<string> procedures = new();
 
-    public Scope(Scope? root = null)
+    private readonly Scope? parentScope;
+
+    public Scope()
     {
-        this.root = root;
     }
 
-    /// <summary>
-    /// Определяет переменную с начальным значением в текущей области видимости.
-    /// </summary>
-    public void DefineVariable(string name, double value)
+    public void DefineVariable(string name, double initialValue = 0)
     {
-        if (variables.ContainsKey(name))
+        if (variables.ContainsKey(name) && constants.ContainsKey(name))
         {
-            throw new InvalidOperationException($"Variable '{name}' is already declared in this scope");
+            throw new InvalidOperationException($"Идентификатор '{name}' уже существует.");
         }
 
-        variables[name] = value;
+        variables[name] = initialValue;
     }
 
-    /// <summary>
-    /// Присваивает значение переменной. Ищет переменную в текущей области и родительских областях.
-    /// </summary>
-    public void AssignVariable(string name, double value)
-    {
-        if (constants.Contains(name))
-        {
-            throw new InvalidOperationException($"Cannot assign to constant '{name}'");
-        }
-
-        if (variables.ContainsKey(name))
-        {
-            variables[name] = value;
-            return;
-        }
-
-        if (root != null)
-        {
-            root.AssignVariable(name, value);
-            return;
-        }
-
-        throw new InvalidOperationException($"Variable '{name}' is not declared");
-    }
-
-    /// <summary>
-    /// Определяет константу со значением в текущей области видимости.
-    /// </summary>
-    public void DefineConstant(string name, double value)
-    {
-        if (variables.ContainsKey(name) || constants.Contains(name))
-        {
-            throw new InvalidOperationException($"Constant '{name}' is already declared in this scope");
-        }
-
-        constants.Add(name);
-        variables[name] = value;
-    }
-
-    /// <summary>
-    /// Получает значение переменной или константы. Ищет в текущей области и родительских областях.
-    /// </summary>
-    public double GetValue(string name)
+    public double GetVariable(string name)
     {
         if (variables.TryGetValue(name, out double value))
         {
             return value;
         }
 
-        if (root != null)
+        throw new KeyNotFoundException($"Переменная '{name}' не найдена.");
+    }
+
+    public bool TryGetVariable(string name, out double value)
+        => variables.TryGetValue(name, out value);
+
+    public bool HasVariable(string name) => variables.ContainsKey(name);
+
+    public void DeclareConstant(string name, double value)
+    {
+        if (constants.ContainsKey(name) || variables.ContainsKey(name))
         {
-            return root.GetValue(name);
+            throw new InvalidOperationException($"Идентификатор '{name}' уже существует");
         }
 
-        throw new InvalidOperationException($"Variable or constant '{name}' is not declared");
+        constants[name] = value;
     }
 
-    /// <summary>
-    /// Проверяет, существует ли переменная или константа в текущей области или родительских областях.
-    /// </summary>
-    public bool HasValue(string name)
+    public double GetConstant(string name)
     {
-        if (variables.ContainsKey(name))
+        if (constants.TryGetValue(name, out double value))
         {
-            return true;
+            return value;
         }
 
-        return root?.HasValue(name) ?? false;
+        throw new KeyNotFoundException($"Константа '{name}' не найдена");
     }
 
-    /// <summary>
-    /// Получает родительскую область видимости.
-    /// </summary>
-    public Scope? GetRoot()
-    {
-        return root;
-    }
+    public bool TryGetConstant(string name, out double value)
+        => constants.TryGetValue(name, out value);
 
-    /// <summary>
-    /// Проверяет, является ли переменная константой.
-    /// </summary>
-    public bool IsConstant(string name)
-    {
-        if (constants.Contains(name))
-        {
-            return true;
-        }
+    public bool HasConstant(string name) => constants.ContainsKey(name);
 
-        return root?.IsConstant(name) ?? false;
-    }
-
-    /// <summary>
-    /// Проверяет, существует ли переменная или константа только в текущей области видимости (без подъема вверх).
-    /// </summary>
-    public bool HasLocalValue(string name)
-    {
-        return variables.ContainsKey(name);
-    }
-
-    /// <summary>
-    /// Определяет функцию в текущей области видимости.
-    /// </summary>
     public void DefineFunction(string name)
     {
-        if (variables.ContainsKey(name) || constants.Contains(name) || functions.Contains(name))
+        if (functions.Contains(name) || procedures.Contains(name))
         {
-            throw new InvalidOperationException($"Function '{name}' is already declared");
+            throw new InvalidOperationException($"Идентификатор '{name}' уже существует");
         }
 
         functions.Add(name);
     }
 
-    /// <summary>
-    /// Проверяет, является ли имя функцией.
-    /// </summary>
-    public bool IsFunction(string name)
+    public bool HasFunction(string name) => functions.Contains(name);
+
+    public void RegisterProcedure(string name)
     {
-        if (functions.Contains(name))
+        if (procedures.Contains(name) || functions.Contains(name))
         {
-            return true;
+            throw new InvalidOperationException($"Идентификатор '{name}' уже существует");
         }
 
-        return root?.IsFunction(name) ?? false;
+        procedures.Add(name);
     }
 
-    /// <summary>
-    /// Проверяет, является ли имя функцией только в текущей области видимости (без подъема вверх).
-    /// </summary>
-    public bool IsFunctionLocal(string name)
+    public bool HasProcedure(string name) => procedures.Contains(name);
+
+    public bool Exists(string name)
     {
-        return functions.Contains(name);
+        return variables.ContainsKey(name) ||
+               constants.ContainsKey(name) ||
+               functions.Contains(name) ||
+               procedures.Contains(name);
+    }
+
+    public void Clean()
+    {
+        variables.Clear();
+        constants.Clear();
+        procedures.Clear();
+        functions.Clear();
     }
 }
