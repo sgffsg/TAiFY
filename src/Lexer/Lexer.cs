@@ -348,7 +348,7 @@ namespace Lexer
                 return new Token(TokenType.Error, new TokenValue("No digits in the number"));
             }
 
-            if (decimal.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal resultNumber))
+            if (double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double resultNumber))
             {
                 return new Token(TokenType.NumericLiteral, new TokenValue(resultNumber));
             }

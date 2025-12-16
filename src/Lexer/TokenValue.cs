@@ -4,7 +4,9 @@
     {
         private readonly object value;
 
-        public TokenValue(object value) => this.value = value;
+        public TokenValue(string value) => this.value = value;
+
+        public TokenValue(double value) => this.value = value;
 
         public override string ToString() =>
             value switch

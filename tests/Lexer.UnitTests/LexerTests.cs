@@ -245,7 +245,7 @@ public class LexerTest
         {
             {
                 "123", [
-                    new Token(TokenType.NumericLiteral, new TokenValue(123m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(123d))
                 ]
             },
             {
@@ -261,18 +261,18 @@ public class LexerTest
             },
             {
                 "3.14", [
-                    new Token(TokenType.NumericLiteral, new TokenValue(3.14m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(3.14))
                 ]
             },
             {
                 "-2.5", [
                     new Token(TokenType.Minus),
-                    new Token(TokenType.NumericLiteral, new TokenValue(2.5m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(2.5))
                 ]
             },
             {
                 "0.0", [
-                    new Token(TokenType.NumericLiteral, new TokenValue(0.0m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(0.0))
                 ]
             },
             {
@@ -408,13 +408,13 @@ public class LexerTest
             {
                 "+5", [
                     new Token(TokenType.Plus),
-                    new Token(TokenType.NumericLiteral, new TokenValue(5m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(5))
                 ]
             },
             {
                 "-10", [
                     new Token(TokenType.Minus),
-                    new Token(TokenType.NumericLiteral, new TokenValue(10m))
+                    new Token(TokenType.NumericLiteral, new TokenValue(10))
                 ]
             },
         };
@@ -498,7 +498,7 @@ public class LexerTest
                 "переменная = 42 + переменная2;", [
                     new Token(TokenType.Identifier, new TokenValue("переменная")),
                     new Token(TokenType.Assignment),
-                    new Token(TokenType.NumericLiteral, new TokenValue(42m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(42)),
                     new Token(TokenType.Plus),
                     new Token(TokenType.Identifier, new TokenValue("переменная2")),
                     new Token(TokenType.Semicolon)
@@ -547,7 +547,7 @@ public class LexerTest
                 "массив[5]", [
                     new Token(TokenType.Identifier, new TokenValue("массив")),
                     new Token(TokenType.OpenSquareBracket),
-                    new Token(TokenType.NumericLiteral, new TokenValue(5m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(5)),
                     new Token(TokenType.CloseSquareBracket)
                 ]
             },
@@ -577,7 +577,7 @@ public class LexerTest
                     new Token(TokenType.OpenParenthesis),
                     new Token(TokenType.Identifier, new TokenValue("счетчик")),
                     new Token(TokenType.LessThan),
-                    new Token(TokenType.NumericLiteral, new TokenValue(10m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(10)),
                     new Token(TokenType.CloseParenthesis),
                     new Token(TokenType.OpenCurlyBrace),
                     new Token(TokenType.CloseCurlyBrace)
@@ -588,7 +588,7 @@ public class LexerTest
                     new Token(TokenType.Baza),
                     new Token(TokenType.Identifier, new TokenValue("константа")),
                     new Token(TokenType.Assignment),
-                    new Token(TokenType.NumericLiteral, new TokenValue(100m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(100)),
                     new Token(TokenType.Semicolon)
                 ]
             },
@@ -598,7 +598,7 @@ public class LexerTest
                     new Token(TokenType.ColonTypeIndication),
                     new Token(TokenType.Ciferka),
                     new Token(TokenType.Assignment),
-                    new Token(TokenType.NumericLiteral, new TokenValue(5m)),
+                    new Token(TokenType.NumericLiteral, new TokenValue(5)),
                     new Token(TokenType.Semicolon)
                 ]
             },
