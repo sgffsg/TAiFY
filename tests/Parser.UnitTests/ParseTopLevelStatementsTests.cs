@@ -41,6 +41,23 @@ public class ParseTopLevelStatementsTests
         Assert.Throws<ArgumentException>(() => parser.ParseProgram());
     }
 
+    [Fact]
+    public void Parse_multiple_variable_declaration()
+    {
+        string code = @"ЦИФЕРКА x = 5;ПОЛТОРАШКА y = 5.1;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        Assert.True(context.Exists("x"));
+        Assert.Equal(5, context.GetValue("x"));
+
+        Assert.True(context.Exists("y"));
+        Assert.Equal(5.1, context.GetValue("y"));
+    }
+
     private void RunBaseTest(string code, double[] inputs, double[] expected)
     {
         Context context = new();
