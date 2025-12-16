@@ -45,7 +45,33 @@ public class Parser
     private void ParseTopLevelItem()
     {
         Token token = tokens.Peek();
-        ParseVariableDeclaration();
+        switch(token.Type)
+        {
+            case TokenType.Baza:
+                ParseConstantDeclaration();
+                break;
+            default:
+                ParseVariableDeclaration();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// constantDeclaration =
+    ///     "БАЗА", typeName, identifier, "=", expression, ";".
+    /// </summary>
+    private void ParseConstantDeclaration()
+    {
+        Match(TokenType.Baza);
+
+        string typeName = ParseTypeName();
+        string identifier = ParseIdentifier();
+
+        Match(TokenType.Assignment);
+        double value = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        context.DefineConstant(identifier, value);
     }
 
     /// <summary>
@@ -61,6 +87,19 @@ public class Parser
         Match(TokenType.Semicolon);
 
         context.DefineVariable(identifier, value);
+    }
+
+    /// <summary>
+    /// variableAssignment = identifier, "=", expression ;.
+    /// </summary>
+    private void ParseVariableAssignment()
+    {
+        string identifier = ParseIdentifier();
+        Match(TokenType.Assignment);
+        double value = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        context.AssignVariable(identifier, value);
     }
 
     /// <summary>
