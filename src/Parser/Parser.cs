@@ -18,16 +18,12 @@ public class Parser
 
     public void ParseProgram()
     {
-    }
-
-    public double ExecuteExpression()
-    {
-        return ParseExpression();
+        ParseExpression();
     }
 
     public List<double> ExecuteExpressionToList()
     {
-        return new List<double>() { ParseExpression() };
+        return new() { ParseExpression() };
     }
 
     /// <summary>
