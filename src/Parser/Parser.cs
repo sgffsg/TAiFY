@@ -1,5 +1,4 @@
 ﻿using Execution;
-
 using Lexer;
 
 namespace Parser;
@@ -34,9 +33,9 @@ public class Parser
     /// <summary>
     /// Парсит список значений, разделенных запятыми.
     /// </summary>
-    private List<decimal> ParseValueList()
+    private List<double> ParseValueList()
     {
-        List<decimal> values = new List<decimal> { ParseExpression() };
+        List<double> values = new List<double> { ParseExpression() };
         while (tokens.Peek().Type == TokenType.Comma)
         {
             tokens.Advance();
@@ -50,7 +49,7 @@ public class Parser
     /// Выполняет парсинг одного выражения:
     ///     expression = logicalOrExpression.
     /// </summary>
-    private decimal ParseExpression()
+    private double ParseExpression()
     {
         return ParseLogicalOrExpression();
     }
@@ -59,13 +58,13 @@ public class Parser
     /// Выполняет парсинг выражения ИЛИ:
     ///     logicalOrExpression = logicalAndExpression, { "ИЛИ", logicalAndExpression }.
     /// </summary>
-    private decimal ParseLogicalOrExpression()
+    private double ParseLogicalOrExpression()
     {
-        decimal left = ParseLogicalAndExpression();
+        double left = ParseLogicalAndExpression();
         while (tokens.Peek().Type == TokenType.Or)
         {
             tokens.Advance();
-            decimal right = ParseLogicalAndExpression();
+            double right = ParseLogicalAndExpression();
             left = (left != 0 || right != 0) ? 1 : 0;
         }
 
@@ -76,13 +75,13 @@ public class Parser
     /// Выполняет парсинг выражения И:
     ///     logicalAndExpression = comparisonExpression, { "И", comparisonExpression }.
     /// </summary>
-    private decimal ParseLogicalAndExpression()
+    private double ParseLogicalAndExpression()
     {
-        decimal left = ParseComparisonExpression();
+        double left = ParseComparisonExpression();
         while (tokens.Peek().Type == TokenType.And)
         {
             tokens.Advance();
-            decimal right = ParseComparisonExpression();
+            double right = ParseComparisonExpression();
             left = (left != 0 && right != 0) ? 1 : 0;
         }
 
@@ -93,9 +92,9 @@ public class Parser
     /// Выполняет парсинг сравнения выражений:
     ///     comparisonExpression = additiveExpression, [ ( "==" | "!=" | "<" | ">" | "<=" | ">=" ), additiveExpression ].
     /// </summary>
-    private decimal ParseComparisonExpression()
+    private double ParseComparisonExpression()
     {
-        decimal left = ParseAdditiveExpression();
+        double left = ParseAdditiveExpression();
 
         switch (tokens.Peek().Type)
         {
@@ -132,9 +131,9 @@ public class Parser
     /// Выполняет парсинг сложения/вычитания:
     ///     additiveExpression = multiplicativeExpression, { ("+" | "-"), multiplicativeExpression }.
     /// </summary>
-    private decimal ParseAdditiveExpression()
+    private double ParseAdditiveExpression()
     {
-        decimal left = ParseMultiplicativeExpression();
+        double left = ParseMultiplicativeExpression();
 
         while (true)
         {
@@ -158,9 +157,9 @@ public class Parser
     /// Разбирает умножение/деление/остаток:
     ///     multiplicativeExpression = unaryExpression, { ("*" | "/" | "%"), unaryExpression }.
     /// </summary>
-    private decimal ParseMultiplicativeExpression()
+    private double ParseMultiplicativeExpression()
     {
-        decimal left = ParseUnaryExpression();
+        double left = ParseUnaryExpression();
         while (true)
         {
             switch (tokens.Peek().Type)
@@ -172,7 +171,7 @@ public class Parser
                 case TokenType.Division:
                     tokens.Advance();
                     {
-                        decimal divisor = ParseUnaryExpression();
+                        double divisor = ParseUnaryExpression();
                         if (divisor == 0)
                         {
                             throw new DivideByZeroException();
@@ -185,7 +184,7 @@ public class Parser
                 case TokenType.Remainder:
                     tokens.Advance();
                     {
-                        decimal divisor = ParseUnaryExpression();
+                        double divisor = ParseUnaryExpression();
                         if (divisor == 0)
                         {
                             throw new DivideByZeroException();
@@ -205,7 +204,7 @@ public class Parser
     /// Разбирает унарную операцию:
     ///     unaryExpression = { "+" | "-" | "НЕ" } , primary.
     /// </summary>
-    private decimal ParseUnaryExpression()
+    private double ParseUnaryExpression()
     {
         while (true)
         {
@@ -213,7 +212,7 @@ public class Parser
             if (type == TokenType.Plus || type == TokenType.Minus || type == TokenType.Not)
             {
                 tokens.Advance();
-                decimal value = ParseUnaryExpression();
+                double value = ParseUnaryExpression();
 
                 return type switch
                 {
@@ -232,7 +231,7 @@ public class Parser
     /// Парсинг основного выражения:
     ///     primary = numericLiteral | stringLiteral | logicalLiteral | constant | functionCall | identifier | "(", expression, ")".
     /// </summary>
-    private decimal ParsePrimaryExpression()
+    private double ParsePrimaryExpression()
     {
         Token t = tokens.Peek();
         switch (t.Type)
@@ -272,7 +271,7 @@ public class Parser
 
             case TokenType.OpenParenthesis:
                 tokens.Advance();
-                decimal value = ParseExpression();
+                double value = ParseExpression();
                 Match(TokenType.CloseParenthesis);
                 return value;
 
@@ -284,7 +283,7 @@ public class Parser
     /// <summary>
     /// Парсинг литералов.
     /// </summary>
-    private decimal ParseLiteral()
+    private double ParseLiteral()
     {
         Token t = tokens.Peek();
         switch (t.Type)
@@ -305,12 +304,12 @@ public class Parser
     /// Парсинг числового литерала:
     ///     numericLiteral = realLiteral | integerLiteral.
     /// </summary>
-    private decimal ParseNumericLiteral()
+    private double ParseNumericLiteral()
     {
         Token t = tokens.Peek();
         if (t.Type == TokenType.NumericLiteral)
         {
-            decimal value = t.Value!.ToDecimal();
+            double value = t.Value!.ToDouble();
             tokens.Advance();
             return value;
         }
@@ -322,7 +321,7 @@ public class Parser
     /// Парсинг строкового литерала:
     ///     stringLiteral = '"', { anyChar - '"' | escapeSequence }, '"'.
     /// </summary>
-    private decimal ParseStringLiteral()
+    private double ParseStringLiteral()
     {
         // В данной реализации строки не поддерживаются для числовых вычислений
         Token t = tokens.Peek();
@@ -335,7 +334,7 @@ public class Parser
     /// Парсинг логического значения:
     ///     logicalLiteral = "ХАЙП" | "КРИНЖ".
     /// </summary>
-    private decimal ParseLogicalLiteral()
+    private double ParseLogicalLiteral()
     {
         Token t = tokens.Peek();
         tokens.Advance();
@@ -351,14 +350,14 @@ public class Parser
     /// Парсинг констант:
     ///     constant = "ПИ" | "ЕШКА".
     /// </summary>
-    private decimal ParseDefaultConstant()
+    private double ParseDefaultConstant()
     {
         Token t = tokens.Peek();
         tokens.Advance();
         return t.Type switch
         {
-            TokenType.EULER => 2.7182818284M,
-            TokenType.PI => 3.1415926535M,
+            TokenType.EULER => 2.7182818284,
+            TokenType.PI => 3.1415926535,
             _ => throw new UnexpectedLexemeException(t.Type, t),
         };
     }
@@ -367,14 +366,14 @@ public class Parser
     /// Парсинг вызова встроенной функции:
     ///     functionCall = identifier, "(", [ argumentList ], ")".
     /// </summary>
-    private decimal ParseDefaultFunctionCall()
+    private double ParseDefaultFunctionCall()
     {
         Token defaultFunctionToken = tokens.Peek();
         tokens.Advance();
 
         Match(TokenType.OpenParenthesis);
 
-        List<decimal> args = new List<decimal>();
+        List<double> args = new List<double>();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
             args = ParseValueList();
@@ -388,11 +387,11 @@ public class Parser
     /// Парсинг идентификатора как вызов пользовательской функции:
     ///     function_call = function_name, "(", [ expression_list ], ")" ;
     /// </summary>
-    private decimal ParseIdentifierAsFunctionCall(string functionName)
+    private double ParseIdentifierAsFunctionCall(string functionName)
     {
         Match(TokenType.OpenParenthesis);
 
-        List<decimal> arguments = new List<decimal>();
+        List<double> arguments = new List<double>();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
             arguments = ParseValueList();
@@ -406,7 +405,7 @@ public class Parser
     /// Парсинг идентификатора как обращения к переменной:
     ///     variableDeclaration = (typeName, identifier, "=", expression, ";" ) | ( "БАЗА", typeName, identifier, "=", expression, ";" )
     /// </summary>
-    private decimal ParseVariableReference(string variableName)
+    private double ParseVariableReference(string variableName)
     {
         throw new NotImplementedException($"Variable '{variableName}' is not implemented yet");
     }
@@ -415,10 +414,10 @@ public class Parser
     /// Парсинг массива:
     ///     array_literal = "[", [ expression_list ], "]".
     /// </summary>
-    private List<decimal> ParseArrayLiteral()
+    private List<double> ParseArrayLiteral()
     {
         Match(TokenType.OpenSquareBracket);
-        List<decimal> values = ParseValueList();
+        List<double> values = ParseValueList();
         Match(TokenType.CloseSquareBracket);
         return values;
     }
