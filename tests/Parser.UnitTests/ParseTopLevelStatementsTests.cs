@@ -30,6 +30,17 @@ public class ParseTopLevelStatementsTests
         Assert.Equal(5.1, context.GetValue("x"));
     }
 
+    [Fact]
+    public void Parse_variable_redeclaration()
+    {
+        string code = @"ЦИФЕРКА x = 5;ПОЛТОРАШКА x = 5.1;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
     private void RunBaseTest(string code, double[] inputs, double[] expected)
     {
         Context context = new();
