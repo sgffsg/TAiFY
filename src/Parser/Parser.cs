@@ -20,7 +20,7 @@ public class Parser
     {
         do
         {
-            ParseExpression();
+            ParseTopLevelItem();
         }
         while (tokens.Peek().Type != TokenType.EOF);
     }
@@ -39,9 +39,34 @@ public class Parser
     }
 
     /// <summary>
+    /// topLevelItem =
+    ///     procedureDeclaration | constantDeclaration | typedDeclaration.
+    /// </summary>
+    private void ParseTopLevelItem()
+    {
+        Token token = tokens.Peek();
+        ParseVariableDeclaration();
+    }
+
+    /// <summary>
+    /// variableDeclaration =
+    ///     typeName, identifier, "=", expression, ";" ;.
+    /// </summary>
+    private void ParseVariableDeclaration()
+    {
+        string typeName = ParseTypeName();
+        string identifier = ParseIdentifier();
+        Match(TokenType.Assignment);
+        double value = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        context.DefineVariable(identifier, value);
+    }
+
+    /// <summary>
     /// Парсит список значений, разделенных запятыми.
     /// </summary>
-    private List<double> ParseValueList()
+    private List<double> ParseArgumentList()
     {
         List<double> values = new List<double> { ParseExpression() };
         while (tokens.Peek().Type == TokenType.Comma)
@@ -383,14 +408,14 @@ public class Parser
 
         Match(TokenType.OpenParenthesis);
 
-        List<double> args = new List<double>();
+        List<double> arguments = new();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            args = ParseValueList();
+            arguments = ParseArgumentList();
         }
 
         Match(TokenType.CloseParenthesis);
-        return BuiltinFunctions.Instance.Invoke(defaultFunctionToken.Type, args);
+        return BuiltinFunctions.Instance.Invoke(defaultFunctionToken.Type, arguments);
     }
 
     /// <summary>
@@ -404,7 +429,7 @@ public class Parser
         List<double> arguments = new List<double>();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            arguments = ParseValueList();
+            arguments = ParseArgumentList();
         }
 
         Match(TokenType.CloseParenthesis);
@@ -427,7 +452,7 @@ public class Parser
     private List<double> ParseArrayLiteral()
     {
         Match(TokenType.OpenSquareBracket);
-        List<double> values = ParseValueList();
+        List<double> values = ParseArgumentList();
         Match(TokenType.CloseSquareBracket);
         return values;
     }
@@ -443,5 +468,44 @@ public class Parser
         }
 
         tokens.Advance();
+    }
+
+    private bool IsTypeName(Token token) => token.Type switch
+    {
+        TokenType.Ciferka => true,
+        TokenType.Poltorashka => true,
+        TokenType.Citata => true,
+        TokenType.Rasklad => true,
+        TokenType.Pachka => true,
+        _ => false
+    };
+
+    private string ParseTypeName()
+    {
+        Token token = tokens.Peek();
+        switch (token.Type)
+        {
+            case TokenType.Ciferka:
+            case TokenType.Poltorashka:
+            case TokenType.Citata:
+            case TokenType.Rasklad:
+            case TokenType.Pachka:
+                tokens.Advance();
+                return token.Type.ToString().ToLower();
+            default:
+                throw new UnexpectedLexemeException("ожидается имя типа", token);
+        }
+    }
+
+    private string ParseIdentifier()
+    {
+        Token token = tokens.Peek();
+        if (token.Type == TokenType.Identifier)
+        {
+            tokens.Advance();
+            return token.Value?.ToString() ?? "";
+        }
+
+        throw new UnexpectedLexemeException(TokenType.Identifier, token);
     }
 }
