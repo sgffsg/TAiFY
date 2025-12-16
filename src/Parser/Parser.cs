@@ -18,12 +18,24 @@ public class Parser
 
     public void ParseProgram()
     {
-        ParseExpression();
+        do
+        {
+            ParseExpression();
+        }
+        while (tokens.Peek().Type != TokenType.EOF);
     }
 
     public List<double> ExecuteExpressionToList()
     {
-        return new() { ParseExpression() };
+        List<double> result = new();
+
+        do
+        {
+            result.Add(ParseExpression());
+        }
+        while (tokens.Peek().Type != TokenType.EOF);
+
+        return result;
     }
 
     /// <summary>
@@ -118,6 +130,8 @@ public class Parser
                 tokens.Advance();
                 left = (left >= ParseAdditiveExpression()) ? 1 : 0;
                 break;
+            default:
+                return left;
         }
 
         return left;
