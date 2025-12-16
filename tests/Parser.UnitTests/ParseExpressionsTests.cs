@@ -12,14 +12,14 @@ public class ParseExpressionsTests
         FakeEnvironment environment = new();
         Parser parser = new(context, environment, code);
 
-        double[] result = parser.ParseExpression();
+        List<double> result = parser.ExecuteExpressionToList();
         MatchResults(expected, result);
     }
 
-    private void MatchResults(double[] expected, double[] results)
+    private void MatchResults(List<double> expected, List<double> results)
     {
-        Assert.Equal(expected.Length, results.Length);
-        for (int i = 0; i < expected.Length; i++)
+        Assert.Equal(expected.Count, results.Count);
+        for (int i = 0; i < expected.Count; i++)
         {
             Assert.Equal(expected[i], results[i]);
         }
