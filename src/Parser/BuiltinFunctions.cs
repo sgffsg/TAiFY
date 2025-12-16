@@ -4,7 +4,7 @@ namespace Parser
 {
     public class BuiltinFunctions
     {
-        private readonly Dictionary<TokenType, Func<List<decimal>, decimal>> functions = new()
+        private readonly Dictionary<TokenType, Func<List<double>, double>> functions = new()
         {
             { TokenType.Module, Module },
             { TokenType.Minimum, Minimum },
@@ -20,9 +20,9 @@ namespace Parser
 
         public static BuiltinFunctions Instance => InstanceValue;
 
-        public decimal Invoke(TokenType type, List<decimal> arguments)
+        public double Invoke(TokenType type, List<double> arguments)
         {
-            if (!functions.TryGetValue(type, out Func<List<decimal>, decimal>? function))
+            if (!functions.TryGetValue(type, out Func<List<double>, double>? function))
             {
                 throw new ArgumentException($"Unknown builtin function {type}");
             }
@@ -30,7 +30,7 @@ namespace Parser
             return function(arguments);
         }
 
-        private static decimal Module(List<decimal> arguments)
+        private static double Module(List<double> arguments)
         {
             if (arguments.Count != 1)
             {
@@ -40,64 +40,64 @@ namespace Parser
             return Math.Abs(arguments[0]);
         }
 
-        private static decimal Minimum(List<decimal> arguments)
+        private static double Minimum(List<double> arguments)
         {
             return arguments.Min();
         }
 
-        private static decimal Maximum(List<decimal> arguments)
+        private static double Maximum(List<double> arguments)
         {
             return arguments.Max();
         }
 
-        private static decimal Pow(List<decimal> arguments)
+        private static double Pow(List<double> arguments)
         {
             if (arguments.Count != 2)
             {
                 throw new ArgumentException($"Встроенная функция СТЕПЕНЬ требует 2 аргумента, получено: {arguments.Count}");
             }
 
-            return (decimal)Math.Pow((double)arguments[0], (double)arguments[1]);
+            return Math.Pow(arguments[0], arguments[1]);
         }
 
-        private static decimal Sqrt(List<decimal> arguments)
+        private static double Sqrt(List<double> arguments)
         {
             if (arguments.Count != 1)
             {
                 throw new ArgumentException($"Встроенная функция КОРЕНЬ требует 1 аргумент, получено: {arguments.Count}");
             }
 
-            return (decimal)Math.Sqrt((double)arguments[0]);
+            return Math.Sqrt(arguments[0]);
         }
 
-        private static decimal Sinus(List<decimal> arguments)
+        private static double Sinus(List<double> arguments)
         {
             if (arguments.Count != 1)
             {
                 throw new ArgumentException($"Встроенная функция СИНУС требует 1 аргумент, получено: {arguments.Count}");
             }
 
-            return (decimal)Math.Sin((double)arguments[0]);
+            return Math.Sin(arguments[0]);
         }
 
-        private static decimal Cosinus(List<decimal> arguments)
+        private static double Cosinus(List<double> arguments)
         {
             if (arguments.Count != 1)
             {
                 throw new ArgumentException($"Встроенная функция КОСИНУС требует 1 аргумент, получено: {arguments.Count}");
             }
 
-            return (decimal)Math.Cos((double)arguments[0]);
+            return Math.Cos(arguments[0]);
         }
 
-        private static decimal Tangens(List<decimal> arguments)
+        private static double Tangens(List<double> arguments)
         {
             if (arguments.Count != 1)
             {
                 throw new ArgumentException($"Встроенная функция ТАНГЕНС требует 1 аргумент, получено: {arguments.Count}");
             }
 
-            return (decimal)Math.Tan((double)arguments[0]);
+            return Math.Tan(arguments[0]);
         }
     }
 }
