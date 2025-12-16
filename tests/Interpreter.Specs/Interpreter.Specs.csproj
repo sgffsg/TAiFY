@@ -26,4 +26,8 @@
     <ProjectReference Include="..\..\src\Interpreter\Interpreter.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Feature\" />
+  </ItemGroup>
+
 </Project>

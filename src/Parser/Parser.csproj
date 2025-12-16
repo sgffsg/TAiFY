@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Execution\Execution.csproj" />
     <ProjectReference Include="..\Lexer\Lexer.csproj" />
   </ItemGroup>
 
@@ -10,9 +11,5 @@
     <Nullable>enable</Nullable>
     <_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
   </PropertyGroup>
-    
-  <ItemGroup>
-    <ProjectReference Include="..\Execution\Execution.csproj" />
-  </ItemGroup>  
 
 </Project>
