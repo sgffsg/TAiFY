@@ -9,7 +9,6 @@ public class Parser
     private readonly IEnvironment environment;
     private readonly Dictionary<string, object> symbols = new();
 
-    
     public Parser(IEnvironment environment, string code)
     {
         this.environment = environment;
