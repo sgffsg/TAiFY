@@ -8,6 +8,18 @@ public class FakeEnvironment : IEnvironment
     private readonly Queue<double> inputQueue = new();
     private readonly List<double> outputList = new();
 
+    public FakeEnvironment()
+    {
+    }
+
+    public FakeEnvironment(params double[] inputs)
+    {
+        foreach (double input in inputs)
+        {
+            inputQueue.Enqueue(input);
+        }
+    }
+
     /// <summary>
     /// Добавляет значение в очередь ввода.
     /// </summary>

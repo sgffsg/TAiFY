@@ -19,54 +19,11 @@ public class Parser
 
     public void ParseProgram()
     {
-
     }
 
-    /// <summary>
-    /// Парсинг строкового выражения.
-    /// </summary>
-    public static Row ExecuteExpression(string expression)
+    public double[] ParseExpression()
     {
-        Parser p = new(expression);
-        return p.ParseRowWithDelimiter();
-    }
-
-    /// <summary>
-    /// Парсит строку с выражением до разделителя строк.
-    /// </summary>
-    private Row ParseRowWithDelimiter()
-    {
-        Row result = ParseRow();
-        ConsumeRowDelimiter();
-
-        return result;
-    }
-
-    /// <summary>
-    /// Парсит строку в Row.
-    /// </summary>
-    private Row ParseRow()
-    {
-        List<decimal> values = ParseValueList();
-        return new Row(values.ToArray());
-    }
-
-    /// <summary>
-    /// Проверяет разделитель строки (точку с запятой или конец файла).
-    /// </summary>
-    private void ConsumeRowDelimiter()
-    {
-        Token t = tokens.Peek();
-        switch (t.Type)
-        {
-            case TokenType.Semicolon:
-                tokens.Advance();
-                break;
-            case TokenType.EOF:
-                break;
-            default:
-                throw new UnexpectedLexemeException(TokenType.Semicolon, t);
-        }
+        return [];
     }
 
     /// <summary>
