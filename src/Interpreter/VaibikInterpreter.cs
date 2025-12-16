@@ -27,6 +27,6 @@ public class VaibikiInterpreter
     public void Execute(string code)
     {
         Parser.Parser parser = new Parser.Parser(context, environment, code);
-        parser.ExecuteProgram();
+        parser.ParseProgram();
     }
 }

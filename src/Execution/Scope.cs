@@ -13,8 +13,6 @@ public class Scope
     private readonly HashSet<string> functions = new();
     private readonly HashSet<string> procedures = new();
 
-    private readonly Scope? parentScope;
-
     public Scope()
     {
     }
