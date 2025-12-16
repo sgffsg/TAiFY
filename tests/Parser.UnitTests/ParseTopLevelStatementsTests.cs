@@ -58,6 +58,41 @@ public class ParseTopLevelStatementsTests
         Assert.Equal(5.1, context.GetValue("y"));
     }
 
+    [Fact]
+    public void Parse_constant_variable_declaration()
+    {
+        string code = @"БАЗА ЦИФЕРКА x = 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+        Assert.True(context.Exists("x"));
+        Assert.Equal(5, context.GetValue("x"));
+    }
+
+    [Fact]
+    public void Parse_constant_variable_redeclaration()
+    {
+        string code = @"БАЗА ЦИФЕРКА x = 5;БАЗА ЦИФЕРКА x = 2;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_constant_variable_with_same_name_variable_declaration()
+    {
+        string code = @"БАЗА ЦИФЕРКА x = 5;ЦИФЕРКА x = 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
     private void RunBaseTest(string code, double[] inputs, double[] expected)
     {
         Context context = new();
