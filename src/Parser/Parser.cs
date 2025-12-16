@@ -1,532 +1,67 @@
-﻿using Execution;
-using Lexer;
+﻿using Lexer;
 
 namespace Parser;
 
 public class Parser
 {
     private readonly TokenStream tokens;
-    private readonly IEnvironment environment;
-    private readonly Dictionary<string, object> symbols = new();
 
-    public Parser(IEnvironment environment, string code)
+    private Parser(string code)
     {
-        this.environment = environment;
         tokens = new TokenStream(code);
     }
 
     /// <summary>
-    /// program = { topLevelItem } , EOF.
+    /// Парсинг строкового выражения.
     /// </summary>
-    public void ParseProgram()
+    public static Row ExecuteExpression(string expression)
     {
-        do
-        {
-            ParseTopLevelItem();
-        }
-        while (tokens.Peek().Type != TokenType.EOF);
+        Parser p = new(expression);
+        return p.ParseRowWithDelimiter();
     }
 
     /// <summary>
-    /// topLevelItem =
-    ///     procedureDeclaration | constantDeclaration | typedDeclaration.
+    /// Парсит строку с выражением до разделителя строк.
     /// </summary>
-    private void ParseTopLevelItem()
+    private Row ParseRowWithDelimiter()
     {
-        Token token = tokens.Peek();
-        switch(token.Type)
-        {
-            case TokenType.Baza:
-                ParseConstantDeclaration();
-                break;
-            case TokenType.Prokrastiniryem:
-                ParseProcedureDeclaration();
-                break;
-            default:
-                if (IsTypeName(token))
-                {
-                    ParseTypedDeclaration();
-                }
-                else
-                {
-                    ParseStatement();
-                }
+        Row result = ParseRow();
+        ConsumeRowDelimiter();
 
-                break;
-        }
+        return result;
     }
 
     /// <summary>
-    /// constantDeclaration =
-    ///     "БАЗА", typeName, identifier, "=", expression, ";".
+    /// Парсит строку в Row.
     /// </summary>
-    private void ParseConstantDeclaration()
+    private Row ParseRow()
     {
-        Match(TokenType.Baza);
-
-        string typeName = ParseTypeName();
-        string identifier = ParseIdentifier();
-
-        Match(TokenType.Assignment);
-        decimal value = ParseExpression();
-        Match(TokenType.Semicolon);
-
-        symbols[identifier] = value;
-        environment.AddResult(value);
+        List<decimal> values = ParseValueList();
+        return new Row(values.ToArray());
     }
 
     /// <summary>
-    /// typedDeclaration =
-    ///     typeName, identifier, (functionTail | variableTail ) ;.
+    /// Проверяет разделитель строки (точку с запятой или конец файла).
     /// </summary>
-    private void ParseTypedDeclaration()
+    private void ConsumeRowDelimiter()
     {
-        string typeName = ParseTypeName();
-        string identifier = ParseIdentifier();
-
-        if (tokens.Peek().Type == TokenType.OpenParenthesis)
-        {
-            ParseFunctionTail(identifier);
-        }
-        else
-        {
-            ParseVariableTail(identifier);
-        }
-    }
-
-    /// <summary>
-    /// functionTail =
-    ///     "(", [parameterList], ")", block ;.
-    /// </summary>
-    private void ParseFunctionTail(string functionName)
-    {
-        Match(TokenType.OpenParenthesis);
-        if (tokens.Peek().Type != TokenType.CloseParenthesis)
-        {
-            ParseParameterList();
-        }
-
-        Match(TokenType.CloseParenthesis);
-
-        SkipBlock();
-    }
-
-    /// <summary>
-    /// variableTail =
-    ///     "=", expression, ";".
-    /// </summary>
-    private void ParseVariableTail(string variableName)
-    {
-        Match(TokenType.Assignment);
-        decimal value = ParseExpression();
-        Match(TokenType.Semicolon);
-
-        symbols[variableName] = value;
-        environment.AddResult(value);
-    }
-
-    /// <summary>
-    /// procedureDeclaration =
-    ///     "ПРОКРАСТИНИРУЕМ", identifier, "(", [parameterList], ")", block.
-    /// </summary>
-    private void ParseProcedureDeclaration()
-    {
-        Match(TokenType.Prokrastiniryem);
-        string procedureName = ParseIdentifier();
-        Match(TokenType.OpenParenthesis);
-
-        if (tokens.Peek().Type != TokenType.CloseParenthesis)
-        {
-            ParseParameterList();
-        }
-
-        Match(TokenType.CloseParenthesis);
-        ParseBlock();
-    }
-
-    /// <summary>
-    /// parameterList =
-    ///     identifier, ":", typeName, { ",", identifier, ":", typeName };.
-    /// </summary>
-    private void ParseParameterList()
-    {
-        do
-        {
-            ParseIdentifier();
-            Match(TokenType.ColonTypeIndication);
-            ParseTypeName();
-
-            if (tokens.Peek().Type != TokenType.Comma)
-            {
-                break;
-            }
-
-            Match(TokenType.Comma);
-        }
-        while (true);
-    }
-
-    /// <summary>
-    /// block = "ПОЕХАЛИ", { statement }, "ФИНАЛОЧКА" ;.
-    /// </summary>
-    private void ParseBlock()
-    {
-        Match(TokenType.Poehali);
-
-        while (tokens.Peek().Type != TokenType.Finalochka &&
-               tokens.Peek().Type != TokenType.EOF)
-        {
-            ParseStatement();
-        }
-
-        Match(TokenType.Finalochka);
-    }
-
-    /// <summary>
-    /// statement =
-    ///     variableDeclaration | ifStatement | whileStatement | forStatement | returnStatement | breakStatement
-    ///      | continueStatement | ioStatement | block | sideEffectStatement | ";" ;.
-    /// </summary>
-    private void ParseStatement()
-    {
-        Token token = tokens.Peek();
-        switch (token.Type)
+        Token t = tokens.Peek();
+        switch (t.Type)
         {
             case TokenType.Semicolon:
                 tokens.Advance();
                 break;
-            case TokenType.Ciferka:
-            case TokenType.Poltorashka:
-            case TokenType.Citata:
-            case TokenType.Rasklad:
-            case TokenType.Pachka:
-                ParseVariableDeclaration();
-                break;
-            case TokenType.Esli:
-                ParseIfStatement();
-                break;
-            case TokenType.Cikl:
-                ParseForStatement();
-                break;
-            case TokenType.Poka:
-                ParseWhileStatement();
-                break;
-            case TokenType.Dratuti:
-                ParseReturnStatement();
-                break;
-            case TokenType.Hvatit:
-                ParseBreakStatement();
-                break;
-            case TokenType.Prodolzhaem:
-                ParseContinueStatement();
-                break;
-            case TokenType.Vbros:
-                ParseInputStatement();
-                break;
-            case TokenType.Vybros:
-                ParseOutputStatement();
-                break;
-            case TokenType.Poehali:
-                ParseBlock();
-                break;
-            case TokenType.Identifier:
-                ParseSideEffectStatement();
+            case TokenType.EOF:
                 break;
             default:
-                decimal result = ParseExpression();
-                Match(TokenType.Semicolon);
-                environment.AddResult(result);
-                break;
-        }
-    }
-
-    /// <summary>
-    /// variableDeclaration =
-    ///     typeName, identifier, "=", expression, ";" ;.
-    /// </summary>
-    private void ParseVariableDeclaration()
-    {
-        string typeName = ParseTypeName();
-        string identifier = ParseIdentifier();
-        Match(TokenType.Assignment);
-        decimal value = ParseExpression();
-        Match(TokenType.Semicolon);
-
-        symbols[identifier] = value;
-    }
-
-    /// <summary>
-    /// ifStatement =
-    ///     "ЕСЛИ", "(", expression, ")", "ТО", statement,
-    ///     ["ИНАЧЕ", statement] ;.
-    /// </summary>
-    private void ParseIfStatement()
-    {
-        Match(TokenType.Esli);
-        Match(TokenType.OpenParenthesis);
-        decimal condition = ParseExpression();
-        Match(TokenType.CloseParenthesis);
-        Match(TokenType.To);
-
-        if (condition != 0)
-        {
-            ParseStatement();
-
-            if (tokens.Peek().Type == TokenType.Inache)
-            {
-                Match(TokenType.Inache);
-                SkipStatement();
-            }
-        }
-        else
-        {
-            SkipStatement();
-
-            if (tokens.Peek().Type == TokenType.Inache)
-            {
-                Match(TokenType.Inache);
-                ParseStatement();
-            }
-        }
-    }
-
-    /// <summary>
-    /// whileStatement =
-    ///     "ПОКА", "(", expression, ")", block ;.
-    /// </summary>
-    private void ParseWhileStatement()
-    {
-        Match(TokenType.Poka);
-        Match(TokenType.OpenParenthesis);
-
-        while (tokens.Peek().Type != TokenType.CloseParenthesis &&
-               tokens.Peek().Type != TokenType.EOF)
-        {
-            tokens.Advance();
-        }
-
-        Match(TokenType.CloseParenthesis);
-
-        SkipBlockOrStatement();
-    }
-
-    /// <summary>
-    /// forStatement =
-    ///     "ЦИКЛ", "(", variableAssignment, ";", expression, ";", variableAssignment, ")", block ;.
-    /// </summary>
-    private void ParseForStatement()
-    {
-        Match(TokenType.Cikl);
-        Match(TokenType.OpenParenthesis);
-
-        while (tokens.Peek().Type != TokenType.Semicolon &&
-               tokens.Peek().Type != TokenType.EOF)
-        {
-            tokens.Advance();
-        }
-
-        Match(TokenType.Semicolon);
-
-        while (tokens.Peek().Type != TokenType.Semicolon &&
-               tokens.Peek().Type != TokenType.EOF)
-        {
-            tokens.Advance();
-        }
-
-        Match(TokenType.Semicolon);
-
-        while (tokens.Peek().Type != TokenType.CloseParenthesis &&
-               tokens.Peek().Type != TokenType.EOF)
-        {
-            tokens.Advance();
-        }
-
-        Match(TokenType.CloseParenthesis);
-
-        SkipBlockOrStatement();
-    }
-
-    /// <summary>
-    /// Пропускает блок или одиночный statement.
-    /// </summary>
-    private void SkipBlockOrStatement()
-    {
-        if (tokens.Peek().Type == TokenType.Poehali)
-        {
-            // Пропускаем блок
-            SkipBlock();
-        }
-        else
-        {
-            // Пропускаем одиночный statement
-            SkipStatement();
-        }
-    }
-
-    /// <summary>
-    /// returnStatement = "ДРАТУТИ", [ expression ], ";" ;.
-    /// </summary>
-    private void ParseReturnStatement()
-    {
-        Match(TokenType.Dratuti);
-
-        decimal returnValue = 0;
-        if (tokens.Peek().Type != TokenType.Semicolon)
-        {
-            returnValue = ParseExpression();
-        }
-
-        Match(TokenType.Semicolon);
-        environment.AddResult(returnValue);
-    }
-
-    /// <summary>
-    /// breakStatement = "ХВАТИТ", ";" ;.
-    /// </summary>
-    private void ParseBreakStatement()
-    {
-        Match(TokenType.Hvatit);
-        Match(TokenType.Semicolon);
-    }
-
-    /// <summary>
-    /// continueStatement = "ПРОДОЛЖАЕМ", ";" ;.
-    /// </summary>
-    private void ParseContinueStatement()
-    {
-        Match(TokenType.Prodolzhaem);
-        Match(TokenType.Semicolon);
-    }
-
-    /// <summary>
-    /// inputStatement = "ВБРОС", "(", identifier, { ",", identifier }, ")", ";".
-    /// </summary>
-    private void ParseInputStatement()
-    {
-        Match(TokenType.Vbros);
-        Match(TokenType.OpenParenthesis);
-
-        List<string> variables = new List<string>();
-        variables.Add(ParseIdentifier());
-
-        while (tokens.Peek().Type == TokenType.Comma)
-        {
-            Match(TokenType.Comma);
-            variables.Add(ParseIdentifier());
-        }
-
-        Match(TokenType.CloseParenthesis);
-        Match(TokenType.Semicolon);
-
-        foreach (string variable in variables)
-        {
-            symbols[variable] = environment.ReadNumber();
-        }
-    }
-
-    /// <summary>
-    /// outputStatement = "ВЫБРОС", "(", [ argumentList ], ")", ";".
-    /// </summary>
-    private void ParseOutputStatement()
-    {
-        Match(TokenType.Vybros);
-        Match(TokenType.OpenParenthesis);
-
-        List<decimal> arguments = new List<decimal>();
-        if (tokens.Peek().Type != TokenType.CloseParenthesis)
-        {
-            arguments = ParseArgumentList();
-        }
-        else
-        {
-        }
-
-        Match(TokenType.CloseParenthesis);
-
-        Match(TokenType.Semicolon);
-        foreach (decimal arg in arguments)
-        {
-            environment.AddResult(arg);
-        }
-    }
-
-    /// <summary>
-    /// sideEffectStatement = identifier, ( assignmentTail | callTail ), ";" ;.
-    /// </summary>
-    private void ParseSideEffectStatement()
-    {
-        string identifier = ParseIdentifier();
-
-        if (tokens.Peek().Type == TokenType.Assignment)
-        {
-            ParseAssignment(identifier);
-        }
-        else if (tokens.Peek().Type == TokenType.OpenParenthesis)
-        {
-            ParseCallTail(identifier);
-        }
-        else
-        {
-            throw new UnexpectedLexemeException("ожидается '=' или '('", tokens.Peek());
-        }
-    }
-
-    /// <summary>
-    /// assignmentTail = "=", expression ;.
-    /// </summary>
-    private void ParseAssignment(string variableName)
-    {
-        Match(TokenType.Assignment);
-        decimal value = ParseExpression();
-        Match(TokenType.Semicolon);
-
-        if (!symbols.ContainsKey(variableName))
-        {
-            throw new Exception($"Необъявленная переменная: {variableName}");
-        }
-
-        // symbols[variableName] = value;
-        environment.AddResult(value);
-    }
-
-    /// <summary>
-    /// callTail       = "(", [ argumentList ], ")" ;.
-    /// </summary>
-    private void ParseCallTail(string functionName)
-    {
-        Match(TokenType.OpenParenthesis);
-
-        List<decimal> arguments = new();
-        if (tokens.Peek().Type != TokenType.CloseParenthesis)
-        {
-            arguments = ParseArgumentList();
-        }
-
-        Match(TokenType.CloseParenthesis);
-        Match(TokenType.Semicolon);
-
-        environment.AddResult(arguments.Count);
-    }
-
-    /// <summary>
-    /// variableAssignment = identifier, "=", expression ;.
-    /// </summary>
-    private void ParseVariableAssignment()
-    {
-        string identifier = ParseIdentifier();
-        Match(TokenType.Assignment);
-        while (tokens.Peek().Type != TokenType.Semicolon &&
-               tokens.Peek().Type != TokenType.CloseParenthesis &&
-               tokens.Peek().Type != TokenType.EOF)
-        {
-            tokens.Advance();
+                throw new UnexpectedLexemeException(TokenType.Semicolon, t);
         }
     }
 
     /// <summary>
     /// Парсит список значений, разделенных запятыми.
     /// </summary>
-    private List<decimal> ParseArgumentList()
+    private List<decimal> ParseValueList()
     {
         List<decimal> values = new List<decimal> { ParseExpression() };
         while (tokens.Peek().Type == TokenType.Comma)
@@ -583,7 +118,7 @@ public class Parser
 
     /// <summary>
     /// Выполняет парсинг сравнения выражений:
-    ///     comparisonExpression = additiveExpression, [ ( "==" | "!=" | ".<" | ">" | "<=" | ">=" ), additiveExpression ].
+    ///     comparisonExpression = additiveExpression, [ ( "==" | "!=" | "<" | ">" | "<=" | ">=" ), additiveExpression ].
     /// </summary>
     private decimal ParseComparisonExpression()
     {
@@ -869,7 +404,7 @@ public class Parser
         List<decimal> args = new List<decimal>();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            args = ParseArgumentList();
+            args = ParseValueList();
         }
 
         Match(TokenType.CloseParenthesis);
@@ -878,7 +413,7 @@ public class Parser
 
     /// <summary>
     /// Парсинг идентификатора как вызов пользовательской функции:
-    ///     function_call = function_name, "(", [ expression_list ], ")" ;.
+    ///     function_call = function_name, "(", [ expression_list ], ")" ;
     /// </summary>
     private decimal ParseIdentifierAsFunctionCall(string functionName)
     {
@@ -887,30 +422,32 @@ public class Parser
         List<decimal> arguments = new List<decimal>();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            arguments = ParseArgumentList();
+            arguments = ParseValueList();
         }
 
         Match(TokenType.CloseParenthesis);
-        return arguments.Count;
+        throw new NotImplementedException($"User function '{functionName}' is not implemented yet");
     }
 
     /// <summary>
     /// Парсинг идентификатора как обращения к переменной:
-    ///     variableDeclaration = (typeName, identifier, "=", expression, ";" ) | ( "БАЗА", typeName, identifier, "=", expression, ";" ).
+    ///     variableDeclaration = (typeName, identifier, "=", expression, ";" ) | ( "БАЗА", typeName, identifier, "=", expression, ";" )
     /// </summary>
     private decimal ParseVariableReference(string variableName)
     {
-        if (symbols.TryGetValue(variableName, out object? value))
-        {
-            if (value is decimal decimalValue)
-            {
-                return decimalValue;
-            }
+        throw new NotImplementedException($"Variable '{variableName}' is not implemented yet");
+    }
 
-            return Convert.ToDecimal(value);
-        }
-
-        throw new Exception($"Необъявленная переменная: {variableName}");
+    /// <summary>
+    /// Парсинг массива:
+    ///     array_literal = "[", [ expression_list ], "]".
+    /// </summary>
+    private List<decimal> ParseArrayLiteral()
+    {
+        Match(TokenType.OpenSquareBracket);
+        List<decimal> values = ParseValueList();
+        Match(TokenType.CloseSquareBracket);
+        return values;
     }
 
     /// <summary>
@@ -924,91 +461,5 @@ public class Parser
         }
 
         tokens.Advance();
-    }
-
-    private string ParseIdentifier()
-    {
-        Token token = tokens.Peek();
-        if (token.Type == TokenType.Identifier)
-        {
-            tokens.Advance();
-            return token.Value?.ToString() ?? "";
-        }
-
-        throw new UnexpectedLexemeException(TokenType.Identifier, token);
-    }
-
-    private bool IsTypeName(Token token) => token.Type switch
-    {
-        TokenType.Ciferka => true,
-        TokenType.Poltorashka => true,
-        TokenType.Citata => true,
-        TokenType.Rasklad => true,
-        TokenType.Pachka => true,
-        _ => false
-    };
-
-    private string ParseTypeName()
-    {
-        Token token = tokens.Peek();
-        switch (token.Type)
-        {
-            case TokenType.Ciferka:
-            case TokenType.Poltorashka:
-            case TokenType.Citata:
-            case TokenType.Rasklad:
-            case TokenType.Pachka:
-                tokens.Advance();
-                return token.Type.ToString().ToLower();
-            default:
-                throw new UnexpectedLexemeException("ожидается имя типа", token);
-        }
-    }
-
-    private void SkipBlock()
-    {
-        Match(TokenType.Poehali);
-
-        int braceCount = 1;
-        while (braceCount > 0 && tokens.Peek().Type != TokenType.EOF)
-        {
-            if (tokens.Peek().Type == TokenType.Poehali)
-            {
-                braceCount++;
-            }
-            else if (tokens.Peek().Type == TokenType.Finalochka)
-            {
-                braceCount--;
-            }
-
-            tokens.Advance();
-        }
-    }
-
-    private void SkipStatement()
-    {
-        int depth = 0;
-
-        while (tokens.Peek().Type != TokenType.EOF)
-        {
-            Token token = tokens.Peek();
-
-            if (token.Type == TokenType.Semicolon && depth == 0)
-            {
-                tokens.Advance();
-                break;
-            }
-
-            if (token.Type == TokenType.Poehali)
-            {
-                depth++;
-            }
-            else if (token.Type == TokenType.Finalochka)
-            {
-                depth--;
-            }
-
-            tokens.Advance();
-        }
     }
 }
