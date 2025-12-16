@@ -21,9 +21,14 @@ public class Parser
     {
     }
 
-    public double[] ParseExpression()
+    public double ExecuteExpression()
     {
-        return [];
+        return ParseExpression();
+    }
+
+    public List<double> ExecuteExpressionToList()
+    {
+        return new List<double>() { ParseExpression() };
     }
 
     /// <summary>
