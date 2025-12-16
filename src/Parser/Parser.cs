@@ -9,6 +9,7 @@ public class Parser
     private readonly IEnvironment environment;
     private readonly Dictionary<string, object> symbols = new();
 
+    
     public Parser(IEnvironment environment, string code)
     {
         this.environment = environment;
@@ -418,13 +419,10 @@ public class Parser
         Match(TokenType.CloseParenthesis);
         Match(TokenType.Semicolon);
 
-        // Читаем значения из окружения и сохраняем в переменные
         foreach (string variable in variables)
         {
             symbols[variable] = environment.ReadNumber();
         }
-
-        environment.AddResult(variables.Count);
     }
 
     /// <summary>
@@ -432,32 +430,21 @@ public class Parser
     /// </summary>
     private void ParseOutputStatement()
     {
-        Console.WriteLine("DEBUG: Parsing output statement");
-
         Match(TokenType.Vybros);
-        Console.WriteLine("DEBUG: Matched Vybros");
-
         Match(TokenType.OpenParenthesis);
-        Console.WriteLine("DEBUG: Matched OpenParenthesis");
 
         List<decimal> arguments = new List<decimal>();
         if (tokens.Peek().Type != TokenType.CloseParenthesis)
         {
-            Console.WriteLine("DEBUG: Parsing argument list");
             arguments = ParseArgumentList();
         }
         else
         {
-            Console.WriteLine("DEBUG: No arguments");
         }
 
         Match(TokenType.CloseParenthesis);
-        Console.WriteLine("DEBUG: Matched CloseParenthesis");
 
-        Match(TokenType.Semicolon); // КРИТИЧЕСКИ ВАЖНО!
-        Console.WriteLine("DEBUG: Matched Semicolon");
-
-        Console.WriteLine($"DEBUG: Output {arguments.Count} arguments");
+        Match(TokenType.Semicolon);
         foreach (decimal arg in arguments)
         {
             environment.AddResult(arg);
@@ -499,7 +486,7 @@ public class Parser
             throw new Exception($"Необъявленная переменная: {variableName}");
         }
 
-        symbols[variableName] = value;
+        // symbols[variableName] = value;
         environment.AddResult(value);
     }
 

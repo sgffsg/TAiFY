@@ -3,6 +3,7 @@ using Execution;
 using Reqnroll;
 
 namespace Interpreter.Specs.Steps;
+
 [Binding]
 public class InterpreterSteps
 {

@@ -172,8 +172,6 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
                 table4.AddRow(new string[] {
-                            "1"});
-                table4.AddRow(new string[] {
                             "3.1415926535"});
 #line 24
         await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table4, "Тогда ");

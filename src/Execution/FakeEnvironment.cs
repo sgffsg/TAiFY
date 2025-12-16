@@ -3,7 +3,7 @@
 namespace Execution;
 
 /// <summary>
-/// Поддельное окружение: работает как настоящее, но не совершает реального ввода/вывода.
+/// Поддельное окружение.
 /// </summary>
 public class FakeEnvironment : IEnvironment
 {
@@ -26,7 +26,7 @@ public class FakeEnvironment : IEnvironment
     public void AddResult(decimal result)
     {
         results.Add(result);
-        output.Add("Вывод:" + result.ToString("0.#####", CultureInfo.InvariantCulture));
+        output.Add(result.ToString("0.#####", CultureInfo.InvariantCulture));
     }
 
     public decimal ReadNumber()
