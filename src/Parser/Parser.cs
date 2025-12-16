@@ -1,13 +1,19 @@
-﻿using Lexer;
+﻿using Execution;
+
+using Lexer;
 
 namespace Parser;
 
 public class Parser
 {
     private readonly TokenStream tokens;
+    private readonly Context context;
+    private readonly IEnvironment environment;
 
-    private Parser(string code)
+    private Parser(Context context, IEnvironment environment, string code)
     {
+        this.context = context;
+        this.environment = environment;
         tokens = new TokenStream(code);
     }
 
