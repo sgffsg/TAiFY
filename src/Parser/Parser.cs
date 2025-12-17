@@ -116,6 +116,59 @@ public class Parser
         context.DefineVariable(variableName, value);
     }
 
+    private void ParseStatement()
+    {
+        Token token = tokens.Peek();
+        switch (token.Type)
+        {
+            case TokenType.Semicolon:
+                tokens.Advance();
+                break;
+            case TokenType.Ciferka:
+            case TokenType.Poltorashka:
+            case TokenType.Citata:
+            case TokenType.Rasklad:
+            case TokenType.Pachka:
+                ParseVariableDeclaration();
+                break;
+            case TokenType.Esli:
+                ParseIfStatement();
+                break;
+            case TokenType.Cikl:
+                ParseForStatement();
+                break;
+            case TokenType.Poka:
+                ParseWhileStatement();
+                break;
+            case TokenType.Dratuti:
+                ParseReturnStatement();
+                break;
+            case TokenType.Hvatit:
+                ParseBreakStatement();
+                break;
+            case TokenType.Prodolzhaem:
+                ParseContinueStatement();
+                break;
+            case TokenType.Vbros:
+                ParseInputStatement();
+                break;
+            case TokenType.Vybros:
+                ParseOutputStatement();
+                break;
+            case TokenType.Poehali:
+                ParseBlock();
+                break;
+            case TokenType.Identifier:
+                ParseSideEffectStatement();
+                break;
+            default:
+                double result = ParseExpression();
+                Match(TokenType.Semicolon);
+                environment.WriteNumber(result);
+                break;
+        }
+    }
+
     /// <summary>
     /// variableDeclaration =
     ///     typeName, identifier, "=", expression, ";" ;.
@@ -142,6 +195,57 @@ public class Parser
         Match(TokenType.Semicolon);
 
         context.AssignVariable(identifier, value);
+    }
+
+    /// <summary>
+    /// ifStatement =
+    ///     "ЕСЛИ", "(", expression, ")", "ТО", statement,
+    ///     ["ИНАЧЕ", statement] ;.
+    /// </summary>
+    private void ParseIfStatement()
+    {
+        Match(TokenType.Esli);
+        Match(TokenType.OpenParenthesis);
+        double condition = ParseExpression();
+        Match(TokenType.CloseParenthesis);
+        Match(TokenType.To);
+
+        if (condition != 0)
+        {
+            ParseStatement();
+
+            if (tokens.Peek().Type == TokenType.Inache)
+            {
+                Match(TokenType.Inache);
+                SkipStatement();
+            }
+        }
+        else
+        {
+            SkipStatement();
+
+            if (tokens.Peek().Type == TokenType.Inache)
+            {
+                Match(TokenType.Inache);
+                ParseStatement();
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Пропускает блок или одиночный statement.
+    /// </summary>
+    private void ParseBlockOrStatement()
+    {
+        if (tokens.Peek().Type == TokenType.Poehali)
+        {
+            ParseBlock();
+        }
+        else
+        {
+            ParseStatement();
+        }
     }
 
     /// <summary>
