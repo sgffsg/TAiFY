@@ -465,6 +465,62 @@ public class Parser
         Match(TokenType.Prodolzhaem);
         Match(TokenType.Semicolon);
     }
+
+    /// <summary>
+    /// inputStatement = "ВБРОС", "(", identifier, { ",", identifier }, ")", ";".
+    /// </summary>
+    private void ParseInputStatement()
+    {
+        Match(TokenType.Vbros);
+        Match(TokenType.OpenParenthesis);
+
+        List<string> variables = new List<string>();
+        variables.Add(ParseIdentifier());
+
+        while (tokens.Peek().Type == TokenType.Comma)
+        {
+            Match(TokenType.Comma);
+            variables.Add(ParseIdentifier());
+        }
+
+        Match(TokenType.CloseParenthesis);
+        Match(TokenType.Semicolon);
+
+        foreach (string variable in variables)
+        {
+            if (!context.Exists(variable))
+            {
+                context.DefineVariable(variable, 0);
+            }
+
+            double value = environment.ReadNumber();
+            context.AssignVariable(variable, value);
+        }
+    }
+
+    /// <summary>
+    /// outputStatement = "ВЫБРОС", "(", [ argumentList ], ")", ";".
+    /// </summary>
+    private void ParseOutputStatement()
+    {
+        Match(TokenType.Vybros);
+        Match(TokenType.OpenParenthesis);
+
+        List<double> arguments = new List<double>();
+        if (tokens.Peek().Type != TokenType.CloseParenthesis)
+        {
+            arguments = ParseArgumentList();
+        }
+
+        Match(TokenType.CloseParenthesis);
+        Match(TokenType.Semicolon);
+
+        foreach (double arg in arguments)
+        {
+            environment.WriteNumber(arg);
+        }
+    }
+
     /// <summary>
     /// sideEffectStatement = identifier, ( assignmentTail | callTail ), ";" ;.
     /// </summary>
