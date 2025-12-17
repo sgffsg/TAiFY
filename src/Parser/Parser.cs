@@ -8,6 +8,8 @@ public class Parser
     private readonly TokenStream tokens;
     private readonly Context context;
     private readonly IEnvironment environment;
+    private readonly Stack<LoopContext> loopStack = new();
+    private readonly Stack<FunctionContext> functionStack = new();
 
     public Parser(Context context, IEnvironment environment, string code)
     {
@@ -142,6 +144,43 @@ public class Parser
         context.AssignVariable(identifier, value);
     }
 
+    /// <summary>
+    /// sideEffectStatement = identifier, ( assignmentTail | callTail ), ";" ;.
+    /// </summary>
+    private void ParseSideEffectStatement()
+    {
+        string identifier = ParseIdentifier();
+
+        if (tokens.Peek().Type == TokenType.Assignment)
+        {
+            ParseAssignment(identifier);
+        }
+        else if (tokens.Peek().Type == TokenType.OpenParenthesis)
+        {
+            ParseCallTail(identifier);
+        }
+        else
+        {
+            throw new UnexpectedLexemeException("ожидается '=' или '('", tokens.Peek());
+        }
+    }
+
+    /// <summary>
+    /// assignmentTail = "=", expression ;.
+    /// </summary>
+    private void ParseAssignment(string variableName)
+    {
+        Match(TokenType.Assignment);
+        double value = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        if (!context.Exists(variableName))
+        {
+            throw new Exception($"Необъявленная переменная: {variableName}");
+        }
+
+        context.AssignVariable(variableName, value);
+    }
     /// <summary>
     /// Парсит список значений, разделенных запятыми.
     /// </summary>
@@ -512,7 +551,8 @@ public class Parser
         }
 
         Match(TokenType.CloseParenthesis);
-        throw new NotImplementedException($"User function '{functionName}' is not implemented yet");
+
+        return arguments.Count;
     }
 
     /// <summary>
@@ -521,7 +561,14 @@ public class Parser
     /// </summary>
     private double ParseVariableReference(string variableName)
     {
-        throw new NotImplementedException($"Variable '{variableName}' is not implemented yet");
+        try
+        {
+            return context.GetValue(variableName);
+        }
+        catch (ArgumentException ex)
+        {
+            throw new Exception($"Необъявленная переменная: {variableName}", ex);
+        }
     }
 
     /// <summary>
@@ -587,4 +634,129 @@ public class Parser
 
         throw new UnexpectedLexemeException(TokenType.Identifier, token);
     }
+
+    private void SkipBlock()
+    {
+        Match(TokenType.Poehali);
+
+        int braceCount = 1;
+        while (braceCount > 0 && tokens.Peek().Type != TokenType.EOF)
+        {
+            if (tokens.Peek().Type == TokenType.Poehali)
+            {
+                braceCount++;
+            }
+            else if (tokens.Peek().Type == TokenType.Finalochka)
+            {
+                braceCount--;
+            }
+
+            tokens.Advance();
+        }
+    }
+
+    private void SkipStatement()
+    {
+        int depth = 0;
+
+        while (tokens.Peek().Type != TokenType.EOF)
+        {
+            Token token = tokens.Peek();
+
+            if (token.Type == TokenType.Semicolon && depth == 0)
+            {
+                tokens.Advance();
+                break;
+            }
+
+            if (token.Type == TokenType.Poehali)
+            {
+                depth++;
+            }
+            else if (token.Type == TokenType.Finalochka)
+            {
+                depth--;
+            }
+
+            tokens.Advance();
+        }
+    }
+
+    private void SkipBlockOrStatement()
+    {
+        if (tokens.Peek().Type == TokenType.Poehali)
+        {
+            SkipBlock();
+        }
+        else
+        {
+            SkipStatement();
+        }
+    }
+
+    /// <summary>
+    /// Пропускает присваивание переменной.
+    /// </summary>
+    private void SkipVariableAssignment()
+    {
+        ParseIdentifier();
+        Match(TokenType.Assignment);
+        while (tokens.Peek().Type != TokenType.Semicolon &&
+               tokens.Peek().Type != TokenType.CloseParenthesis &&
+               tokens.Peek().Type != TokenType.EOF)
+        {
+            tokens.Advance();
+        }
+    }
+}
+
+/// <summary>
+/// Контекст цикла для управления break/continue.
+/// </summary>
+public class LoopContext
+{
+    public LoopContext(LoopType type)
+    {
+        Type = type;
+    }
+
+    public LoopType Type { get; }
+}
+
+/// <summary>
+/// Тип цикла.
+/// </summary>
+public enum LoopType
+{
+    /// <summary>
+    /// Цикл While.
+    /// </summary>
+    While,
+
+    /// <summary>
+    /// Цикл For.
+    /// </summary>
+    For,
+}
+
+/// <summary>
+/// Контекст функции для управления возвратом значений.
+/// </summary>
+public class FunctionContext
+{
+    public FunctionContext(string name, string returnType)
+    {
+        Name = name;
+        ReturnType = returnType;
+        ReturnValue = 0;
+        HasReturned = false;
+    }
+
+    public string Name { get; }
+
+    public string ReturnType { get; }
+
+    public double ReturnValue { get; set; }
+
+    public bool HasReturned { get; set; }
 }

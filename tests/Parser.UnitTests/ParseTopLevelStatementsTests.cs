@@ -122,8 +122,51 @@ public class ParseTopLevelStatementsTests
         Assert.Throws<ArgumentException>(() => parser.ParseProgram());
     }
 
-    private void RunBaseTest(string code, double[] inputs, double[] expected)
+    [Fact]
+    public void Parse_constant_variable_usage()
     {
+        string code = @"БАЗА ЦИФЕРКА МАКС = 100; ЦИФЕРКА результат = МАКС;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        Assert.True(context.Exists("МАКС"));
+        Assert.Equal(100, context.GetValue("МАКС"));
+
+        Assert.True(context.Exists("результат"));
+        Assert.Equal(100, context.GetValue("результат"));
+    }
+
+    [Fact]
+    public void Parse_constant_reassignment_failed()
+    {
+        string code = @"БАЗА ЦИФЕРКА МАКС = 100; МАКС = 50;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Exception exception = Assert.Throws<InvalidOperationException>(() => parser.ParseProgram());
+        Assert.Contains("Невозможно изменить значение константы", exception.Message);
+    }
+
+    [Fact]
+    public void Parse_variables_in_expression()
+    {
+        string code = @"ЦИФЕРКА радиус = 5; ПОЛТОРАШКА результат = радиус * радиус * ПИ;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        Assert.True(context.Exists("радиус"));
+        Assert.Equal(5, context.GetValue("радиус"));
+
+        Assert.True(context.Exists("результат"));
+        Assert.Equal(5 * 5 * Math.PI, context.GetValue("результат"), 5); // Точность до 5 знаков
+    }
         Context context = new();
         FakeEnvironment environment = new(inputs);
         Parser parser = new(context, environment, code);
