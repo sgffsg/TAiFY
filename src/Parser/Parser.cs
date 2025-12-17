@@ -106,7 +106,6 @@ public class Parser
         }
     }
 
-
     /// <summary>
     /// functionTail =
     ///     "(", [parameterList], ")", block ;.
