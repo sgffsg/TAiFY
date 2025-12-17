@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Ast.Statements;
-
-namespace Ast.Expressions;
+﻿namespace Ast.Expressions;
 
 public sealed class ForLoopExpression : Expression
 {
