@@ -1,13 +1,8 @@
-﻿using Ast.Expressions;
+﻿namespace Ast.Expressions;
 
-namespace Ast.Statements;
-
-/// <summary>
-/// Цикл с предусловием.
-/// </summary>
-public sealed class WhileStatement : Statement
+public sealed class WhileLoopExpression : Expression
 {
-    public WhileStatement(Expression condition, Statement body)
+    public WhileLoopExpression(Expression condition, Expression body)
     {
         Condition = condition;
         Body = body;
@@ -21,7 +16,7 @@ public sealed class WhileStatement : Statement
     /// <summary>
     /// Тело цикла.
     /// </summary>
-    public Statement Body { get; }
+    public Expression Body { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

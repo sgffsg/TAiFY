@@ -7,17 +7,11 @@ namespace Ast.Declarations;
 /// </summary>
 public sealed class VariableDeclaration : Declaration
 {
-    public VariableDeclaration(string typeName, string name, Expression? value)
+    public VariableDeclaration(string name, Expression? value)
     {
-        TypeName = typeName;
         Name = name;
         Value = value;
     }
-
-    /// <summary>
-    /// Тип переменной.
-    /// </summary>
-    public string TypeName { get; }
 
     /// <summary>
     /// Имя переменной.

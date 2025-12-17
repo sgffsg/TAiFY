@@ -1,4 +1,6 @@
-﻿using Ast.Declarations;
+﻿using System.Xml.Linq;
+
+using Ast.Declarations;
 
 namespace Execution;
 
@@ -137,23 +139,40 @@ public class Context
         {
             throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
         }
-
-        currentScope.DefineFunction(name);
     }
 
     /// <summary>
     /// Регистрирует процедуру в текущей области видимости.
     /// </summary>
-    public void RegisterProcedure(string name)
+    public void DefineProcedure(string name, FunctionDeclaration procedure)
     {
         Scope currentScope = scopes.Peek();
-
         if (currentScope.Exists(name))
         {
             throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
         }
 
-        currentScope.RegisterProcedure(name);
+        functions[name] = procedure;
+    }
+
+    public FunctionDeclaration GetFunction(string name)
+    {
+        if (!functions.ContainsKey(name))
+        {
+            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
+        }
+
+        return functions[name];
+    }
+
+    public ProcedureDeclaration GetProcedure(string name)
+    {
+        if (!procedures.ContainsKey(name))
+        {
+            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
+        }
+
+        return procedures[name];
     }
 
     /// <summary>

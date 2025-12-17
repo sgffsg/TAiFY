@@ -1,11 +1,10 @@
 ﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
-using Ast.Statements;
 
 namespace Execution;
 
-internal class AstEvaluator : IAstVisitor
+public class AstEvaluator : IAstVisitor
 {
     public void Visit(ConstantDeclaration d)
     {
@@ -17,17 +16,17 @@ internal class AstEvaluator : IAstVisitor
         throw new NotImplementedException();
     }
 
-    public void Visit(ParameterDeclaration d)
-    {
-        throw new NotImplementedException();
-    }
-
     public void Visit(FunctionDeclaration d)
     {
         throw new NotImplementedException();
     }
 
     public void Visit(ProcedureDeclaration d)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Visit(AssignmentExpression e)
     {
         throw new NotImplementedException();
     }
@@ -47,67 +46,57 @@ internal class AstEvaluator : IAstVisitor
         throw new NotImplementedException();
     }
 
-    public void Visit(IdentifierExpression e)
-    {
-        throw new NotImplementedException();
-    }
-
     public void Visit(LiteralExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(VariableAssignmentStatement s)
+    public void Visit(BreakExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(ExpressionStatement s)
+    public void Visit(ContinueExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(BlockStatement s)
+    public void Visit(ReturnExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(IfStatement s)
+    public void Visit(SequenceExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(ForStatement s)
+    public void Visit(InputExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(WhileStatement s)
+    public void Visit(OutputExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(BreakStatement s)
+    public void Visit(VariableScopeExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(ContinueStatement s)
+    public void Visit(WhileLoopExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(ReturnStatement s)
+    public void Visit(ForLoopExpression e)
     {
         throw new NotImplementedException();
     }
 
-    public void Visit(InputStatement s)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Visit(OutputStatement s)
+    public void Visit(IfElseExpression e)
     {
         throw new NotImplementedException();
     }

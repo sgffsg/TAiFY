@@ -1,4 +1,4 @@
-﻿using Ast.Statements;
+﻿using Ast.Expressions;
 
 namespace Ast.Declarations;
 
@@ -7,18 +7,12 @@ namespace Ast.Declarations;
 /// </summary>
 public sealed class FunctionDeclaration : Declaration
 {
-    public FunctionDeclaration(string returnType, string name, List<ParameterDeclaration> parameters, BlockStatement body)
+    public FunctionDeclaration(string name, List<string> parameters, Expression body)
     {
-        ReturnType = returnType;
         Name = name;
         Parameters = parameters;
         Body = body;
     }
-
-    /// <summary>
-    /// Возвращаемый тип.
-    /// </summary>
-    public string ReturnType { get; }
 
     /// <summary>
     /// Название функции.
@@ -28,12 +22,12 @@ public sealed class FunctionDeclaration : Declaration
     /// <summary>
     /// Список параметров функции.
     /// </summary>
-    public List<ParameterDeclaration> Parameters { get; }
+    public List<string> Parameters { get; }
 
     /// <summary>
     /// Тело функции.
     /// </summary>
-    public BlockStatement Body { get; }
+    public Expression Body { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

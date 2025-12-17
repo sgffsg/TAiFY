@@ -1,13 +1,13 @@
 ﻿namespace Ast.Expressions;
 
-public sealed class LiteralExpression : Expression
+public sealed class ReturnExpression : Expression
 {
-    public LiteralExpression(double value)
+    public ReturnExpression(Expression value)
     {
         Value = value;
     }
 
-    public double Value { get; }
+    public Expression Value { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

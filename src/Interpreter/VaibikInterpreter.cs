@@ -22,11 +22,17 @@ public class VaibikiInterpreter
     }
 
     /// <summary>
-    /// Выполняет программу из переданного кода.
+    /// Выполняет программу на языке Vaibik
     /// </summary>
-    public void Execute(string code)
+    /// <param name="sourceCode">Исходный код программы</param>
+    public void Execute(string sourceCode)
     {
-        Parser.Parser parser = new Parser.Parser(context, environment, code);
+        if (string.IsNullOrEmpty(sourceCode))
+        {
+            throw new ArgumentException("Source code cannot be null or empty", nameof(sourceCode));
+        }
+
+        Parser.Parser parser = new Parser.Parser(context, environment, sourceCode);
         parser.ParseProgram();
     }
 }

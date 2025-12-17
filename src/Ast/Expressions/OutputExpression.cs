@@ -1,13 +1,14 @@
-﻿using Ast.Expressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Ast.Statements;
+namespace Ast.Expressions;
 
-/// <summary>
-/// Вывод значений выражений в консоль.
-/// </summary>
-public sealed class OutputStatement : Statement
+public sealed class OutputExpression : Expression
 {
-    public OutputStatement(List<Expression> arguments)
+    public OutputExpression(List<Expression> arguments)
     {
         Arguments = arguments;
     }

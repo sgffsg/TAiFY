@@ -11,14 +11,8 @@ public class CallExpression : Expression
         Arguments = arguments;
     }
 
-    /// <summary>
-    /// Имя вызываемой функции/процедуры.
-    /// </summary>
     public string Name { get; }
 
-    /// <summary>
-    /// Список аргументов функции/процедуры.
-    /// </summary>
     public List<Expression> Arguments { get; }
 
     public override void Accept(IAstVisitor visitor)

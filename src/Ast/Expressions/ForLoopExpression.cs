@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Ast.Statements;
+
+namespace Ast.Expressions;
+
+public sealed class ForLoopExpression : Expression
+{
+    public ForLoopExpression(
+        string iteratorName,
+        Expression startValue,
+        Expression endCondition,
+        Expression? stepValue,
+        Expression body
+    )
+    {
+        IteratorName = iteratorName;
+        StartValue = startValue;
+        EndCondition = endCondition;
+        StepValue = stepValue;
+        Body = body;
+    }
+
+    public string IteratorName { get; }
+
+    public Expression StartValue { get; }
+
+    public Expression EndCondition { get; }
+
+    public Expression? StepValue { get; }
+
+    public Expression? Body { get; }
+
+    public override void Accept(IAstVisitor visitor)
+    {
+        visitor.Visit(this);
+    }
+}

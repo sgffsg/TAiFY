@@ -1,4 +1,4 @@
-﻿using Ast.Statements;
+﻿using Ast.Expressions;
 
 namespace Ast.Declarations;
 
@@ -7,7 +7,7 @@ namespace Ast.Declarations;
 /// </summary>
 public sealed class ProcedureDeclaration : Declaration
 {
-    public ProcedureDeclaration(string name, List<ParameterDeclaration> parameters, BlockStatement body)
+    public ProcedureDeclaration(string name, List<string> parameters, Expression body)
     {
         Name = name;
         Parameters = parameters;
@@ -22,12 +22,12 @@ public sealed class ProcedureDeclaration : Declaration
     /// <summary>
     /// Список параметров процедуры.
     /// </summary>
-    public List<ParameterDeclaration> Parameters { get; }
+    public List<string> Parameters { get; }
 
     /// <summary>
     /// Тело процедуры.
     /// </summary>
-    public BlockStatement Body { get; }
+    public Expression Body { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

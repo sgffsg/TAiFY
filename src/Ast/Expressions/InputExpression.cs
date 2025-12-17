@@ -1,11 +1,14 @@
-﻿namespace Ast.Statements;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-/// <summary>
-/// Ввод значений с консоли в переменные.
-/// </summary>
-public sealed class InputStatement : Statement
+namespace Ast.Expressions;
+
+public sealed class InputExpression : Expression
 {
-    public InputStatement(List<string> variableNames)
+    public InputExpression(List<string> variableNames)
     {
         VariableNames = variableNames;
     }

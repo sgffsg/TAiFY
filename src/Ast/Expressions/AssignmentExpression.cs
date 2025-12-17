@@ -1,10 +1,8 @@
-﻿using Ast.Expressions;
+﻿namespace Ast.Expressions;
 
-namespace Ast.Statements;
-
-public class VariableAssignmentStatement : Statement
+public class AssignmentExpression : Expression
 {
-    public VariableAssignmentStatement(string variableName, Expression value)
+    public AssignmentExpression(string variableName, Expression value)
     {
         VariableName = variableName;
         Value = value;
