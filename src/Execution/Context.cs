@@ -1,27 +1,22 @@
-﻿using System.Xml.Linq;
-
-using Ast.Declarations;
+﻿using Ast.Declarations;
 
 namespace Execution;
 
 /// <summary>
-/// Контекст выполнения программы - управляет областями видимости и значениями переменных/констант.
+/// Контекст выполнения программы (все переменные, константы и другие символы).
 /// </summary>
 public class Context
 {
-    private readonly Stack<Scope> scopes = new();
-    private readonly Scope globalScope = new();
-    private readonly Dictionary<string, FunctionDeclaration> functions = new();
-    private readonly Dictionary<string, ProcedureDeclaration> procedures = new();
+    private readonly Stack<Scope> scopes = [];
+    private readonly Dictionary<string, double> constants = [];
+    private readonly Dictionary<string, FunctionDeclaration> functions = [];
+    private readonly Dictionary<string, ProcedureDeclaration> procedures = [];
 
     public Context()
     {
-        scopes.Push(globalScope);
+        scopes.Push(new Scope());
     }
 
-    /// <summary>
-    /// Добавляет новую область видимости в стек.
-    /// </summary>
     public void PushScope(Scope scope)
     {
         scopes.Push(scope);
@@ -29,18 +24,7 @@ public class Context
 
     public void PopScope()
     {
-        if (scopes.Count > 1)
-        {
-            scopes.Pop();
-        }
-    }
-
-    /// <summary>
-    /// Возвращает текущую область видимости.
-    /// </summary>
-    public Scope GetCurrentScope()
-    {
-        return scopes.Peek();
+        scopes.Pop();
     }
 
     /// <summary>
@@ -48,165 +32,93 @@ public class Context
     /// </summary>
     public double GetValue(string name)
     {
-        foreach (Scope scope in scopes)
+        foreach (Scope s in scopes)
         {
-            if (scope.TryGetVariable(name, out double variable))
+            if (s.TryGetVariable(name, out double variable))
             {
                 return variable;
             }
-
-            if (scope.TryGetConstant(name, out double constant))
-            {
-                return constant;
-            }
         }
 
-        throw new ArgumentException($"Переменная или константа '{name}' не определена");
+        if (constants.TryGetValue(name, out double constant))
+        {
+            return constant;
+        }
+
+        throw new ArgumentException($"Variable '{name}' is not defined");
     }
 
     /// <summary>
-    /// Присваивает (изменяет) значение существующей переменной.
-    /// Поиск ведется от текущей области к глобальной.
+    /// Присваивает (изменяет) значение переменной.
     /// </summary>
     public void AssignVariable(string name, double value)
     {
-        foreach (Scope scope in scopes)
+        foreach (Scope s in scopes.Reverse())
         {
-            if (scope.HasVariable(name))
+            if (s.TryAssignVariable(name, value))
             {
-                scope.DefineVariable(name, value);
                 return;
-            }
-
-            if (scope.HasConstant(name))
-            {
-                throw new InvalidOperationException($"Невозможно изменить значение константы '{name}'");
             }
         }
 
-        throw new ArgumentException($"Переменная '{name}' не определена");
+        throw new ArgumentException($"Variable '{name}' is not defined");
     }
 
     /// <summary>
     /// Определяет переменную в текущей области видимости.
     /// </summary>
-    public void DefineVariable(string name, double value = 0)
+    public void DefineVariable(string name, double value)
     {
-        Scope currentScope = scopes.Peek();
-        if (currentScope.Exists(name))
+        if (!scopes.Peek().TryDefineVariable(name, value))
         {
-            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
+            throw new ArgumentException($"Variable '{name}' is already defined in this scope");
         }
-
-        currentScope.DefineVariable(name, value);
-    }
-
-    /// <summary>
-    /// Определяет константу в текущей области видимости.
-    /// </summary>
-    public void DefineConstant(string name, double value)
-    {
-        Scope currentScope = scopes.Peek();
-        if (currentScope.Exists(name))
-        {
-            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
-        }
-
-        currentScope.DeclareConstant(name, value);
     }
 
     /// <summary>
     /// Определяет константу в глобальной области видимости.
     /// </summary>
-    public void DefineGlobalConstant(string name, double value)
+    public void DefineConstant(string name, double value)
     {
-        if (globalScope.Exists(name))
+        if (!constants.TryAdd(name, value))
         {
-            throw new ArgumentException($"Константа '{name}' уже определена в глобальной области");
+            throw new ArgumentException($"Constant '{name}' is already defined");
         }
-
-        globalScope.DeclareConstant(name, value);
-    }
-
-    /// <summary>
-    /// Определяет функцию в текущей области видимости.
-    /// </summary>
-    public void DefineFunction(string name)
-    {
-        Scope currentScope = scopes.Peek();
-
-        if (currentScope.Exists(name))
-        {
-            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
-        }
-    }
-
-    /// <summary>
-    /// Регистрирует процедуру в текущей области видимости.
-    /// </summary>
-    public void DefineProcedure(string name, FunctionDeclaration procedure)
-    {
-        Scope currentScope = scopes.Peek();
-        if (currentScope.Exists(name))
-        {
-            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
-        }
-
-        functions[name] = procedure;
     }
 
     public FunctionDeclaration GetFunction(string name)
     {
-        if (!functions.ContainsKey(name))
+        if (functions.TryGetValue(name, out FunctionDeclaration? function))
         {
-            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
+            return function;
         }
 
-        return functions[name];
+        throw new ArgumentException($"Function '{name}' is not defined");
     }
 
     public ProcedureDeclaration GetProcedure(string name)
     {
-        if (!procedures.ContainsKey(name))
+        if (procedures.TryGetValue(name, out ProcedureDeclaration? procedure))
         {
-            throw new ArgumentException($"Идентификатор '{name}' уже определен в текущей области видимости");
+            return procedure;
         }
 
-        return procedures[name];
+        throw new ArgumentException($"Procedure '{name}' is not defined");
     }
 
-    /// <summary>
-    /// Проверяет существование идентификатора в текущей и родительских областях.
-    /// </summary>
-    public bool Exists(string name)
+    public void DefineFunction(FunctionDeclaration function)
     {
-        foreach (Scope scope in scopes)
+        if (!functions.TryAdd(function.Name, function))
         {
-            if (scope.Exists(name))
-            {
-                return true;
-            }
+            throw new ArgumentException($"Function '{function.Name}' is already defined");
         }
-
-        return false;
     }
 
-    /// <summary>
-    /// Проверяет существование идентификатора только в текущей области видимости.
-    /// </summary>
-    public bool ExistsInCurrentScope(string name)
+    public void DefineProcedure(ProcedureDeclaration procedure)
     {
-        return scopes.Peek().Exists(name);
-    }
-
-    /// <summary>
-    /// Очищает текущую область видимости (кроме глобальной).
-    /// </summary>
-    public void CleanCurrentScope()
-    {
-        if (scopes.Count > 1)
+        if (!procedures.TryAdd(procedure.Name, procedure))
         {
-            scopes.Peek().Clean();
+            throw new ArgumentException($"Function '{procedure.Name}' is already defined");
         }
     }
 }
