@@ -42,9 +42,29 @@ public class ParseTopLevelStatementsTests
     }
 
     [Fact]
-    public void Parse_multiple_variable_declaration()
+    public void Parse_multiple_variable_declarations()
     {
-        string code = @"ЦИФЕРКА x = 5;ПОЛТОРАШКА y = 5.1;";
+        string code = @"ЦИФЕРКА a = 10; ЦИФЕРКА b = 20; ЦИФЕРКА c = a + b;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        Assert.True(context.Exists("a"));
+        Assert.Equal(10, context.GetValue("a"));
+
+        Assert.True(context.Exists("b"));
+        Assert.Equal(20, context.GetValue("b"));
+
+        Assert.True(context.Exists("c"));
+        Assert.Equal(30, context.GetValue("c"));
+    }
+
+    [Fact]
+    public void Parse_variable_reassignment()
+    {
+        string code = @"ЦИФЕРКА x = 5;x = x + 1;";
         Context context = new();
         FakeEnvironment environment = new();
         Parser parser = new(context, environment, code);
@@ -52,10 +72,19 @@ public class ParseTopLevelStatementsTests
         parser.ParseProgram();
 
         Assert.True(context.Exists("x"));
-        Assert.Equal(5, context.GetValue("x"));
+        Assert.Equal(6, context.GetValue("x"));
+    }
 
-        Assert.True(context.Exists("y"));
-        Assert.Equal(5.1, context.GetValue("y"));
+    [Fact]
+    public void Parse_variable_reassignment_without_declaration()
+    {
+        string code = @"x = x + 1;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
+        Assert.Contains("Необъявленная переменная", exception.Message);
     }
 
     [Fact]

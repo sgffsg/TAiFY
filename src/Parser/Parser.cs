@@ -51,7 +51,15 @@ public class Parser
                 ParseConstantDeclaration();
                 break;
             default:
-                ParseVariableDeclaration();
+                if (IsTypeName(token))
+                {
+                    ParseTypedDeclaration();
+                }
+                else
+                {
+                    ParseStatement();
+                }
+
                 break;
         }
     }
@@ -72,6 +80,38 @@ public class Parser
         Match(TokenType.Semicolon);
 
         context.DefineConstant(identifier, value);
+    }
+
+    /// <summary>
+    /// typedDeclaration =
+    ///     typeName, identifier, (functionTail | variableTail ) ;.
+    /// </summary>
+    private void ParseTypedDeclaration()
+    {
+        string typeName = ParseTypeName();
+        string identifier = ParseIdentifier();
+
+        if (tokens.Peek().Type == TokenType.OpenParenthesis)
+        {
+            ParseFunctionTail(typeName, identifier);
+        }
+        else
+        {
+            ParseVariableTail(typeName, identifier);
+        }
+    }
+
+    /// <summary>
+    /// variableTail =
+    ///     "=", expression, ";".
+    /// </summary>
+    private void ParseVariableTail(string typeName, string variableName)
+    {
+        Match(TokenType.Assignment);
+        double value = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        context.DefineVariable(variableName, value);
     }
 
     /// <summary>
