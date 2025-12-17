@@ -15,6 +15,8 @@ public interface IAstVisitor
 
     void Visit(AssignmentExpression e);
 
+    void Visit(VariableExpression e);
+
     void Visit(BinaryOperationExpression e);
 
     void Visit(UnaryOperationExpression e);
