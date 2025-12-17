@@ -512,16 +512,60 @@ public class ParseTopLevelStatementsTests
 
         parser.ParseProgram();
 
-        IReadOnlyList<double> results = environment.GetOutput();
-        MatchResults(expected, results);
+        Assert.True(context.Exists("x"));
+        Assert.True(context.Exists("y"));
+        Assert.Equal(10.5, context.GetValue("x"));
+        Assert.Equal(20.3, context.GetValue("y"));
     }
 
-    private void MatchResults(double[] expected, IReadOnlyList<double> results)
+    [Fact]
+    public void Parse_input_with_existing_variables()
     {
-        Assert.Equal(expected.Length, results.Count);
-        for (int i = 0; i < expected.Length; i++)
-        {
-            Assert.Equal(expected[i], results[i]);
-        }
+        string code = @"ЦИФЕРКА x = 0; ЦИФЕРКА y = 0; ВБРОС(x, y);";
+        double[] inputs = { 100, 200 };
+        Context context = new();
+        FakeEnvironment environment = new(inputs);
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        Assert.Equal(100, context.GetValue("x"));
+        Assert.Equal(200, context.GetValue("y"));
+    }
+
+    [Fact]
+    public void Parse_break_statement_outside_loop_should_fail()
+    {
+        string code = @"ХВАТИТ;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
+        Assert.Contains("может использоваться только внутри цикла", exception.Message);
+    }
+
+    [Fact]
+    public void Parse_continue_statement_outside_loop_should_fail()
+    {
+        string code = @"ПРОДОЛЖАЕМ;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
+        Assert.Contains("может использоваться только внутри цикла", exception.Message);
+    }
+
+    [Fact]
+    public void Parse_return_statement_outside_function_should_fail()
+    {
+        string code = @"ДРАТУТИ 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
+        Assert.Contains("может использоваться только внутри функции", exception.Message);
     }
 }

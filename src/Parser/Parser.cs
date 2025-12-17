@@ -338,6 +338,65 @@ public class Parser
         }
     }
 
+    /// <summary>
+    /// whileStatement =
+    ///     "ПОКА", "(", expression, ")", block ;.
+    /// </summary>
+    private void ParseWhileStatement()
+    {
+        Match(TokenType.Poka);
+        Match(TokenType.OpenParenthesis);
+
+        double condition = ParseExpression();
+
+        Match(TokenType.CloseParenthesis);
+
+        // Добавляем контекст цикла
+        loopStack.Push(new LoopContext(LoopType.While));
+
+        if (condition != 0)
+        {
+            ParseBlockOrStatement();
+        }
+        else
+        {
+            SkipBlockOrStatement();
+        }
+
+        loopStack.Pop();
+    }
+
+    /// <summary>
+    /// forStatement =
+    ///     "ЦИКЛ", "(", variableAssignment, ";", expression, ";", variableAssignment, ")", block ;.
+    /// </summary>
+    private void ParseForStatement()
+    {
+        Match(TokenType.Cikl);
+        Match(TokenType.OpenParenthesis);
+
+        ParseVariableAssignment();
+        Match(TokenType.Semicolon);
+
+        double condition = ParseExpression();
+        Match(TokenType.Semicolon);
+
+        SkipVariableAssignment();
+        Match(TokenType.CloseParenthesis);
+
+        loopStack.Push(new LoopContext(LoopType.For));
+
+        if (condition != 0)
+        {
+            ParseBlockOrStatement();
+        }
+        else
+        {
+            SkipBlockOrStatement();
+        }
+
+        loopStack.Pop();
+    }
 
     /// <summary>
     /// Пропускает блок или одиночный statement.
@@ -354,6 +413,58 @@ public class Parser
         }
     }
 
+    /// <summary>
+    /// returnStatement = "ДРАТУТИ", [ expression ], ";" ;.
+    /// </summary>
+    private void ParseReturnStatement()
+    {
+        if (functionStack.Count == 0)
+        {
+            throw new Exception("Оператор 'ДРАТУТИ' может использоваться только внутри функции");
+        }
+
+        Match(TokenType.Dratuti);
+
+        double returnValue = 0;
+        if (tokens.Peek().Type != TokenType.Semicolon)
+        {
+            returnValue = ParseExpression();
+        }
+
+        Match(TokenType.Semicolon);
+
+        FunctionContext currentFunction = functionStack.Peek();
+        currentFunction.ReturnValue = returnValue;
+        currentFunction.HasReturned = true;
+    }
+
+    /// <summary>
+    /// breakStatement = "ХВАТИТ", ";" ;.
+    /// </summary>
+    private void ParseBreakStatement()
+    {
+        if (loopStack.Count == 0)
+        {
+            throw new Exception("Оператор 'ХВАТИТ' может использоваться только внутри цикла");
+        }
+
+        Match(TokenType.Hvatit);
+        Match(TokenType.Semicolon);
+    }
+
+    /// <summary>
+    /// continueStatement = "ПРОДОЛЖАЕМ", ";" ;.
+    /// </summary>
+    private void ParseContinueStatement()
+    {
+        if (loopStack.Count == 0)
+        {
+            throw new Exception("Оператор 'ПРОДОЛЖАЕМ' может использоваться только внутри цикла");
+        }
+
+        Match(TokenType.Prodolzhaem);
+        Match(TokenType.Semicolon);
+    }
     /// <summary>
     /// sideEffectStatement = identifier, ( assignmentTail | callTail ), ";" ;.
     /// </summary>
