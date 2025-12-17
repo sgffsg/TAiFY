@@ -1,12 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Ast.Expressions;
 
-namespace Ast.Statements
+namespace Ast.Statements;
+
+/// <summary>
+/// Инструкция для выполнения.
+/// </summary>
+public sealed class ExpressionStatement : Statement
 {
-    internal class ExpressionStatement
+    public ExpressionStatement(Expression expression)
     {
+        Expression = expression;
+    }
+
+    /// <summary>
+    /// Выражение для выполнения.
+    /// </summary>
+    public Expression Expression { get; }
+
+    public override void Accept(IAstVisitor visitor)
+    {
+        visitor.Visit(this);
     }
 }
