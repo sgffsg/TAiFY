@@ -1,4 +1,6 @@
-﻿namespace Execution;
+﻿using Ast.Declarations;
+
+namespace Execution;
 
 /// <summary>
 /// Контекст выполнения программы - управляет областями видимости и значениями переменных/констант.
@@ -7,6 +9,8 @@ public class Context
 {
     private readonly Stack<Scope> scopes = new();
     private readonly Scope globalScope = new();
+    private readonly Dictionary<string, FunctionDeclaration> functions = new();
+    private readonly Dictionary<string, ProcedureDeclaration> procedures = new();
 
     public Context()
     {
