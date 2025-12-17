@@ -52,6 +52,9 @@ public class Parser
             case TokenType.Baza:
                 ParseConstantDeclaration();
                 break;
+            case TokenType.Prokrastiniryem:
+                ParseProcedureDeclaration();
+                break;
             default:
                 if (IsTypeName(token))
                 {
@@ -103,6 +106,34 @@ public class Parser
         }
     }
 
+
+    /// <summary>
+    /// functionTail =
+    ///     "(", [parameterList], ")", block ;.
+    /// </summary>
+    private void ParseFunctionTail(string returnType, string functionName)
+    {
+        context.DefineFunction(functionName);
+
+        Scope functionScope = new Scope();
+        context.PushScope(functionScope);
+
+        functionStack.Push(new FunctionContext(functionName, returnType));
+
+        Match(TokenType.OpenParenthesis);
+        if (tokens.Peek().Type != TokenType.CloseParenthesis)
+        {
+            ParseParameterList();
+        }
+
+        Match(TokenType.CloseParenthesis);
+
+        ParseBlock();
+
+        context.PopScope();
+        functionStack.Pop();
+    }
+
     /// <summary>
     /// variableTail =
     ///     "=", expression, ";".
@@ -116,6 +147,81 @@ public class Parser
         context.DefineVariable(variableName, value);
     }
 
+    /// <summary>
+    /// procedureDeclaration =
+    ///     "ПРОКРАСТИНИРУЕМ", identifier, "(", [parameterList], ")", block.
+    /// </summary>
+    private void ParseProcedureDeclaration()
+    {
+        Match(TokenType.Prokrastiniryem);
+        string procedureName = ParseIdentifier();
+
+        context.RegisterProcedure(procedureName);
+
+        Scope procedureScope = new Scope();
+        context.PushScope(procedureScope);
+
+        Match(TokenType.OpenParenthesis);
+        if (tokens.Peek().Type != TokenType.CloseParenthesis)
+        {
+            ParseParameterList();
+        }
+
+        Match(TokenType.CloseParenthesis);
+        ParseBlock();
+
+        context.PopScope();
+    }
+
+    /// <summary>
+    /// parameterList =
+    ///     identifier, ":", typeName, { ",", identifier, ":", typeName };.
+    /// </summary>
+    private void ParseParameterList()
+    {
+        do
+        {
+            string paramName = ParseIdentifier();
+            Match(TokenType.ColonTypeIndication);
+            string paramType = ParseTypeName();
+
+            context.DefineVariable(paramName, 0);
+
+            if (tokens.Peek().Type != TokenType.Comma)
+            {
+                break;
+            }
+
+            Match(TokenType.Comma);
+        }
+        while (true);
+    }
+
+    /// <summary>
+    /// block = "ПОЕХАЛИ", { statement }, "ФИНАЛОЧКА" ;.
+    /// </summary>
+    private void ParseBlock()
+    {
+        Scope blockScope = new Scope();
+        context.PushScope(blockScope);
+
+        Match(TokenType.Poehali);
+
+        while (tokens.Peek().Type != TokenType.Finalochka &&
+               tokens.Peek().Type != TokenType.EOF)
+        {
+            ParseStatement();
+        }
+
+        Match(TokenType.Finalochka);
+        context.PopScope();
+    }
+
+    /// <summary>
+    /// statement =
+    ///     variableDeclaration | ifStatement | whileStatement | forStatement | returnStatement | breakStatement
+    ///      | continueStatement | ioStatement | block | sideEffectStatement | ";" ;.
+    /// </summary>
     private void ParseStatement()
     {
         Token token = tokens.Peek();
@@ -285,6 +391,31 @@ public class Parser
 
         context.AssignVariable(variableName, value);
     }
+
+    /// <summary>
+    /// callTail = "(", [ argumentList ], ")" ;.
+    /// </summary>
+    private void ParseCallTail(string functionName)
+    {
+        if (!context.Exists(functionName))
+        {
+            throw new Exception($"Необъявленная функция: {functionName}");
+        }
+
+        Match(TokenType.OpenParenthesis);
+
+        List<double> arguments = new();
+        if (tokens.Peek().Type != TokenType.CloseParenthesis)
+        {
+            arguments = ParseArgumentList();
+        }
+
+        Match(TokenType.CloseParenthesis);
+        Match(TokenType.Semicolon);
+
+        environment.WriteNumber(arguments.Count);
+    }
+
     /// <summary>
     /// Парсит список значений, разделенных запятыми.
     /// </summary>

@@ -272,6 +272,240 @@ public class ParseTopLevelStatementsTests
         Assert.Equal(2, output[1]);
         Assert.Equal(3, output[2]);
     }
+
+    [Fact]
+    public void Parse_nested_functions()
+    {
+        string code = @"МОДУЛЬ(МИНИМУМ(-10, 5, 20));";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(10, output[0]);
+    }
+
+    [Fact]
+    public void Parse_combination_of_functions()
+    {
+        string code = @"СТЕПЕНЬ(КОРЕНЬ(16), 2);";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(16, output[0], 5);
+    }
+
+    [Fact]
+    public void Parse_combination_of_variables_and_functions()
+    {
+        string code = @"ЦИФЕРКА x = 5; ЦИФЕРКА y = 10; (x + y) * МОДУЛЬ(-2);";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(30, output[0]);
+    }
+
+    [Fact]
+    public void Parse_complex_logical_and_condition()
+    {
+        string code = @"ЕСЛИ (5 > 3 И 10 < 20) ТО 100; ИНАЧЕ 200;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(100, output[0]);
+    }
+
+    [Fact]
+    public void Parse_complex_logical_or_condition()
+    {
+        string code = @"ЕСЛИ (5 > 10 ИЛИ 10 < 20) ТО 100; ИНАЧЕ 200;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(100, output[0]);
+    }
+
+    [Fact]
+    public void Parse_complex_logical_and_or_combination()
+    {
+        string code = @"ЕСЛИ ((5 > 3) И (10 < 20 ИЛИ 1 == 2)) ТО 100; ИНАЧЕ 200;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(100, output[0]);
+    }
+
+    [Fact]
+    public void Parse_unclosed_parenthesis_should_fail()
+    {
+        string code = @"(2 + 3";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_extra_closed_parenthesis_should_fail()
+    {
+        string code = @"2 + 3)";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_unknown_operator_should_fail()
+    {
+        string code = @"2 & 3;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_division_by_zero_should_fail()
+    {
+        string code = @"5 / 0;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<DivideByZeroException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_remainder_by_zero_should_fail()
+    {
+        string code = @"10 % 0;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<DivideByZeroException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_use_undeclared_variable_should_fail()
+    {
+        string code = @"x = 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
+        Assert.Contains("Необъявленная переменная", exception.Message);
+    }
+
+    [Fact]
+    public void Parse_function_too_few_arguments_should_fail()
+    {
+        string code = @"МОДУЛЬ();";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_function_too_many_arguments_should_fail()
+    {
+        string code = @"МОДУЛЬ(1, 2, 3);";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+    }
+
+    [Fact]
+    public void Parse_output_string()
+    {
+        string code = @"ВЫБРОС(""Привет"");";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(6, output[0]); // Длина строки "Привет" = 6 символов
+    }
+
+    [Fact]
+    public void Parse_output_multiple_values()
+    {
+        string code = @"ВЫБРОС(1, 2, 3);";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Equal(3, output.Count);
+        Assert.Equal(1, output[0]);
+        Assert.Equal(2, output[1]);
+        Assert.Equal(3, output[2]);
+    }
+
+    [Fact]
+    public void Parse_output_with_expressions()
+    {
+        string code = @"ЦИФЕРКА x = 5; ВЫБРОС(x, x * 2, x + 10);";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Equal(3, output.Count);
+        Assert.Equal(5, output[0]);
+        Assert.Equal(10, output[1]);
+        Assert.Equal(15, output[2]);
+    }
+
+    [Fact]
+    public void Parse_input_statement()
+    {
+        string code = @"ВБРОС(x, y);";
+        double[] inputs = { 10.5, 20.3 };
         Context context = new();
         FakeEnvironment environment = new(inputs);
         Parser parser = new(context, environment, code);

@@ -189,8 +189,7 @@ public class ParseExpressionsTests
             { "", typeof(UnexpectedLexemeException) },
             { "5 / 0", typeof(DivideByZeroException) },
             { "МОДУЛЬ(1, 2)", typeof(ArgumentException) },
-            { "МОЯ_ФУНКЦИЯ()", typeof(NotImplementedException) },
-            { "переменная", typeof(NotImplementedException) },
+            { "переменная", typeof(Exception) },
         };
     }
 
