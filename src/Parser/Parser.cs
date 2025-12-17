@@ -351,7 +351,6 @@ public class Parser
 
         Match(TokenType.CloseParenthesis);
 
-        // Добавляем контекст цикла
         loopStack.Push(new LoopContext(LoopType.While));
 
         if (condition != 0)
