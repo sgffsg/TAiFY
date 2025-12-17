@@ -2,30 +2,21 @@
 
 public sealed class ForLoopExpression : Expression
 {
-    public ForLoopExpression(
-        string iteratorName,
-        Expression startValue,
-        Expression endCondition,
-        Expression? stepValue,
-        Expression body
-    )
+    public ForLoopExpression(Expression initialization, Expression condition, Expression increment, Expression body)
     {
-        IteratorName = iteratorName;
-        StartValue = startValue;
-        EndCondition = endCondition;
-        StepValue = stepValue;
+        Initialization = initialization;
+        Condition = condition;
+        Increment = increment;
         Body = body;
     }
 
-    public string IteratorName { get; }
+    public Expression Initialization { get; }
 
-    public Expression StartValue { get; }
+    public Expression Condition { get; }
 
-    public Expression EndCondition { get; }
+    public Expression Increment { get; }
 
-    public Expression? StepValue { get; }
-
-    public Expression? Body { get; }
+    public Expression Body { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

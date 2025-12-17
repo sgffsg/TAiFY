@@ -7,12 +7,15 @@ namespace Ast.Declarations;
 /// </summary>
 public sealed class FunctionDeclaration : Declaration
 {
-    public FunctionDeclaration(string name, List<string> parameters, Expression body)
+    public FunctionDeclaration(string returnType, string name, List<string> parameters, Expression body)
     {
+        ReturnType = returnType;
         Name = name;
         Parameters = parameters;
         Body = body;
     }
+
+    public string ReturnType { get; }
 
     /// <summary>
     /// Название функции.

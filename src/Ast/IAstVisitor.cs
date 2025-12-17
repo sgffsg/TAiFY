@@ -39,6 +39,8 @@ public interface IAstVisitor
 
     void Visit(VariableScopeExpression e);
 
+    void Visit(VariableDeclarationExpression e);
+
     void Visit(WhileLoopExpression e);
 
     void Visit(ForLoopExpression e);
