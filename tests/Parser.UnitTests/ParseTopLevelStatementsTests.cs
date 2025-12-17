@@ -167,6 +167,111 @@ public class ParseTopLevelStatementsTests
         Assert.True(context.Exists("результат"));
         Assert.Equal(5 * 5 * Math.PI, context.GetValue("результат"), 5); // Точность до 5 знаков
     }
+
+    [Fact]
+    public void Parse_if_branch_with_literal_check()
+    {
+        string code = @"ЕСЛИ (ХАЙП) ТО 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(5, output[0]);
+    }
+
+    [Fact]
+    public void Parse_empty_else_branch_with_literal_check()
+    {
+        string code = @"ЕСЛИ (КРИНЖ) ТО 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Empty(output);
+    }
+
+    [Fact]
+    public void Parse_if_branch_with_comparison_expression()
+    {
+        string code = @"ЕСЛИ (5 > 3) ТО 10;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(10, output[0]);
+    }
+
+    [Fact]
+    public void Parse_empty_else_branch_with_comparison_expression()
+    {
+        string code = @"ЕСЛИ (5 < 3) ТО 10;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Empty(output);
+    }
+
+    [Fact]
+    public void Parse_if_else_true_branch()
+    {
+        string code = @"ЕСЛИ (ХАЙП) ТО 10; ИНАЧЕ 20;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(10, output[0]);
+    }
+
+    [Fact]
+    public void Parse_if_else_false_branch()
+    {
+        string code = @"ЕСЛИ (КРИНЖ) ТО 10; ИНАЧЕ 20;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Single(output);
+        Assert.Equal(20, output[0]);
+    }
+
+    [Fact]
+    public void Parse_block_with_multiple_statements()
+    {
+        string code = @"ПОЕХАЛИ 1; 2; 3; ФИНАЛОЧКА";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Parser parser = new(context, environment, code);
+
+        parser.ParseProgram();
+
+        IReadOnlyList<double> output = environment.GetOutput();
+        Assert.Equal(3, output.Count);
+        Assert.Equal(1, output[0]);
+        Assert.Equal(2, output[1]);
+        Assert.Equal(3, output[2]);
+    }
         Context context = new();
         FakeEnvironment environment = new(inputs);
         Parser parser = new(context, environment, code);
