@@ -182,8 +182,6 @@ namespace Interpreter.Specs.Feature
                             "Результат"});
                 table6.AddRow(new string[] {
                             "1.60934"});
-                table6.AddRow(new string[] {
-                            "1.60934"});
 #line 24
         await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table6, "Тогда ");
 #line hidden
