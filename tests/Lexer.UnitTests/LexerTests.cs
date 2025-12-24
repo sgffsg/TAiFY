@@ -104,11 +104,6 @@ public class LexerTest
                 ]
             },
             {
-                "ПАЧКА", [
-                    new Token(TokenType.Pachka)
-                ]
-            },
-            {
                 "ХАЙП", [
                     new Token(TokenType.Hype)
                 ]
@@ -535,22 +530,6 @@ public class LexerTest
     {
         return new TheoryData<string, List<Token>>
         {
-            {
-                "ПАЧКА[ЦИФЕРКА]", [
-                    new Token(TokenType.Pachka),
-                    new Token(TokenType.OpenSquareBracket),
-                    new Token(TokenType.Ciferka),
-                    new Token(TokenType.CloseSquareBracket)
-                ]
-            },
-            {
-                "массив[5]", [
-                    new Token(TokenType.Identifier, new TokenValue("массив")),
-                    new Token(TokenType.OpenSquareBracket),
-                    new Token(TokenType.NumericLiteral, new TokenValue(5)),
-                    new Token(TokenType.CloseSquareBracket)
-                ]
-            },
             {
                 "ПРОКРАСТИНИРУЕМ функция() {}", [
                     new Token(TokenType.Prokrastiniryem),

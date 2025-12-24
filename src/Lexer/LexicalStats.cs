@@ -8,7 +8,7 @@ namespace Lexer
         {
             TokenType.Poehali, TokenType.Finalochka, TokenType.Prokrastiniryem, TokenType.Vbros,
             TokenType.Vybros, TokenType.Hvatit, TokenType.Dratuti, TokenType.Ciferka, TokenType.Poltorashka,
-            TokenType.Citata, TokenType.Rasklad, TokenType.Pachka, TokenType.Baza, TokenType.And,
+            TokenType.Citata, TokenType.Rasklad, TokenType.Baza, TokenType.And,
             TokenType.Or, TokenType.Not, TokenType.Esli, TokenType.To, TokenType.Inache, TokenType.Cikl,
         };
 

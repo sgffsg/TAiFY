@@ -24,9 +24,6 @@ namespace Lexer
                 "ВЫБРОС", TokenType.Vybros
             },
             {
-                "ПАЧКА", TokenType.Pachka
-            },
-            {
                 "ЦИТАТА", TokenType.Citata
             },
             {

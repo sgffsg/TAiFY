@@ -1,8 +1,5 @@
 ﻿namespace Ast.Expressions;
 
-/// <summary>
-/// Бинарная операция между двумя выражениями.
-/// </summary>
 public sealed class BinaryOperationExpression : Expression
 {
     public BinaryOperationExpression(Expression left, BinaryOperation operation, Expression right)
@@ -12,19 +9,10 @@ public sealed class BinaryOperationExpression : Expression
         Right = right;
     }
 
-    /// <summary>
-    /// Левый операнд.
-    /// </summary>
     public Expression Left { get; }
 
-    /// <summary>
-    /// Тип бинарной операции.
-    /// </summary>
     public BinaryOperation Operation { get; }
 
-    /// <summary>
-    /// Правый операнд.
-    /// </summary>
     public Expression Right { get; }
 
     public override void Accept(IAstVisitor visitor)

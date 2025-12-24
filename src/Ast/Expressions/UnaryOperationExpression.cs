@@ -1,8 +1,5 @@
 ﻿namespace Ast.Expressions;
 
-/// <summary>
-/// Унарная операция над выражением.
-/// </summary>
 public sealed class UnaryOperationExpression : Expression
 {
     public UnaryOperationExpression(UnaryOperation operation, Expression operand)
@@ -11,14 +8,8 @@ public sealed class UnaryOperationExpression : Expression
         Operand = operand;
     }
 
-    /// <summary>
-    /// Тип унарной операции.
-    /// </summary>
     public UnaryOperation Operation { get; }
 
-    /// <summary>
-    /// Операнд операции.
-    /// </summary>
     public Expression Operand { get; }
 
     public override void Accept(IAstVisitor visitor)

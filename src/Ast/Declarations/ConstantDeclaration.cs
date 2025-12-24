@@ -2,31 +2,19 @@
 
 namespace Ast.Declarations;
 
-/// <summary>
-/// Объявление константы.
-/// </summary>
 public sealed class ConstantDeclaration : Declaration
 {
-    public ConstantDeclaration(string typeName, string name, Expression value)
+    public ConstantDeclaration(string type, string name, Expression value)
     {
-        TypeName = typeName;
+        Type = type;
         Name = name;
         Value = value;
     }
 
-    /// <summary>
-    /// Тип константы.
-    /// </summary>
-    public string TypeName { get; }
+    public string Type { get; }
 
-    /// <summary>
-    /// Имя константы.
-    /// </summary>
     public string Name { get; }
 
-    /// <summary>
-    /// Значение константы.
-    /// </summary>
     public Expression Value { get; }
 
     public override void Accept(IAstVisitor visitor)

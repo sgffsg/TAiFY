@@ -1,14 +1,14 @@
 ﻿namespace Ast.Expressions;
 
-public class AssignmentExpression : Expression
+public sealed class AssignmentExpression : Expression
 {
-    public AssignmentExpression(string variableName, Expression value)
+    public AssignmentExpression(string name, Expression value)
     {
-        VariableName = variableName;
+        Name = name;
         Value = value;
     }
 
-    public string VariableName { get; }
+    public string Name { get; }
 
     public Expression Value { get; }
 
