@@ -1,8 +1,8 @@
-﻿namespace Ast.Expressions;
+﻿namespace Ast.Statements;
 
-public sealed class BreakExpression : Expression
+public sealed class ContinueStatement : Statement
 {
-    public BreakExpression()
+    public ContinueStatement()
     {
     }
 

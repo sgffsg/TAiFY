@@ -72,4 +72,14 @@ public class FakeEnvironment : IEnvironment
     {
         inputQueue.Clear();
     }
+
+    public string ReadString()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Write(double value)
+    {
+        outputList.Add(value);
+    }
 }

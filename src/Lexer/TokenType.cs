@@ -66,11 +66,6 @@
         /// </summary>
         Rasklad,
 
-        /// <summary>
-        /// Массив ПАЧКА
-        /// </summary>
-        Pachka,
-
         // Литералы и значения
 
         /// <summary>

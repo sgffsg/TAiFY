@@ -24,11 +24,14 @@ public class ConsoleEnvironment : IEnvironment
         return 0;
     }
 
-    /// <summary>
-    /// Записывает число в консоль.
-    /// </summary>
-    public void WriteNumber(double value)
+    public string ReadString()
     {
-        Console.WriteLine(value.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        string? input = Console.ReadLine();
+        return input ?? "";
+    }
+
+    public void Write(double value)
+    {
+        Console.WriteLine(value.ToString());
     }
 }

@@ -4,5 +4,7 @@ public interface IEnvironment
 {
     double ReadNumber();
 
-    void WriteNumber(double value);
+    string ReadString();
+
+    void Write(double value);
 }

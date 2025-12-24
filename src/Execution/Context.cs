@@ -1,4 +1,6 @@
-﻿using Ast.Declarations;
+﻿using System.Xml.Linq;
+
+using Ast.Declarations;
 
 namespace Execution;
 
@@ -7,7 +9,7 @@ namespace Execution;
 /// </summary>
 public class Context
 {
-    private readonly Stack<Scope> scopes = [];
+    private readonly Stack<Scope> scopes = new();
     private readonly Dictionary<string, double> constants = [];
     private readonly Dictionary<string, FunctionDeclaration> functions = [];
     private readonly Dictionary<string, ProcedureDeclaration> procedures = [];
@@ -27,14 +29,11 @@ public class Context
         scopes.Pop();
     }
 
-    /// <summary>
-    /// Возвращает значение переменной или константы.
-    /// </summary>
     public double GetValue(string name)
     {
-        foreach (Scope s in scopes)
+        foreach (Scope scope in scopes)
         {
-            if (s.TryGetVariable(name, out double variable))
+            if (scope.TryGetVariable(name, out double variable))
             {
                 return variable;
             }
@@ -45,15 +44,12 @@ public class Context
             return constant;
         }
 
-        throw new ArgumentException($"Variable '{name}' is not defined");
+        throw new ArgumentException($"Переменная {name} не определена");
     }
 
-    /// <summary>
-    /// Присваивает (изменяет) значение переменной.
-    /// </summary>
     public void AssignVariable(string name, double value)
     {
-        foreach (Scope s in scopes.Reverse())
+        foreach (Scope s in scopes)
         {
             if (s.TryAssignVariable(name, value))
             {
@@ -61,29 +57,22 @@ public class Context
             }
         }
 
-        throw new ArgumentException($"Variable '{name}' is not defined");
+        throw new ArgumentException($"Переменная {name} не определена");
     }
 
-    /// <summary>
-    /// Определяет переменную в текущей области видимости.
-    /// </summary>
-    public void DefineVariable(string name, double value)
+    public Declaration GetCallable(string name)
     {
-        if (!scopes.Peek().TryDefineVariable(name, value))
+        if (functions.TryGetValue(name, out FunctionDeclaration? function))
         {
-            throw new ArgumentException($"Variable '{name}' is already defined in this scope");
+            return function;
         }
-    }
 
-    /// <summary>
-    /// Определяет константу в глобальной области видимости.
-    /// </summary>
-    public void DefineConstant(string name, double value)
-    {
-        if (!constants.TryAdd(name, value))
+        if (procedures.TryGetValue(name, out ProcedureDeclaration? procedure))
         {
-            throw new ArgumentException($"Constant '{name}' is already defined");
+            return procedure;
         }
+
+        throw new Exception($"Функция или процедура с именем '{name}' не определена");
     }
 
     public FunctionDeclaration GetFunction(string name)
@@ -93,7 +82,7 @@ public class Context
             return function;
         }
 
-        throw new ArgumentException($"Function '{name}' is not defined");
+        throw new Exception($"Function '{name}' is not defined");
     }
 
     public ProcedureDeclaration GetProcedure(string name)
@@ -103,7 +92,23 @@ public class Context
             return procedure;
         }
 
-        throw new ArgumentException($"Procedure '{name}' is not defined");
+        throw new Exception($"Procedure '{name}' is not defined");
+    }
+
+    public void DefineVariable(string name, double value)
+    {
+        if (!scopes.Peek().TryDefineVariable(name, value) || constants.TryGetValue(name, out _))
+        {
+            throw new ArgumentException($"Variable '{name}' is already defined in this scope");
+        }
+    }
+
+    public void DefineConstant(string name, double value)
+    {
+        if (!constants.TryAdd(name, value))
+        {
+            throw new ArgumentException($"Constant '{name}' is already defined");
+        }
     }
 
     public void DefineFunction(FunctionDeclaration function)
@@ -120,5 +125,23 @@ public class Context
         {
             throw new ArgumentException($"Function '{procedure.Name}' is already defined");
         }
+    }
+
+    public bool Exists(string name)
+    {
+        foreach (Scope scope in scopes)
+        {
+            if (scope.TryGetVariable(name, out _))
+            {
+                return true;
+            }
+        }
+
+        if (constants.ContainsKey(name))
+        {
+            return true;
+        }
+
+        return functions.ContainsKey(name) || procedures.ContainsKey(name);
     }
 }
