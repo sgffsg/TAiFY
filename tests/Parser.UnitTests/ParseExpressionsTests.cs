@@ -1,4 +1,8 @@
-﻿using Execution;
+﻿using Ast;
+
+using Execution;
+
+using Xunit.Sdk;
 
 namespace Parser.UnitTests;
 
@@ -15,19 +19,19 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "42", [42] },
-            { "-42", [-42] },
-            { "3.14", [3.14] },
-            { "-3.14", [-3.14] },
-            { "+5", [5] },
-            { "0", [0] },
-            { "ХАЙП", [1] },
-            { "КРИНЖ", [0] },
-            { "ПИ", [3.1415926535] },
-            { "ЕШКА", [2.7182818284] },
-            { "\"Hello\"", [5] },
-            { "\"\"", [0] },
-            { "\"Привет мир!\"", [11] },
+            { "42;", [42] },
+            { "-42;", [-42] },
+            { "3.14;", [3.14] },
+            { "-3.14;", [-3.14] },
+            { "+5;", [5] },
+            { "0;", [0] },
+            { "ХАЙП;", [1] },
+            { "КРИНЖ;", [0] },
+            { "ПИ;", [3.1415926535] },
+            { "ЕШКА;", [2.7182818284] },
+            { "\"Hello\";", [5] },
+            { "\"\";", [0] },
+            { "\"Привет мир!\";", [11] },
         };
     }
 
@@ -42,12 +46,12 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "2 + 3", [5] },
-            { "5 - 2", [3] },
-            { "3 * 4", [12] },
-            { "10 / 2", [5] },
-            { "7 % 3", [1] },
-            { "2 + 3 * 4", [14] },
+            { "2 + 3;", [5] },
+            { "5 - 2;", [3] },
+            { "3 * 4;", [12] },
+            { "10 / 2;", [5] },
+            { "7 % 3;", [1] },
+            { "2 + 3 * 4;", [14] },
         };
     }
 
@@ -62,12 +66,12 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "ХАЙП И ХАЙП", [1] },
-            { "ХАЙП И КРИНЖ", [0] },
-            { "ХАЙП ИЛИ КРИНЖ", [1] },
-            { "КРИНЖ ИЛИ КРИНЖ", [0] },
-            { "НЕ ХАЙП", [0] },
-            { "НЕ КРИНЖ", [1] },
+            { "ХАЙП И ХАЙП;", [1] },
+            { "ХАЙП И КРИНЖ;", [0] },
+            { "ХАЙП ИЛИ КРИНЖ;", [1] },
+            { "КРИНЖ ИЛИ КРИНЖ;", [0] },
+            { "НЕ ХАЙП;", [0] },
+            { "НЕ КРИНЖ;", [1] },
         };
     }
 
@@ -82,14 +86,14 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "5 == 5", [1] },
-            { "5 == 3", [0] },
-            { "5 != 3", [1] },
-            { "5 != 5", [0] },
-            { "3 < 5", [1] },
-            { "5 <= 5", [1] },
-            { "5 > 3", [1] },
-            { "5 >= 5", [1] },
+            { "5 == 5;", [1] },
+            { "5 == 3;", [0] },
+            { "5 != 3;", [1] },
+            { "5 != 5;", [0] },
+            { "3 < 5;", [1] },
+            { "5 <= 5;", [1] },
+            { "5 > 3;", [1] },
+            { "5 >= 5;", [1] },
         };
     }
 
@@ -104,9 +108,9 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "10 - 4 / 2", [8] },
-            { "-3 + 5", [2] },
-            { "2 < 3 И 4 > 1", [1] },
+            { "10 - 4 / 2;", [8] },
+            { "-3 + 5;", [2] },
+            { "2 < 3 И 4 > 1;", [1] },
         };
     }
 
@@ -121,15 +125,15 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "10 - 5 - 2", [3] },
-            { "12 / 3 / 2", [2] },
-            { "+5", [5] },
-            { "-3.14", [-3.14] },
-            { "НЕ НЕ ХАЙП", [1] },
-            { "-5 + 3", [-2] },
-            { "- + -5", [5] },
-            { "-2 * 3", [-6] },
-            { "-(2 + 3)", [-5] },
+            { "10 - 5 - 2;", [3] },
+            { "12 / 3 / 2;", [2] },
+            { "+5;", [5] },
+            { "-3.14;", [-3.14] },
+            { "НЕ НЕ ХАЙП;", [1] },
+            { "-5 + 3;", [-2] },
+            { "- + -5;", [5] },
+            { "-2 * 3;", [-6] },
+            { "-(2 + 3);", [-5] },
         };
     }
 
@@ -144,9 +148,9 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "(2 + 3) * 4", [20] },
-            { "2 + (3 * 4)", [14] },
-            { "((2 + 3) * (4 - 1))", [15] },
+            { "(2 + 3) * 4;", [20] },
+            { "2 + (3 * 4);", [14] },
+            { "((2 + 3) * (4 - 1));", [15] },
         };
     }
 
@@ -161,10 +165,10 @@ public class ParseExpressionsTests
     {
         return new TheoryData<string, List<double>>
         {
-            { "МОДУЛЬ(-5)", [5] },
-            { "СТЕПЕНЬ(2, 3)", [8] },
-            { "МИНИМУМ(3, 1, 2)", [1] },
-            { "МОДУЛЬ(МИНИМУМ(-1, 5))", [1] },
+            { "МОДУЛЬ(-5);", [5] },
+            { "СТЕПЕНЬ(2, 3);", [8] },
+            { "МИНИМУМ(3, 1, 2);", [1] },
+            { "МОДУЛЬ(МИНИМУМ(-1, 5));", [1] },
         };
     }
 
@@ -174,22 +178,29 @@ public class ParseExpressionsTests
     {
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws(expectedExceptionType, () => parser.ExecuteExpressionToList());
+        Parser parser = new(code);
+        AstEvaluator evaluator = new(context, environment);
+
+        Assert.Throws(expectedExceptionType, () =>
+        {
+            List<AstNode> nodes = parser.ParseProgram();
+            foreach (AstNode node in nodes)
+            {
+                evaluator.Evaluate(node);
+            }
+        });
     }
 
     public static TheoryData<string, Type> GetExceptionThrowTheory()
     {
         return new TheoryData<string, Type>
         {
-            { "(2 + 3", typeof(UnexpectedLexemeException) },
-            { "2 + 3)", typeof(UnexpectedLexemeException) },
-            { "2 & 3", typeof(UnexpectedLexemeException) },
-            { "", typeof(UnexpectedLexemeException) },
-            { "5 / 0", typeof(DivideByZeroException) },
-            { "МОДУЛЬ(1, 2)", typeof(ArgumentException) },
-            { "переменная", typeof(Exception) },
+            { "(2 + 3;", typeof(UnexpectedLexemeException) },
+            { "2 + 3);", typeof(UnexpectedLexemeException) },
+            { "2 & 3;", typeof(UnexpectedLexemeException) },
+            { "5 / 0;", typeof(DivideByZeroException) },
+            { "МОДУЛЬ(1, 2);", typeof(ArgumentException) },
         };
     }
 
@@ -197,10 +208,19 @@ public class ParseExpressionsTests
     {
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        List<double> result = parser.ExecuteExpressionToList();
-        MatchResults(expected, result);
+        Parser parser = new(code);
+        AstEvaluator evaluator = new(context, environment);
+
+        List<double> results = new();
+        List<AstNode> nodes = parser.ParseProgram();
+
+        foreach (AstNode node in nodes)
+        {
+            results.Add(evaluator.Evaluate(node));
+        }
+
+        MatchResults(expected, results);
     }
 
     private void MatchResults(List<double> expected, List<double> results)

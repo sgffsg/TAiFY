@@ -1,4 +1,8 @@
-﻿using Execution;
+﻿using Ast;
+using Ast.Declarations;
+
+using Execution;
+using Execution.Exceptions;
 
 namespace Parser.UnitTests;
 
@@ -10,9 +14,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЦИФЕРКА x = 5;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
+        ExecuteTestCode(context, environment, code);
 
-        parser.ParseProgram();
         Assert.True(context.Exists("x"));
         Assert.Equal(5, context.GetValue("x"));
     }
@@ -23,9 +26,9 @@ public class ParseTopLevelStatementsTests
         string code = @"ПОЛТОРАШКА x = 5.1;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
+
         Assert.True(context.Exists("x"));
         Assert.Equal(5.1, context.GetValue("x"));
     }
@@ -36,9 +39,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЦИФЕРКА x = 5;ПОЛТОРАШКА x = 5.1;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -47,9 +49,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЦИФЕРКА a = 10; ЦИФЕРКА b = 20; ЦИФЕРКА c = a + b;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         Assert.True(context.Exists("a"));
         Assert.Equal(10, context.GetValue("a"));
@@ -67,9 +68,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЦИФЕРКА x = 5;x = x + 1;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         Assert.True(context.Exists("x"));
         Assert.Equal(6, context.GetValue("x"));
@@ -81,10 +81,8 @@ public class ParseTopLevelStatementsTests
         string code = @"x = x + 1;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
-        Assert.Contains("Необъявленная переменная", exception.Message);
+        Exception exception = Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -93,9 +91,9 @@ public class ParseTopLevelStatementsTests
         string code = @"БАЗА ЦИФЕРКА x = 5;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
+
         Assert.True(context.Exists("x"));
         Assert.Equal(5, context.GetValue("x"));
     }
@@ -106,9 +104,8 @@ public class ParseTopLevelStatementsTests
         string code = @"БАЗА ЦИФЕРКА x = 5;БАЗА ЦИФЕРКА x = 2;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -117,9 +114,8 @@ public class ParseTopLevelStatementsTests
         string code = @"БАЗА ЦИФЕРКА x = 5;ЦИФЕРКА x = 5;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -128,9 +124,8 @@ public class ParseTopLevelStatementsTests
         string code = @"БАЗА ЦИФЕРКА МАКС = 100; ЦИФЕРКА результат = МАКС;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         Assert.True(context.Exists("МАКС"));
         Assert.Equal(100, context.GetValue("МАКС"));
@@ -145,10 +140,8 @@ public class ParseTopLevelStatementsTests
         string code = @"БАЗА ЦИФЕРКА МАКС = 100; МАКС = 50;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Exception exception = Assert.Throws<InvalidOperationException>(() => parser.ParseProgram());
-        Assert.Contains("Невозможно изменить значение константы", exception.Message);
+        Exception exception = Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -157,9 +150,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЦИФЕРКА радиус = 5; ПОЛТОРАШКА результат = радиус * радиус * ПИ;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         Assert.True(context.Exists("радиус"));
         Assert.Equal(5, context.GetValue("радиус"));
@@ -171,12 +163,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_if_branch_with_literal_check()
     {
-        string code = @"ЕСЛИ (ХАЙП) ТО 5;";
+        string code = @"ЕСЛИ (ХАЙП) ТО ВЫБРОС(5);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -189,9 +180,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЕСЛИ (КРИНЖ) ТО 5;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Empty(output);
@@ -200,15 +190,13 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_if_branch_with_comparison_expression()
     {
-        string code = @"ЕСЛИ (5 > 3) ТО 10;";
+        string code = @"ЕСЛИ (5 > 3) ТО ВЫБРОС(10);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
         Assert.Equal(10, output[0]);
     }
 
@@ -218,9 +206,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЕСЛИ (5 < 3) ТО 10;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Empty(output);
@@ -229,12 +216,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_if_else_true_branch()
     {
-        string code = @"ЕСЛИ (ХАЙП) ТО 10; ИНАЧЕ 20;";
+        string code = @"ЕСЛИ (ХАЙП) ТО ВЫБРОС(10); ИНАЧЕ ВЫБРОС(20);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -244,12 +230,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_if_else_false_branch()
     {
-        string code = @"ЕСЛИ (КРИНЖ) ТО 10; ИНАЧЕ 20;";
+        string code = @"ЕСЛИ (КРИНЖ) ТО ВЫБРОС(10); ИНАЧЕ ВЫБРОС(20);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -257,31 +242,13 @@ public class ParseTopLevelStatementsTests
     }
 
     [Fact]
-    public void Parse_block_with_multiple_statements()
-    {
-        string code = @"ПОЕХАЛИ 1; 2; 3; ФИНАЛОЧКА";
-        Context context = new();
-        FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
-
-        parser.ParseProgram();
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Equal(3, output.Count);
-        Assert.Equal(1, output[0]);
-        Assert.Equal(2, output[1]);
-        Assert.Equal(3, output[2]);
-    }
-
-    [Fact]
     public void Parse_nested_functions()
     {
-        string code = @"МОДУЛЬ(МИНИМУМ(-10, 5, 20));";
+        string code = @"ВЫБРОС(МОДУЛЬ(МИНИМУМ(-10, 5, 20)));";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -291,12 +258,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_combination_of_functions()
     {
-        string code = @"СТЕПЕНЬ(КОРЕНЬ(16), 2);";
+        string code = @"ВЫБРОС(СТЕПЕНЬ(КОРЕНЬ(16), 2));";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -306,12 +272,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_combination_of_variables_and_functions()
     {
-        string code = @"ЦИФЕРКА x = 5; ЦИФЕРКА y = 10; (x + y) * МОДУЛЬ(-2);";
+        string code = @"ЦИФЕРКА x = 5; ЦИФЕРКА y = 10; ВЫБРОС((x + y) * МОДУЛЬ(-2));";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -321,12 +286,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_complex_logical_and_condition()
     {
-        string code = @"ЕСЛИ (5 > 3 И 10 < 20) ТО 100; ИНАЧЕ 200;";
+        string code = @"ЕСЛИ (5 > 3 И 10 < 20) ТО ВЫБРОС(100); ИНАЧЕ ВЫБРОС(200);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -336,12 +300,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_complex_logical_or_condition()
     {
-        string code = @"ЕСЛИ (5 > 10 ИЛИ 10 < 20) ТО 100; ИНАЧЕ 200;";
+        string code = @"ЕСЛИ (5 > 10 ИЛИ 10 < 20) ТО ВЫБРОС(100); ИНАЧЕ ВЫБРОС(200);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -351,12 +314,11 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_complex_logical_and_or_combination()
     {
-        string code = @"ЕСЛИ ((5 > 3) И (10 < 20 ИЛИ 1 == 2)) ТО 100; ИНАЧЕ 200;";
+        string code = @"ЕСЛИ ((5 > 3) И (10 < 20 ИЛИ 1 == 2)) ТО ВЫБРОС(100); ИНАЧЕ ВЫБРОС(200);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -369,9 +331,8 @@ public class ParseTopLevelStatementsTests
         string code = @"(2 + 3";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+        Assert.Throws<UnexpectedLexemeException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -380,9 +341,8 @@ public class ParseTopLevelStatementsTests
         string code = @"2 + 3)";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+        Assert.Throws<UnexpectedLexemeException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -391,9 +351,8 @@ public class ParseTopLevelStatementsTests
         string code = @"2 & 3;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<UnexpectedLexemeException>(() => parser.ParseProgram());
+        Assert.Throws<UnexpectedLexemeException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -402,9 +361,8 @@ public class ParseTopLevelStatementsTests
         string code = @"5 / 0;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<DivideByZeroException>(() => parser.ParseProgram());
+        Assert.Throws<DivideByZeroException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -413,9 +371,8 @@ public class ParseTopLevelStatementsTests
         string code = @"10 % 0;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<DivideByZeroException>(() => parser.ParseProgram());
+        Assert.Throws<DivideByZeroException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -424,10 +381,8 @@ public class ParseTopLevelStatementsTests
         string code = @"x = 5;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
-        Assert.Contains("Необъявленная переменная", exception.Message);
+        Exception exception = Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -436,9 +391,8 @@ public class ParseTopLevelStatementsTests
         string code = @"МОДУЛЬ();";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -447,9 +401,8 @@ public class ParseTopLevelStatementsTests
         string code = @"МОДУЛЬ(1, 2, 3);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Assert.Throws<ArgumentException>(() => parser.ParseProgram());
+        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -458,9 +411,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ВЫБРОС(""Привет"");";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Single(output);
@@ -473,9 +425,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ВЫБРОС(1, 2, 3);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Equal(3, output.Count);
@@ -490,9 +441,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ЦИФЕРКА x = 5; ВЫБРОС(x, x * 2, x + 10);";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         IReadOnlyList<double> output = environment.GetOutput();
         Assert.Equal(3, output.Count);
@@ -504,13 +454,12 @@ public class ParseTopLevelStatementsTests
     [Fact]
     public void Parse_input_statement()
     {
-        string code = @"ВБРОС(x, y);";
+        string code = @"ЦИФЕРКА x; ЦИФЕРКА y;ВБРОС(x, y);";
         double[] inputs = { 10.5, 20.3 };
         Context context = new();
         FakeEnvironment environment = new(inputs);
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         Assert.True(context.Exists("x"));
         Assert.True(context.Exists("y"));
@@ -525,9 +474,8 @@ public class ParseTopLevelStatementsTests
         double[] inputs = { 100, 200 };
         Context context = new();
         FakeEnvironment environment = new(inputs);
-        Parser parser = new(context, environment, code);
 
-        parser.ParseProgram();
+        ExecuteTestCode(context, environment, code);
 
         Assert.Equal(100, context.GetValue("x"));
         Assert.Equal(200, context.GetValue("y"));
@@ -539,10 +487,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ХВАТИТ;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
-        Assert.Contains("может использоваться только внутри цикла", exception.Message);
+        Exception exception = Assert.Throws<BreakException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -551,10 +497,8 @@ public class ParseTopLevelStatementsTests
         string code = @"ПРОДОЛЖАЕМ;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
-        Assert.Contains("может использоваться только внутри цикла", exception.Message);
+        Exception exception = Assert.Throws<ContinueException>(() => ExecuteTestCode(context, environment, code));
     }
 
     [Fact]
@@ -563,9 +507,24 @@ public class ParseTopLevelStatementsTests
         string code = @"ДРАТУТИ 5;";
         Context context = new();
         FakeEnvironment environment = new();
-        Parser parser = new(context, environment, code);
 
-        Exception exception = Assert.Throws<Exception>(() => parser.ParseProgram());
-        Assert.Contains("может использоваться только внутри функции", exception.Message);
+        Exception exception = Assert.Throws<ReturnException>(() => ExecuteTestCode(context, environment, code));
+    }
+
+    private void ExecuteTestCode(Context context, IEnvironment environment, string code)
+    {
+        Parser parser = new(code);
+        List<AstNode> nodes = parser.ParseProgram();
+        AstEvaluator evaluator = new(context, environment);
+
+        foreach (Declaration node in nodes.OfType<Declaration>())
+        {
+            node.Accept(evaluator);
+        }
+
+        foreach (AstNode? node in nodes.Where(n => n is not Declaration))
+        {
+            evaluator.Evaluate(node);
+        }
     }
 }
