@@ -1,4 +1,8 @@
-﻿using Execution;
+﻿using Ast;
+using Ast.Declarations;
+using Ast.Expressions;
+
+using Execution;
 
 namespace Interpreter;
 
@@ -22,9 +26,9 @@ public class VaibikiInterpreter
     }
 
     /// <summary>
-    /// Выполняет программу на языке Vaibik
+    /// Выполняет программу на языке Vaibik.
     /// </summary>
-    /// <param name="sourceCode">Исходный код программы</param>
+    /// <param name="sourceCode">Исходный код программы.</param>
     public void Execute(string sourceCode)
     {
         if (string.IsNullOrEmpty(sourceCode))
@@ -32,7 +36,34 @@ public class VaibikiInterpreter
             throw new ArgumentException("Source code cannot be null or empty", nameof(sourceCode));
         }
 
-        Parser.Parser parser = new Parser.Parser(context, environment, sourceCode);
-        parser.ParseProgram();
+        AstEvaluator evaluator = new AstEvaluator(context, environment);
+        Parser.Parser parser = new Parser.Parser(sourceCode);
+        List<AstNode> nodes = parser.ParseProgram();
+
+        foreach (Declaration node in nodes.OfType<Declaration>())
+        {
+            node.Accept(evaluator);
+        }
+
+        List<AstNode> topLevelStatements = nodes.Where(n => n is not Declaration).ToList();
+        if (topLevelStatements.Count > 0)
+        {
+            foreach (AstNode node in topLevelStatements)
+            {
+                evaluator.Evaluate(node);
+            }
+        }
+        else
+        {
+            try
+            {
+                CallExpression mainCall = new CallExpression("ПОГНАЛИ", new List<Expression>());
+                evaluator.Evaluate(mainCall);
+            }
+            catch (Exception ex) when (ex.Message.Contains("not defined"))
+            {
+                // ПОГНАЛИ не найдена
+            }
+        }
     }
 }
