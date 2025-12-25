@@ -107,12 +107,11 @@ identifier = ( cyrillicLetter | underscore ), { cyrillicLetter | digit | undersc
 numericLiteral = realLiteral | integerLiteral ;
 integerLiteral = [ "-" | "+" ], digit, { digit } ;
 realLiteral    = [ "-" | "+" ], digit, { digit }, ".", digit, { digit } ;
-stringLiteral  = '"', { anyChar - '"' | escapeSequence }, '"' ;
 logicalLiteral = "ХАЙП" | "КРИНЖ" ;
 
 constant = "ПИ" | "ЕШКА" ;
 
-typeName = "ЦИФЕРКА" | "ПОЛТОРАШКА" | "ЦИТАТА" | "РАСКЛАД" | "ПШИК" ;
+typeName = "ЦИФЕРКА" | "ПОЛТОРАШКА" | "РАСКЛАД" ;
 ```
 
 #### Грамматика Выражений
@@ -148,7 +147,6 @@ unaryExpression =
 
 primary = 
       numericLiteral
-    | stringLiteral
     | logicalLiteral
     | constant
     | identifier, [ callSuffix ]
