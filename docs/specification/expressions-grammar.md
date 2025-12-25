@@ -13,6 +13,7 @@
 * Встроенные константы
 * Круглые скобки `()` для группировки
 * Вызовы встроенных функций (напр. `abs(x)`)
+* При вызове функции `имя(арг1, арг2, ...)` аргументы вычисляются строго слева направо перед передачей в тело функции
 
 ## Операторы
 
@@ -70,10 +71,6 @@
 * `МИНИМУМ(x, y, ...)` — возвращает наименьшее из переданных чисел.
 * `МАКСИМУМ(x, y, ...)` — возвращает наибольшее из переданных чисел.
 
-## Встроенные  функции для строк
-
-* `ДЛИНА(строка)` — возвращает длину строки в виде перемнной типа `ЦИФЕРКА`.
-
 ## Встроенные тригонометрические функции
 
 * `СИНУС(x)` — возвращает синус угла.
@@ -94,10 +91,6 @@ cyrillicLetter =
     "р" | "с" | "т" | "у" | "ф" | "х" | "ц" | "ч" | "ш" | "щ" | "ъ" | "ы" | "ь" | "э" | "ю" | "я" |
     "А" | "Б" | "В" | "Г" | "Д" | "Е" | "Ё" | "Ж" | "З" | "И" | "Й" | "К" | "Л" | "М" | "Н" | "О" | "П" |
     "Р" | "С" | "Т" | "У" | "Ф" | "Х" | "Ц" | "Ч" | "Ш" | "Щ" | "Ъ" | "Ы" | "Ь" | "Э" | "Ю" | "Я" ;
-    
-anyChar = ? "Любой символ Unicode" ? ;
-
-escapeSequence = "\" , ( "n" | "t" | '"' | "\" ) ;
 ```
 
 ### Лексемы и Синтаксис Инструкций
@@ -110,12 +103,11 @@ identifier = ( cyrillicLetter | underscore ), { cyrillicLetter | digit | undersc
 numericLiteral = realLiteral | integerLiteral ;
 integerLiteral = [ "-" | "+" ], digit, { digit } ;
 realLiteral    = [ "-" | "+" ], digit, { digit }, ".", digit, { digit } ;
-stringLiteral  = '"', { anyChar - '"' | escapeSequence }, '"' ;
 logicalLiteral = "ХАЙП" | "КРИНЖ" ;
 
 constant = "ПИ" | "ЕШКА" ;
 
-typeName = "ЦИФЕРКА" | "ПОЛТОРАШКА" | "ЦИТАТА" | "РАСКЛАД" ;
+typeName = "ЦИФЕРКА" | "ПОЛТОРАШКА" | "РАСКЛАД" ;
 ```
 
 #### Грамматика Выражений
@@ -151,15 +143,13 @@ unaryExpression =
 
 primary = 
       numericLiteral
-    | stringLiteral
     | logicalLiteral
     | constant
-    | identifier, [ callSuffix | indexSuffix ]
+    | identifier, [ callSuffix ]
     | "(", expression, ")"
     ;
 
 callSuffix = "(", [ argumentList ], ")" ;
-indexSuffix = "[", expression, "]" ;
 
 argumentList = expression, { ",", expression } ;
 ```
