@@ -1,4 +1,6 @@
-﻿using Parser;
+﻿using Execution;
+
+using Parser;
 
 namespace Interpreter;
 
@@ -31,7 +33,8 @@ public static class Program
 
             string sourceCode = File.ReadAllText(sourcePath);
 
-            VaibikiInterpreter interpreter = new();
+            ConsoleEnvironment environment = new();
+            VaibikiInterpreter interpreter = new(environment);
             interpreter.Execute(sourceCode);
 
             return 0;
@@ -43,6 +46,7 @@ public static class Program
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex.StackTrace);
             Console.Error.WriteLine($"Error: {ex.Message}");
             return 1;
         }

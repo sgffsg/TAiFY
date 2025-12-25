@@ -1,8 +1,12 @@
-﻿using Ast;
+﻿using System;
+
+using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
 
 using Execution;
+
+using Semantics;
 
 namespace Interpreter;
 
@@ -11,18 +15,15 @@ namespace Interpreter;
 /// </summary>
 public class VaibikiInterpreter
 {
+    private readonly Builtins builtins;
     private readonly Context context;
     private readonly IEnvironment environment;
 
-    public VaibikiInterpreter()
-        : this(new Context(), new ConsoleEnvironment())
+    public VaibikiInterpreter(IEnvironment environment)
     {
-    }
-
-    public VaibikiInterpreter(Context context, IEnvironment environment)
-    {
-        this.context = context;
         this.environment = environment;
+        this.builtins = new(this.environment);
+        this.context = new();
     }
 
     /// <summary>
@@ -36,9 +37,17 @@ public class VaibikiInterpreter
             throw new ArgumentException("Source code cannot be null or empty", nameof(sourceCode));
         }
 
-        AstEvaluator evaluator = new AstEvaluator(context, environment);
-        Parser.Parser parser = new Parser.Parser(sourceCode);
+        Parser.Parser parser = new(sourceCode);
         List<AstNode> nodes = parser.ParseProgram();
+
+        SemanticsChecker checker = new(
+            builtins.Functions,
+            builtins.Constants,
+            builtins.Types
+        );
+        checker.Check(nodes);
+
+        AstEvaluator evaluator = new AstEvaluator(context, environment);
 
         foreach (Declaration node in nodes.OfType<Declaration>())
         {
@@ -57,7 +66,7 @@ public class VaibikiInterpreter
         {
             try
             {
-                CallExpression mainCall = new CallExpression("ПОГНАЛИ", new List<Expression>());
+                FunctionCallExpression mainCall = new FunctionCallExpression("ПОГНАЛИ", new List<Expression>());
                 evaluator.Evaluate(mainCall);
             }
             catch (Exception ex) when (ex.Message.Contains("not defined"))

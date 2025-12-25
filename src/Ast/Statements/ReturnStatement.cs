@@ -2,7 +2,7 @@
 
 namespace Ast.Statements;
 
-public sealed class ReturnStatement : Statement
+public sealed class ReturnStatement : Expression
 {
     public ReturnStatement(Expression? value)
     {

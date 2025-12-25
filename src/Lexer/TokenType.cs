@@ -280,60 +280,6 @@
         /// </summary>
         MultiLineComment,
 
-        // Встроенные константы
-
-        /// <summary>
-        /// Константа 3.14159265358
-        /// </summary>
-        PI,
-
-        /// <summary>
-        /// Константа 2.71828182846
-        /// </summary>
-        EULER,
-
-        // Встроенные функции
-
-        /// <summary>
-        /// Модуль числа МОДУЛЬ(X)
-        /// </summary>
-        Module,
-
-        /// <summary>
-        /// Минимум числа МИНИМУМ(x, y, ...)
-        /// </summary>
-        Minimum,
-
-        /// <summary>
-        /// Максимум числа МАКСИМУМ(x, y, ...)
-        /// </summary>
-        Maximum,
-
-        /// <summary>
-        /// Возведение числа в степень СТЕПЕНЬ()
-        /// </summary>
-        Pow,
-
-        /// <summary>
-        /// Извлечение корня из числа Корень(X)
-        /// </summary>
-        Sqrt,
-
-        /// <summary>
-        /// Синус угла СИНУС(X)
-        /// </summary>
-        Sinus,
-
-        /// <summary>
-        /// Косинус угла КОСИНУС(X)
-        /// </summary>
-        Cosinus,
-
-        /// <summary>
-        /// Тангенс угла ТАНГЕНС(X)
-        /// </summary>
-        Tangens,
-
         // Служебные слова
 
         /// <summary>

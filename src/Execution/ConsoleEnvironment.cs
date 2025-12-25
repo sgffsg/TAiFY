@@ -1,37 +1,45 @@
-﻿namespace Execution;
+﻿using Runtime;
+using ValueType = Runtime.ValueType;
+
+namespace Execution;
 
 /// <summary>
 /// Реализация IEnvironment для работы с консолью.
 /// </summary>
 public class ConsoleEnvironment : IEnvironment
 {
-    /// <summary>
-    /// Читает число из консоли.
-    /// </summary>
-    public double ReadNumber()
+    public Value Read(ValueType expectedType)
     {
-        string? input = Console.ReadLine();
-        if (string.IsNullOrWhiteSpace(input))
+        while (true)
         {
-            return 0;
+            string? input = Console.ReadLine();
+            try
+            {
+                return expectedType switch
+                {
+                    ValueType.Ciferka => new Value(int.Parse(input ?? "0")),
+                    ValueType.Poltorashka => new Value(double.Parse(input ?? "0.0")),
+                    ValueType.Rasklad => input?.ToUpper() == "ХАЙП" ? new Value(true) :
+                                         input?.ToUpper() == "КРИНЖ" ? new Value(false) :
+                                         throw new Exception(),
+                    ValueType.Citata => new Value(input ?? ""),
+                    _ => throw new ArgumentException("Неподдерживаемый тип для чтения")
+                };
+            }
+            catch
+            {
+                Console.WriteLine($"Ошибка: Ожидался тип {expectedType}. Попробуйте еще раз:");
+            }
         }
-
-        if (double.TryParse(input, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double result))
-        {
-            return result;
-        }
-
-        return 0;
     }
 
-    public string ReadString()
+    public void Write(string message)
     {
-        string? input = Console.ReadLine();
-        return input ?? "";
+        Console.Write(message);
     }
 
-    public void Write(double value)
+    public void AddResult(Value value)
     {
-        Console.WriteLine(value.ToString());
+        Console.WriteLine($"Результат: {value}");
     }
 }

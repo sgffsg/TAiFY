@@ -80,36 +80,6 @@ namespace Lexer
             {
                 "НЕ", TokenType.Not
             },
-            {
-                "ПИ", TokenType.PI
-            },
-            {
-                "ЕШКА", TokenType.EULER
-            },
-            {
-                "МОДУЛЬ", TokenType.Module
-            },
-            {
-                "МИНИМУМ", TokenType.Minimum
-            },
-            {
-                "МАКСИМУМ", TokenType.Maximum
-            },
-            {
-                "СТЕПЕНЬ", TokenType.Pow
-            },
-            {
-                "КОРЕНЬ", TokenType.Sqrt
-            },
-            {
-                "СИНУС", TokenType.Sinus
-            },
-            {
-                "КОСИНУС", TokenType.Cosinus
-            },
-            {
-                "ТАНГЕНС", TokenType.Tangens
-            },
         };
 
         private static readonly Dictionary<char, char> SimpleEscapes = new()

@@ -1,11 +1,9 @@
-﻿namespace Ast.Statements;
+﻿using Ast.Expressions;
 
-public sealed class ContinueStatement : Statement
+namespace Ast.Statements;
+
+public sealed class ContinueStatement : Expression
 {
-    public ContinueStatement()
-    {
-    }
-
     public override void Accept(IAstVisitor visitor)
     {
         visitor.Visit(this);

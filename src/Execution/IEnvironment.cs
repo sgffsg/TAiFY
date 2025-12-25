@@ -1,10 +1,11 @@
-﻿namespace Execution;
+﻿using Runtime;
+using ValueType = Runtime.ValueType;
+
+namespace Execution;
 
 public interface IEnvironment
 {
-    double ReadNumber();
+    Value Read(ValueType expectedType);
 
-    string ReadString();
-
-    void Write(double value);
+    void Write(string message);
 }

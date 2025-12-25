@@ -5,37 +5,44 @@ using Ast.Statements;
 
 using Execution.Exceptions;
 
+using Runtime;
+
+using ValueType = Runtime.ValueType;
+
 namespace Execution;
 
-public class AstEvaluator : IAstVisitor
+public class AstEvaluator(Context context, IEnvironment environment) : IAstVisitor
 {
-    private readonly Context context;
-    private readonly IEnvironment environment;
-    private readonly Stack<double> values = new();
+    private readonly Stack<Value> values = new();
 
-    public AstEvaluator(Context context, IEnvironment environment)
+    public Value Evaluate(AstNode node)
     {
-        this.context = context;
-        this.environment = environment;
-    }
-
-    public double Evaluate(AstNode node)
-    {
-        values.Clear();
-        node.Accept(this);
-
-        if (values.Count == 0)
+        if (values.Count > 0)
         {
-            return 0.0;
+            throw new InvalidOperationException("Стек вычислений должен быть пуст.");
         }
 
-        return values.Pop();
+        node.Accept(this);
+
+        return values.Count switch
+        {
+            0 => Value.Void,
+            1 => values.Pop(),
+            _ => throw new InvalidOperationException("Ошибка логики: на стеке осталось более одного значения.")
+        };
     }
 
+    /// <summary>
+    /// Объявления (Declarations).
+    /// </summary>
     public void Visit(ConstantDeclaration d)
     {
-        d.Value.Accept(this);
-        context.DefineConstant(d.Name, values.Pop());
+        context.DefineConstant(d.Name, Evaluate(d.Value));
+    }
+
+    public void Visit(VariableDeclaration d)
+    {
+        context.DefineVariable(d.Name, d.InitialValue != null ? Evaluate(d.InitialValue) : Value.Void);
     }
 
     public void Visit(FunctionDeclaration d)
@@ -43,135 +50,13 @@ public class AstEvaluator : IAstVisitor
         context.DefineFunction(d);
     }
 
-    public void Visit(ProcedureDeclaration d)
+    public void Visit(ParameterDeclaration d)
     {
-        context.DefineProcedure(d);
     }
 
-    public void Visit(BinaryOperationExpression e)
-    {
-        e.Left.Accept(this);
-        e.Right.Accept(this);
-        double right = values.Pop();
-        double left = values.Pop();
-
-        values.Push(e.Operation switch
-        {
-            BinaryOperation.Plus => left + right,
-            BinaryOperation.Minus => left - right,
-            BinaryOperation.Multiplication => left * right,
-            BinaryOperation.Division => right == 0 ? throw new DivideByZeroException("Division by zero") : left / right,
-            BinaryOperation.Remainder => right == 0 ? throw new DivideByZeroException("Remainder by zero") : left % right,
-            BinaryOperation.Equal => left == right ? 1.0 : 0.0,
-            BinaryOperation.NotEqual => left != right ? 1.0 : 0.0,
-            BinaryOperation.LessThan => left < right ? 1.0 : 0.0,
-            BinaryOperation.GreaterThan => left > right ? 1.0 : 0.0,
-            BinaryOperation.LessThanOrEqual => (left <= right) || (right == left) ? 1.0 : 0.0,
-            BinaryOperation.GreaterThanOrEqual => (right <= left) || (right == left) ? 1.0 : 0.0,
-            BinaryOperation.And => (left > 0 && right > 0) ? 1.0 : 0.0,
-            BinaryOperation.Or => (left > 0 || right > 0) ? 1.0 : 0.0,
-            _ => throw new NotImplementedException($"Оператор {e.Operation} не поддерживается")
-        });
-    }
-
-    public void Visit(UnaryOperationExpression e)
-    {
-        e.Operand.Accept(this);
-        double value = values.Pop();
-
-        values.Push(e.Operation switch
-        {
-            UnaryOperation.Plus => value,
-            UnaryOperation.Minus => -value,
-            UnaryOperation.Not => (value == 0.0) ? 1.0 : 0.0,
-
-            _ => throw new NotImplementedException($"Оператор {e.Operation} не поддерживается")
-        });
-    }
-
-    public void Visit(CallExpression e)
-    {
-        List<double> evaluatedArgs = new();
-        foreach (Expression argument in e.Arguments)
-        {
-            argument.Accept(this);
-            evaluatedArgs.Add(values.Pop());
-        }
-
-        try
-        {
-            double builtinResult = BuiltinFunctions.Instance.Invoke(e.Name, evaluatedArgs);
-            values.Push(builtinResult);
-            return;
-        }
-        catch (ArgumentException ex) when (ex.Message.Contains("Unknown builtin function"))
-        {
-        }
-
-        Declaration declaration = context.GetCallable(e.Name);
-
-        List<Parameter> parameters;
-        BlockStatement body;
-
-        if (declaration is FunctionDeclaration func)
-        {
-            parameters = func.Parameters;
-            body = func.Body;
-        }
-        else if (declaration is ProcedureDeclaration proc)
-        {
-            parameters = proc.Parameters;
-            body = proc.Body;
-        }
-        else
-        {
-            throw new InvalidOperationException($"'{e.Name}' не является вызываемым объектом.");
-        }
-
-        if (evaluatedArgs.Count != parameters.Count)
-        {
-            throw new ArgumentException($"'{e.Name}' ожидает {parameters.Count} аргументов, получено {evaluatedArgs.Count}");
-        }
-
-        context.PushScope(new Scope());
-
-        try
-        {
-            for (int i = 0; i < parameters.Count; i++)
-            {
-                context.DefineVariable(parameters[i].Name, evaluatedArgs[i]);
-            }
-
-            try
-            {
-                body.Accept(this);
-                values.Push(0.0);
-            }
-            catch (ReturnException ex)
-            {
-                values.Push((double)ex.Value);
-            }
-        }
-        finally
-        {
-            context.PopScope();
-        }
-    }
-
-    public void Visit(AssignmentExpression e)
-    {
-        e.Value.Accept(this);
-        double value = values.Peek();
-        context.AssignVariable(e.Name, value);
-    }
-
-    public void Visit(AssignmentStatement e)
-    {
-        e.Value.Accept(this);
-        double value = values.Pop();
-        context.AssignVariable(e.Name, value);
-    }
-
+    /// <summary>
+    /// Выражения (Expressions).
+    /// </summary>
     public void Visit(LiteralExpression e)
     {
         values.Push(e.Value);
@@ -182,134 +67,166 @@ public class AstEvaluator : IAstVisitor
         values.Push(context.GetValue(e.Name));
     }
 
-    public void Visit(BlockStatement e)
+    public void Visit(FunctionCallExpression e)
     {
-        foreach (Statement s in e.Statements)
-        {
-            s.Accept(this);
+        List<Value> argValues = e.Arguments.Select(arg => Evaluate(arg)).ToList();
+        FunctionDeclaration function = context.GetCallable(e.FunctionName);
 
-            while (values.Count > 0)
+        context.PushScope(new Scope());
+        try
+        {
+            for (int i = 0; i < function.Parameters.Count; i++)
             {
-                values.Pop();
-            }
-        }
-    }
-
-    public void Visit(BreakStatement e)
-    {
-        throw new BreakException();
-    }
-
-    public void Visit(ContinueStatement e)
-    {
-        throw new ContinueException();
-    }
-
-    public void Visit(ReturnStatement e)
-    {
-        double result = 0;
-        if (e.Value != null)
-        {
-            e.Value.Accept(this);
-            result = values.Pop();
-        }
-
-        throw new ReturnException(result);
-    }
-
-    public void Visit(ExpressionStatement e)
-    {
-        e.Expression.Accept(this);
-    }
-
-    public void Visit(ForStatement e)
-    {
-        e.Initializer.Accept(this);
-        while(true)
-        {
-            if (e.Condition != null)
-            {
-                e.Condition.Accept(this);
-                if (values.Pop() <= 0)
-                {
-                    break;
-                }
+                context.DefineVariable(function.Parameters[i].Name, argValues[i]);
             }
 
             try
             {
-                e.Body.Accept(this);
+                foreach (AstNode statement in function.Body.Statements)
+                {
+                    statement.Accept(this);
+                    if (values.Count > 0)
+                    {
+                        values.Pop();
+                    }
+                }
             }
-            catch (BreakException)
+            catch (ReturnException ret)
             {
-                break;
-            }
-            catch (ContinueException)
-            {
+                values.Push(ret.ReturnValue);
+                return;
             }
 
-            e.Iterator.Accept(this);
+            values.Push(Value.Void);
+        }
+        finally
+        {
+            context.PopScope();
         }
     }
 
-    public void Visit(IfStatement e)
+    public void Visit(BinaryOperationExpression e)
     {
-        e.Condition.Accept(this);
-        if (values.Pop() > 0)
+        e.Left.Accept(this);
+        Value left = values.Pop();
+        e.Right.Accept(this);
+        Value right = values.Pop();
+
+        if (left.GetValueType() != right.GetValueType())
         {
-            e.ThenBranch.Accept(this);
+            throw new Exception($"Типы не совпадают: {left.GetValueType()} и {right.GetValueType()}");
+        }
+
+        values.Push(e.Operation switch
+        {
+            BinaryOperation.Plus => left.GetValueType() == ValueType.Citata
+                ? new Value(left.AsString() + right.AsString())
+                : NumericOp(left, right, (a, b) => a + b),
+            BinaryOperation.Minus => NumericOp(left, right, (a, b) => a - b),
+            BinaryOperation.Multiplication => NumericOp(left, right, (a, b) => a * b),
+            BinaryOperation.Division => IsZero(right)
+                ? throw new DivideByZeroException("Division by zero")
+                : NumericOp(left, right, (a, b) => a / b),
+            BinaryOperation.Remainder => IsZero(right)
+                ? throw new DivideByZeroException("Division by zero")
+                : NumericOp(left, right, (a, b) => a % b),
+            BinaryOperation.Equal => new Value(Compare(left, right) == 0),
+            BinaryOperation.NotEqual => new Value(Compare(left, right) != 0),
+            BinaryOperation.LessThan => new Value(Compare(left, right) < 0),
+            BinaryOperation.GreaterThan => new Value(Compare(left, right) > 0),
+            BinaryOperation.LessThanOrEqual => new Value(Compare(left, right) <= 0),
+            BinaryOperation.GreaterThanOrEqual => new Value(Compare(left, right) >= 0),
+            BinaryOperation.And => new Value(IsTruthy(left) && IsTruthy(right)),
+            BinaryOperation.Or => new Value(IsTruthy(left) || IsTruthy(right)),
+            _ => throw new NotImplementedException()
+        });
+    }
+
+    public void Visit(UnaryOperationExpression e)
+    {
+        e.Operand.Accept(this);
+        Value value = values.Pop();
+
+        values.Push(e.Operation switch
+        {
+            UnaryOperation.Plus => value,
+            UnaryOperation.Minus => value.GetValueType() == ValueType.Ciferka
+                ? new Value(-value.AsInt())
+                : new Value(-value.AsDouble()),
+            UnaryOperation.Not => new Value(!value.AsBool()),
+            _ => throw new NotImplementedException()
+        });
+    }
+
+    public void Visit(AssignmentExpression e)
+    {
+        e.Value.Accept(this);
+        Value value = values.Peek();
+        context.AssignVariable(e.Name, value);
+    }
+
+    /// <summary>
+    /// Инструкции (Statements).
+    /// </summary>
+    public void Visit(BlockStatement s)
+    {
+        context.PushScope(new Scope());
+        try
+        {
+            foreach (AstNode statement in s.Statements)
+            {
+                statement.Accept(this);
+                if (values.Count > 0)
+                {
+                    values.Pop();
+                }
+            }
+        }
+        finally
+        {
+            context.PopScope();
+        }
+
+        values.Push(Value.Void);
+    }
+
+    public void Visit(IfStatement s)
+    {
+        s.Condition.Accept(this);
+        if (values.Pop().AsBool())
+        {
+            s.ThenBranch.Accept(this);
         }
         else
         {
-            e.ElseBranch?.Accept(this);
+            s.ElseBranch?.Accept(this);
         }
-    }
 
-    public void Visit(InputStatement e)
-    {
-        foreach(string name in e.VariableNames)
+        if (values.Count > 0)
         {
-            double value = environment.ReadNumber();
-            context.AssignVariable(name, value);
-        }
-    }
-
-    public void Visit(OutputStatement e)
-    {
-        foreach (Expression argument in e.Arguments)
-        {
-            argument.Accept(this);
-
-            double value = values.Pop();
-            environment.Write(value);
-        }
-    }
-
-    public void Visit(VariableDeclarationStatement e)
-    {
-        double initialValue = 0.0;
-        if (e.InitialValue != null)
-        {
-            e.InitialValue.Accept(this);
-            initialValue = values.Pop();
+            values.Pop();
         }
 
-        context.DefineVariable(e.Name, initialValue);
+        values.Push(Value.Void);
     }
 
-    public void Visit(WhileStatement e)
+    public void Visit(WhileStatement s)
     {
         while (true)
         {
-            e.Condition.Accept(this);
-            if (values.Pop() <= 0)
+            s.Condition.Accept(this);
+            if (!values.Pop().AsBool())
             {
                 break;
             }
 
             try
             {
-                e.Body.Accept(this);
+                s.Body.Accept(this);
+                if (values.Count > 0)
+                {
+                    values.Pop();
+                }
             }
             catch (BreakException)
             {
@@ -320,5 +237,137 @@ public class AstEvaluator : IAstVisitor
                 continue;
             }
         }
+
+        values.Push(Value.Void);
+    }
+
+    public void Visit(ForStatement s)
+    {
+        context.PushScope(new Scope());
+        try
+        {
+            s.Initializer.Accept(this);
+            if (values.Count > 0)
+            {
+                values.Pop();
+            }
+
+            while (true)
+            {
+                s.Condition.Accept(this);
+                if (!values.Pop().AsBool())
+                {
+                    break;
+                }
+
+                try
+                {
+                    s.Body.Accept(this);
+                    if (values.Count > 0)
+                    {
+                        values.Pop();
+                    }
+                }
+                catch (BreakException)
+                {
+                    break;
+                }
+                catch (ContinueException)
+                {
+                }
+
+                s.Iterator.Accept(this);
+                if (values.Count > 0)
+                {
+                    values.Pop();
+                }
+            }
+        }
+        finally
+        {
+            context.PopScope();
+        }
+
+        values.Push(Value.Void);
+    }
+
+    public void Visit(ReturnStatement s)
+    {
+        throw new ReturnException(s.Value != null ? Evaluate(s.Value) : Value.Void);
+    }
+
+    public void Visit(BreakStatement s)
+    {
+        throw new BreakException();
+    }
+
+    public void Visit(ContinueStatement s)
+    {
+        throw new ContinueException();
+    }
+
+    public void Visit(OutputStatement s)
+    {
+        IEnumerable<string?> messages = s.Arguments.Select(arg =>
+        {
+            Value val = Evaluate(arg);
+            return val.GetValueType() == ValueType.Rasklad
+                ? (val.AsBool() ? "ХАЙП" : "КРИНЖ")
+                : val.ToString();
+        });
+
+        environment.Write(string.Join(" ", messages));
+        values.Push(Value.Void);
+    }
+
+    public void Visit(InputStatement s)
+    {
+        foreach (string name in s.VariableNames)
+        {
+            ValueType targetType = context.GetValue(name).GetValueType();
+            context.AssignVariable(name, environment.Read(targetType));
+        }
+
+        values.Push(Value.Void);
+    }
+
+    public void Visit(ExpressionStatement s)
+    {
+        s.Expression.Accept(this);
+    }
+
+    private int Compare(Value l, Value r)
+    {
+        return l.GetValueType() switch
+        {
+            ValueType.Ciferka => l.AsInt().CompareTo(r.AsInt()),
+            ValueType.Poltorashka => l.AsDouble().CompareTo(r.AsDouble()),
+            ValueType.Citata => string.CompareOrdinal(l.AsString(), r.AsString()),
+            _ => throw new InvalidOperationException("Тип не поддерживает сравнение.")
+        };
+    }
+
+    private Value NumericOp(Value l, Value r, Func<double, double, double> op)
+    {
+        if (l.GetValueType() == ValueType.Ciferka)
+        {
+            return new Value((int)op(l.AsInt(), r.AsInt()));
+        }
+
+        return new Value(op(l.AsDouble(), r.AsDouble()));
+    }
+
+    private bool IsZero(Value value)
+    {
+        return value.GetValueType() == ValueType.Ciferka
+            ? value.AsInt() == 0
+            : value.AsDouble() == 0;
+    }
+
+    private bool IsTruthy(Value value)
+    {
+        return value.GetValueType() == ValueType.Ciferka
+            ? value.AsInt() > 0
+            : value.AsDouble() > 0;
     }
 }

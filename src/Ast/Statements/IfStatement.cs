@@ -2,9 +2,9 @@
 
 namespace Ast.Statements;
 
-public sealed class IfStatement : Statement
+public sealed class IfStatement : Expression
 {
-    public IfStatement(Expression condition, Statement thenBranch, Statement? elseBranch)
+    public IfStatement(Expression condition, AstNode thenBranch, AstNode? elseBranch)
     {
         Condition = condition;
         ThenBranch = thenBranch;
@@ -13,9 +13,9 @@ public sealed class IfStatement : Statement
 
     public Expression Condition { get; }
 
-    public Statement ThenBranch { get; }
+    public AstNode ThenBranch { get; }
 
-    public Statement? ElseBranch { get; }
+    public AstNode? ElseBranch { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

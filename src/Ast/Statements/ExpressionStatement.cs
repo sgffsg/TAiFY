@@ -2,7 +2,7 @@
 
 namespace Ast.Statements;
 
-public sealed class ExpressionStatement : Statement
+public sealed class ExpressionStatement : Expression
 {
     public ExpressionStatement(Expression expression)
     {

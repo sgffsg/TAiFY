@@ -1,85 +1,58 @@
-﻿namespace Execution;
+﻿using Runtime;
+
+namespace Execution;
 
 /// <summary>
 /// Симулирует ввод-вывод в тестах.
 /// </summary>
 public class FakeEnvironment : IEnvironment
 {
-    private readonly Queue<double> inputQueue = new();
-    private readonly List<double> outputList = new();
+    private readonly Queue<Value> inputQueue = new();
 
-    public FakeEnvironment()
+    private readonly List<string> outputHistory = new();
+
+    public void EnqueueInput(Value value) => inputQueue.Enqueue(value);
+
+    public IReadOnlyList<string> GetOutputHistory() => outputHistory;
+
+    public void Write(string message)
     {
+        outputHistory.Add(message);
     }
 
-    public FakeEnvironment(params double[] inputs)
-    {
-        foreach (double input in inputs)
-        {
-            inputQueue.Enqueue(input);
-        }
-    }
-
-    /// <summary>
-    /// Добавляет значение в очередь ввода.
-    /// </summary>
-    public void AddInput(double value)
-    {
-        inputQueue.Enqueue(value);
-    }
-
-    /// <summary>
-    /// Читает число из очереди ввода.
-    /// </summary>
-    public double ReadNumber()
+    public Value Read(Runtime.ValueType expectedType)
     {
         if (inputQueue.Count == 0)
         {
-            return 0;
+            throw new InvalidOperationException(
+                $"Тестовая ошибка: Попытка чтения (ВБРОС), но очередь ввода пуста. Ожидался тип: {expectedType}"
+            );
         }
 
-        return inputQueue.Dequeue();
+        Value value = inputQueue.Dequeue();
+        if (value.GetValueType() != expectedType)
+        {
+            throw new InvalidOperationException(
+                $"Ошибка типизации в тесте: ВБРОС ожидал {expectedType}, но в очереди было {value.GetValueType()}"
+            );
+        }
+
+        return value;
     }
 
-    /// <summary>
-    /// Записывает число в список вывода.
-    /// </summary>
-    public void WriteNumber(double value)
+    public void Reset()
     {
-        outputList.Add(value);
+        inputQueue.Clear();
+        outputHistory.Clear();
     }
 
-    /// <summary>
-    /// Получает список всех выведенных значений.
-    /// </summary>
-    public IReadOnlyList<double> GetOutput()
-    {
-        return outputList.AsReadOnly();
-    }
-
-    /// <summary>
-    /// Очищает список вывода.
-    /// </summary>
     public void ClearOutput()
     {
-        outputList.Clear();
+        outputHistory.Clear();
     }
 
-    /// <summary>
-    /// Очищает очередь ввода.
-    /// </summary>
     public void ClearInput()
     {
         inputQueue.Clear();
-    }
-
-    public string ReadString()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Write(double value)
-    {
-        outputList.Add(value);
     }
 }

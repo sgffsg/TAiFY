@@ -2,7 +2,7 @@
 
 namespace Ast.Statements;
 
-public sealed class OutputStatement : Statement
+public sealed class OutputStatement : Expression
 {
     public OutputStatement(List<Expression> arguments)
     {
