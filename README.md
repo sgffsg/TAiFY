@@ -1,5 +1,8 @@
 # Интерпретатор языка Vaibik
 
+Vaibik — учебный язык программирования, разработанный в рамках курса предмета ТАиФЯ.
+Цель этого проекта — написать рабочий интерпретатор на C#.
+
 ## Структура проекта на C#
 
 Ликбез по типам файлов:
@@ -31,13 +34,28 @@ dotnet test
 
 Взаимосвязь модулей:
 
+    Interpreter --> Parser
+    Interpreter --> Execution
+    Interpreter --> Ast
+
+    Parser --> Lexer
+    Parser --> Execution
+    Parser --> Ast
+
+    Execution --> Ast
+
+    Grammar -.-> Parser
+    Grammar -.-> Lexer
+
 ## Покрытие тестами
 
 В проекте есть:
 
-Приёмочные интеграционные тесты: Interpreter.IntegrationTests
+Приёмочные интеграционные тесты: 
+Interpreter.Specs - Gherkin
 Тесты модуля Grammar, содержащего валидатор синтаксиса на ANTLR4: Grammar.UnitTests
 Тесты модуля Lexer, содержащего лексический анализатор: Lexemes.UnitTests
 
 ## Лицензия
 - Исходный код интерпретатора доступен под лицензией MIT.
+- Тесты в каталоге tests/Grammar.UnitTests/valid/ используются на правах GPL 3.0
