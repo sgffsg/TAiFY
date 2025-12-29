@@ -17,18 +17,17 @@ public abstract class AbstractPass : IAstVisitor
 
     public virtual void Visit(VariableDeclaration d)
     {
-        if (d.InitialValue != null)
-        {
-            d.InitialValue.Accept(this);
-        }
+        d.InitialValue.Accept(this);
     }
 
     public virtual void Visit(FunctionDeclaration d)
     {
-        foreach (AstNode s in d.Body.Statements)
+        foreach (AstNode s in d.Parameters)
         {
             s.Accept(this);
         }
+
+        d.Body.Accept(this);
     }
 
     public virtual void Visit(ParameterDeclaration d)
@@ -94,11 +93,6 @@ public abstract class AbstractPass : IAstVisitor
         s.Condition.Accept(this);
         s.Iterator.Accept(this);
         s.Body.Accept(this);
-
-        foreach (AstNode node in s.Body.Statements)
-        {
-            node.Accept(this);
-        }
     }
 
     public virtual void Visit(ReturnStatement s)
@@ -126,5 +120,11 @@ public abstract class AbstractPass : IAstVisitor
     public virtual void Visit(ExpressionStatement s)
     {
         s.Expression.Accept(this);
+    }
+
+    public virtual void Visit(IndexExpression e)
+    {
+        e.Target.Accept(this);
+        e.Index.Accept(this);
     }
 }

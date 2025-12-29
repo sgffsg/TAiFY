@@ -12,11 +12,11 @@ public class SymbolsTable
 
     public SymbolsTable(SymbolsTable? parent)
     {
-        parent = parent;
+        this.parent = parent;
         symbols = [];
     }
 
-    public SymbolsTable? Parent => parent;
+    public SymbolsTable? Parent => this.parent;
 
     public Declaration GetSymbol(string name)
     {

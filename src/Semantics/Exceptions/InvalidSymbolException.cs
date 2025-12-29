@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Semantics.Exceptions;
 
-namespace Semantics.Exceptions
+#pragma warning disable RCS1194
+
+/// <summary>
+/// Исключение из-за некорректного использования символа (функции, переменной, типа).
+/// </summary>
+public class InvalidSymbolException : Exception
 {
-    internal class InvalidSymbolException
+    public InvalidSymbolException(string message)
+        : base(message)
     {
     }
 }
+#pragma warning restore RCS1194
