@@ -7,64 +7,64 @@
         /// <summary>
         /// Начало блока кода ПОЕХАЛИ
         /// </summary>
-        Poehali,
+        ПОЕХАЛИ,
 
         /// <summary>
         /// Конец блока кода ФИНАЛОЧКА
         /// </summary>
-        Finalochka,
+        ФИНАЛОЧКА,
 
         /// <summary>
         /// Объявление процедуры ПРОКРАСТИНИРУЕМ
         /// </summary>
-        Prokrastiniryem,
+        ПРОКРАСТИНИРУЕМ,
 
         /// <summary>
         /// Ввод значения ВБРОС
         /// </summary>
-        Vbros,
+        ВБРОС,
 
         /// <summary>
         /// Вывод значения ВЫБРОС
         /// </summary>
-        Vybros,
+        ВЫБРОС,
 
         /// <summary>
         /// Прерывание цикла ХВАТИТ
         /// </summary>
-        Hvatit,
+        ХВАТИТ,
 
         /// <summary>
         /// Переход к след. итерации цикла ПРОДОЛЖАЕМ
         /// </summary>
-        Prodolzhaem,
+        ПРОДОЛЖАЕМ,
 
         /// <summary>
         /// Возврат из функции ДРАТУТИ
         /// </summary>
-        Dratuti,
+        ДРАТУТИ,
 
         // Типы данных
 
         /// <summary>
         /// Целочисленный тип ЦИФЕРКА
         /// </summary>
-        Ciferka,
+        ЦИФЕРКА,
 
         /// <summary>
         /// Число с плавающей точкой ПОЛТОРАШКА
         /// </summary>
-        Poltorashka,
+        ПОЛТОРАШКА,
 
         /// <summary>
         /// Строковый тип ЦИТАТА
         /// </summary>
-        Citata,
+        ЦИТАТА,
 
         /// <summary>
         /// Логический тип РАСКЛАД
         /// </summary>
-        Rasklad,
+        РАСКЛАД,
 
         // Литералы и значения
 
@@ -79,29 +79,29 @@
         StringLiteral,
 
         /// <summary>
-        /// Числовой литерал float/int
+        /// Целочисленный числовой литерал
         /// </summary>
-        NumericLiteral,
+        IntegerLiteral,
+
+        /// <summary>
+        /// Вещественный числовой литерал
+        /// </summary>
+        DoubleLiteral,
 
         /// <summary>
         /// Логическое "истина" ХАЙП
         /// </summary>
-        Hype,
+        ХАЙП,
 
         /// <summary>
         /// Логическое "ложь" КРИНЖ
         /// </summary>
-        Cringe,
-
-        /// <summary>
-        /// Null-значение ПШИК
-        /// </summary>
-        Pshik,
+        КРИНЖ,
 
         /// <summary>
         /// Константа БАЗА
         /// </summary>
-        Baza,
+        БАЗА,
 
         // Операторы сравнения
 
@@ -167,44 +167,44 @@
         /// <summary>
         /// Логический оператор И
         /// </summary>
-        And,
+        И,
 
         /// <summary>
         /// Логический оператор ИЛИ
         /// </summary>
-        Or,
+        ИЛИ,
 
         /// <summary>
         /// Логический оператор НЕ
         /// </summary>
-        Not,
+        НЕ,
 
         // Управляющие структуры
 
         /// <summary>
         /// Условный оператор ЕСЛИ
         /// </summary>
-        Esli,
+        ЕСЛИ,
 
         /// <summary>
         /// Часть условного оператора ТО
         /// </summary>
-        To,
+        ТО,
 
         /// <summary>
         /// Альтернативная ветка ИНАЧЕ
         /// </summary>
-        Inache,
+        ИНАЧЕ,
 
         /// <summary>
         /// Объявление цикла for ЦИКЛ
         /// </summary>
-        Cikl,
+        ЦИКЛ,
 
         /// <summary>
-        /// Объявление цикла while ЦИКЛ
+        /// Объявление цикла while ПОКА
         /// </summary>
-        Poka,
+        ПОКА,
 
         // Разделители и скобки
 

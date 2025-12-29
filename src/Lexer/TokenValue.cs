@@ -32,6 +32,16 @@
                 _ => throw new NotImplementedException()
             };
 
+        public int ToInteger() =>
+            value switch
+            {
+                string s => int.Parse(s),
+                int i => i,
+                double d => Convert.ToInt32(d),
+                bool b => Convert.ToInt32(b),
+                _ => throw new NotImplementedException()
+            };
+
         public decimal ToDecimal() =>
             value switch
             {

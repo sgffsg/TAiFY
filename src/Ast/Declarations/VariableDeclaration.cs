@@ -5,9 +5,9 @@ namespace Ast.Declarations;
 
 public class VariableDeclaration : AbstractVariableDeclaration
 {
-    private AstAttribute<AbstractTypeDeclaration?> declaredType;
+    private AstAttribute<AbstractTypeDeclaration> declaredType;
 
-    public VariableDeclaration(string type, string name, Expression? value)
+    public VariableDeclaration(string type, string name, Expression value)
         : base(name)
     {
         Type = type;
@@ -16,9 +16,9 @@ public class VariableDeclaration : AbstractVariableDeclaration
 
     public string Type { get; }
 
-    public Expression? InitialValue { get; }
+    public Expression InitialValue { get; }
 
-    public AbstractTypeDeclaration? DeclaredType
+    public AbstractTypeDeclaration DeclaredType
     {
         get => declaredType.Get();
         set => declaredType.Set(value);

@@ -32,6 +32,8 @@ public interface IAstVisitor
 
     void Visit(AssignmentExpression e);
 
+    void Visit(IndexExpression e);
+
     /// <summary>
     /// Инструкции (Statements).
     /// </summary>

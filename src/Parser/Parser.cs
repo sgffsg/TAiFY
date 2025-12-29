@@ -45,8 +45,8 @@ public class Parser
         Token token = tokens.Peek();
         return token.Type switch
         {
-            TokenType.Baza => ParseConstantDeclaration(),
-            TokenType.Prokrastiniryem => ParseProcedureDeclaration(),
+            TokenType.БАЗА => ParseConstantDeclaration(),
+            TokenType.ПРОКРАСТИНИРУЕМ => ParseProcedureDeclaration(),
             _ when IsTypeName(token) => ParseTypedDeclaration(),
             _ => ParseStatement()
         };
@@ -58,7 +58,7 @@ public class Parser
     /// </summary>
     private ConstantDeclaration ParseConstantDeclaration()
     {
-        Match(TokenType.Baza);
+        Match(TokenType.БАЗА);
         string typeName = ParseTypeName();
         string name = ParseIdentifier();
         Match(TokenType.Assignment);
@@ -118,7 +118,7 @@ public class Parser
     /// </summary>
     private FunctionDeclaration ParseProcedureDeclaration()
     {
-        Match(TokenType.Prokrastiniryem);
+        Match(TokenType.ПРОКРАСТИНИРУЕМ);
         string name = ParseIdentifier();
         Match(TokenType.OpenParenthesis);
         List<ParameterDeclaration> parameters = ParseParameterList();
@@ -164,16 +164,17 @@ public class Parser
     /// </summary>
     private BlockStatement ParseBlock()
     {
-        Match(TokenType.Poehali);
+        Match(TokenType.ПОЕХАЛИ);
         List<AstNode> statements = new();
 
-        while (tokens.Peek().Type != TokenType.Finalochka &&
+        while (tokens.Peek().Type != TokenType.ФИНАЛОЧКА &&
                tokens.Peek().Type != TokenType.EOF)
         {
             statements.Add(ParseStatement());
         }
 
-        Match(TokenType.Finalochka);
+        Match(TokenType.ФИНАЛОЧКА);
+
         return new BlockStatement(statements);
     }
 
@@ -187,37 +188,37 @@ public class Parser
         Token token = tokens.Peek();
         switch (token.Type)
         {
-            case TokenType.Ciferka:
-            case TokenType.Poltorashka:
-            case TokenType.Citata:
-            case TokenType.Rasklad:
+            case TokenType.ЦИФЕРКА:
+            case TokenType.ПОЛТОРАШКА:
+            case TokenType.ЦИТАТА:
+            case TokenType.РАСКЛАД:
                 return ParseVariableDeclaration();
 
-            case TokenType.Esli:
+            case TokenType.ЕСЛИ:
                 return ParseIfStatement();
 
-            case TokenType.Cikl:
+            case TokenType.ЦИКЛ:
                 return ParseForStatement();
 
-            case TokenType.Poka:
+            case TokenType.ПОКА:
                 return ParseWhileStatement();
 
-            case TokenType.Dratuti:
+            case TokenType.ДРАТУТИ:
                 return ParseReturnStatement();
 
-            case TokenType.Hvatit:
+            case TokenType.ХВАТИТ:
                 return ParseBreakStatement();
 
-            case TokenType.Prodolzhaem:
+            case TokenType.ПРОДОЛЖАЕМ:
                 return ParseContinueStatement();
 
-            case TokenType.Vbros:
+            case TokenType.ВБРОС:
                 return ParseInputStatement();
 
-            case TokenType.Vybros:
+            case TokenType.ВЫБРОС:
                 return ParseOutputStatement();
 
-            case TokenType.Poehali:
+            case TokenType.ПОЕХАЛИ:
                 return ParseBlock();
 
             case TokenType.Identifier:
@@ -253,6 +254,7 @@ public class Parser
         string identifier = ParseIdentifier();
         Match(TokenType.Assignment);
         Expression value = ParseExpression();
+        Match(TokenType.Semicolon);
 
         return new AssignmentExpression(identifier, value);
     }
@@ -264,17 +266,17 @@ public class Parser
     /// </summary>
     private IfStatement ParseIfStatement()
     {
-        Match(TokenType.Esli);
+        Match(TokenType.ЕСЛИ);
         Match(TokenType.OpenParenthesis);
         Expression condition = ParseExpression();
         Match(TokenType.CloseParenthesis);
-        Match(TokenType.To);
+        Match(TokenType.ТО);
 
         AstNode thenBranch = ParseStatement();
         AstNode? elseBranch = null;
-        if (tokens.Peek().Type == TokenType.Inache)
+        if (tokens.Peek().Type == TokenType.ИНАЧЕ)
         {
-            Match(TokenType.Inache);
+            Match(TokenType.ИНАЧЕ);
             elseBranch = ParseStatement();
         }
 
@@ -287,14 +289,16 @@ public class Parser
     /// </summary>
     private WhileStatement ParseWhileStatement()
     {
-        Match(TokenType.Poka);
+        Match(TokenType.ПОКА);
         Match(TokenType.OpenParenthesis);
         Expression condition = ParseExpression();
         Match(TokenType.CloseParenthesis);
 
-        BlockStatement body = tokens.Peek().Type == TokenType.Poehali
+        BlockStatement body = tokens.Peek().Type == TokenType.ПОЕХАЛИ
             ? ParseBlock()
             : new BlockStatement(new List<AstNode> { ParseStatement() });
+
+        Match(TokenType.Semicolon);
 
         return new WhileStatement(condition, body);
     }
@@ -305,19 +309,18 @@ public class Parser
     /// </summary>
     private ForStatement ParseForStatement()
     {
-        Match(TokenType.Cikl);
+        Match(TokenType.ЦИКЛ);
         Match(TokenType.OpenParenthesis);
 
         AssignmentExpression init = ParseAssignmentExpression();
-        Match(TokenType.Semicolon);
 
         Expression condition = ParseExpression();
         Match(TokenType.Semicolon);
 
-        AssignmentExpression iterator = ParseAssignmentExpression();
+        AssignmentExpression iterator = ParseAssignmentExpressionWithoutEnd();
         Match(TokenType.CloseParenthesis);
 
-        BlockStatement body = tokens.Peek().Type == TokenType.Poehali
+        BlockStatement body = tokens.Peek().Type == TokenType.ПОЕХАЛИ
             ? ParseBlock()
             : new BlockStatement(new List<AstNode> { ParseStatement() });
         return new ForStatement(init, condition, iterator, body);
@@ -328,7 +331,7 @@ public class Parser
     /// </summary>
     private ReturnStatement ParseReturnStatement()
     {
-        Match(TokenType.Dratuti);
+        Match(TokenType.ДРАТУТИ);
         Expression? returnValue = null;
         if (tokens.Peek().Type != TokenType.Semicolon)
         {
@@ -344,7 +347,7 @@ public class Parser
     /// </summary>
     private BreakStatement ParseBreakStatement()
     {
-        Match(TokenType.Hvatit);
+        Match(TokenType.ХВАТИТ);
         Match(TokenType.Semicolon);
 
         return new BreakStatement();
@@ -355,7 +358,7 @@ public class Parser
     /// </summary>
     private ContinueStatement ParseContinueStatement()
     {
-        Match(TokenType.Prodolzhaem);
+        Match(TokenType.ПРОДОЛЖАЕМ);
         Match(TokenType.Semicolon);
 
         return new ContinueStatement();
@@ -366,7 +369,7 @@ public class Parser
     /// </summary>
     private InputStatement ParseInputStatement()
     {
-        Match(TokenType.Vbros);
+        Match(TokenType.ВБРОС);
         Match(TokenType.OpenParenthesis);
 
         List<string> names = new() { ParseIdentifier() };
@@ -386,7 +389,7 @@ public class Parser
     /// </summary>
     private OutputStatement ParseOutputStatement()
     {
-        Match(TokenType.Vybros);
+        Match(TokenType.ВЫБРОС);
         Match(TokenType.OpenParenthesis);
 
         List<Expression> args = new();
@@ -432,6 +435,7 @@ public class Parser
     {
         Match(TokenType.Assignment);
         Expression value = ParseExpression();
+        Match(TokenType.Semicolon);
 
         return new AssignmentExpression(identifier, value);
     }
@@ -459,21 +463,6 @@ public class Parser
     }
 
     /// <summary>
-    /// Парсит список значений, разделенных запятыми.
-    /// </summary>
-    private List<Expression> ParseArgumentList()
-    {
-        List<Expression> values = new() { ParseExpression() };
-        while (tokens.Peek().Type == TokenType.Comma)
-        {
-            tokens.Advance();
-            values.Add(ParseExpression());
-        }
-
-        return values;
-    }
-
-    /// <summary>
     /// Выполняет парсинг одного выражения:
     ///     expression = logicalOrExpression.
     /// </summary>
@@ -489,7 +478,7 @@ public class Parser
     private Expression ParseLogicalOrExpression()
     {
         Expression left = ParseLogicalAndExpression();
-        while (tokens.Peek().Type == TokenType.Or)
+        while (tokens.Peek().Type == TokenType.ИЛИ)
         {
             tokens.Advance();
             left = new BinaryOperationExpression(left, BinaryOperation.Or, ParseLogicalAndExpression());
@@ -505,7 +494,7 @@ public class Parser
     private Expression ParseLogicalAndExpression()
     {
         Expression left = ParseComparisonExpression();
-        while (tokens.Peek().Type == TokenType.And)
+        while (tokens.Peek().Type == TokenType.И)
         {
             tokens.Advance();
             left = new BinaryOperationExpression(left, BinaryOperation.And, ParseComparisonExpression());
@@ -617,7 +606,7 @@ public class Parser
             {
                 TokenType.Plus => UnaryOperation.Plus,
                 TokenType.Minus => UnaryOperation.Minus,
-                TokenType.Not => UnaryOperation.Not,
+                TokenType.НЕ => UnaryOperation.Not,
                 _ => null,
             };
 
@@ -638,12 +627,14 @@ public class Parser
     private Expression ParsePrimaryExpression()
     {
         Token t = tokens.Peek();
+        Console.WriteLine(t.Type + " " + t.Value);
         switch (t.Type)
         {
-            case TokenType.NumericLiteral:
+            case TokenType.IntegerLiteral:
+            case TokenType.DoubleLiteral:
             case TokenType.StringLiteral:
-            case TokenType.Hype:
-            case TokenType.Cringe:
+            case TokenType.ХАЙП:
+            case TokenType.КРИНЖ:
                 return ParseLiteral();
 
             case TokenType.Identifier:
@@ -678,12 +669,13 @@ public class Parser
         Token t = tokens.Peek();
         switch (t.Type)
         {
-            case TokenType.NumericLiteral:
+            case TokenType.IntegerLiteral:
+            case TokenType.DoubleLiteral:
                 return ParseNumericLiteral();
             case TokenType.StringLiteral:
                 return ParseStringLiteral();
-            case TokenType.Hype:
-            case TokenType.Cringe:
+            case TokenType.ХАЙП:
+            case TokenType.КРИНЖ:
                 return ParseLogicalLiteral();
             default:
                 throw new UnexpectedLexemeException(t.Type, t);
@@ -697,23 +689,23 @@ public class Parser
     private LiteralExpression ParseNumericLiteral()
     {
         Token t = tokens.Peek();
-        if (t.Type == TokenType.NumericLiteral)
+        tokens.Advance();
+        Value value;
+
+        if (t.Type == TokenType.DoubleLiteral)
         {
-            string rawValue = t.Value!.ToString()!;
-            double value = double.Parse(rawValue.Replace(',', '.'));
-            tokens.Advance();
-
-            Runtime.ValueType type = rawValue.Contains('.') || rawValue.Contains(',')
-                ? Runtime.ValueType.Poltorashka
-                : Runtime.ValueType.Ciferka;
-
-            LiteralExpression literal = new LiteralExpression(new Value(value));
-            literal.ResultType = type;
-
-            return literal;
+            value = new Value(t.Value!.ToDouble());
+        }
+        else if (t.Type == TokenType.IntegerLiteral)
+        {
+            value = new Value(t.Value!.ToInteger());
+        }
+        else
+        {
+            throw new Exception($"Ожидалось число, но получено {t.Type}");
         }
 
-        throw new UnexpectedLexemeException(t.Type, t);
+        return new LiteralExpression(value);
     }
 
     /// <summary>
@@ -726,9 +718,7 @@ public class Parser
         string val = t.Value!.ToString()!;
         tokens.Advance();
 
-        LiteralExpression literal = new LiteralExpression(new Value(val));
-        literal.ResultType = Runtime.ValueType.Citata;
-        return literal;
+        return new LiteralExpression(new Value(val));
     }
 
     /// <summary>
@@ -738,12 +728,10 @@ public class Parser
     private LiteralExpression ParseLogicalLiteral()
     {
         Token t = tokens.Peek();
-        bool val = t.Type == TokenType.Hype;
+        bool val = t.Type == TokenType.ХАЙП;
         tokens.Advance();
 
-        LiteralExpression literal = new LiteralExpression(new Value(val));
-        literal.ResultType = Runtime.ValueType.Rasklad;
-        return literal;
+        return new LiteralExpression(new Value(val));
     }
 
     /// <summary>
@@ -761,10 +749,10 @@ public class Parser
 
     private bool IsTypeName(Token token) => token.Type switch
     {
-        TokenType.Ciferka => true,
-        TokenType.Poltorashka => true,
-        TokenType.Citata => true,
-        TokenType.Rasklad => true,
+        TokenType.ЦИФЕРКА => true,
+        TokenType.ПОЛТОРАШКА => true,
+        TokenType.ЦИТАТА => true,
+        TokenType.РАСКЛАД => true,
         _ => false
     };
 
@@ -773,12 +761,12 @@ public class Parser
         Token token = tokens.Peek();
         switch (token.Type)
         {
-            case TokenType.Ciferka:
-            case TokenType.Poltorashka:
-            case TokenType.Citata:
-            case TokenType.Rasklad:
+            case TokenType.ЦИФЕРКА:
+            case TokenType.ПОЛТОРАШКА:
+            case TokenType.ЦИТАТА:
+            case TokenType.РАСКЛАД:
                 tokens.Advance();
-                return token.Type.ToString().ToLower();
+                return token.Type.ToString();
             default:
                 throw new UnexpectedLexemeException("ожидается имя типа", token);
         }
@@ -794,5 +782,17 @@ public class Parser
         }
 
         throw new UnexpectedLexemeException(TokenType.Identifier, token);
+    }
+
+    /// <summary>
+    /// variableAssignment = identifier, "=", expression.
+    /// </summary>
+    private AssignmentExpression ParseAssignmentExpressionWithoutEnd()
+    {
+        string identifier = ParseIdentifier();
+        Match(TokenType.Assignment);
+        Expression value = ParseExpression();
+
+        return new AssignmentExpression(identifier, value);
     }
 }

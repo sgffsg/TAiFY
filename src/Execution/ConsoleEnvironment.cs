@@ -17,12 +17,12 @@ public class ConsoleEnvironment : IEnvironment
             {
                 return expectedType switch
                 {
-                    ValueType.Ciferka => new Value(int.Parse(input ?? "0")),
-                    ValueType.Poltorashka => new Value(double.Parse(input ?? "0.0")),
-                    ValueType.Rasklad => input?.ToUpper() == "ХАЙП" ? new Value(true) :
+                    ValueType.ЦИФЕРКА => new Value(int.Parse(input ?? "0")),
+                    ValueType.ПОЛТОРАШКА => new Value(double.Parse(input ?? "0.0")),
+                    ValueType.РАСКЛАД => input?.ToUpper() == "ХАЙП" ? new Value(true) :
                                          input?.ToUpper() == "КРИНЖ" ? new Value(false) :
                                          throw new Exception(),
-                    ValueType.Citata => new Value(input ?? ""),
+                    ValueType.ЦИТАТА => new Value(input ?? ""),
                     _ => throw new ArgumentException("Неподдерживаемый тип для чтения")
                 };
             }

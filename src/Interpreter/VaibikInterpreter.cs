@@ -1,11 +1,7 @@
-﻿using System;
-
-using Ast;
+﻿using Ast;
 using Ast.Declarations;
 using Ast.Expressions;
-
 using Execution;
-
 using Semantics;
 
 namespace Interpreter;
@@ -15,14 +11,12 @@ namespace Interpreter;
 /// </summary>
 public class VaibikiInterpreter
 {
-    private readonly Builtins builtins;
     private readonly Context context;
     private readonly IEnvironment environment;
 
     public VaibikiInterpreter(IEnvironment environment)
     {
         this.environment = environment;
-        this.builtins = new(this.environment);
         this.context = new();
     }
 
@@ -41,9 +35,9 @@ public class VaibikiInterpreter
         List<AstNode> nodes = parser.ParseProgram();
 
         SemanticsChecker checker = new(
-            builtins.Functions,
-            builtins.Constants,
-            builtins.Types
+            Builtins.Functions,
+            Builtins.Constants,
+            Builtins.Types
         );
         checker.Check(nodes);
 
@@ -69,9 +63,9 @@ public class VaibikiInterpreter
                 FunctionCallExpression mainCall = new FunctionCallExpression("ПОГНАЛИ", new List<Expression>());
                 evaluator.Evaluate(mainCall);
             }
-            catch (Exception ex) when (ex.Message.Contains("not defined"))
+            catch (Exception ex)
             {
-                // ПОГНАЛИ не найдена
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }
