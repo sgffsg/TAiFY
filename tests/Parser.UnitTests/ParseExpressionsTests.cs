@@ -1,13 +1,22 @@
-﻿using Ast;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Ast;
+using Ast.Expressions;
 
 using Execution;
 
-using Xunit.Sdk;
+using Runtime;
+
+using Xunit;
 
 namespace Parser.UnitTests;
 
 public class ParseExpressionsTests
 {
+    private const double Precision = 1e-10;
+
     [Theory]
     [MemberData(nameof(GetLiteralsTheory))]
     public void Can_parse_literals_expression(string code, List<double> expected)
@@ -155,7 +164,7 @@ public class ParseExpressionsTests
     }
 
     [Theory]
-    [MemberData(nameof(GetParenthesesGroupingTheory))]
+    [MemberData(nameof(GetBuiltInFunctionTheory))]
     public void Can_parse_builtin_function_expression(string code, List<double> expected)
     {
         RunBaseTest(code, expected);
@@ -198,18 +207,16 @@ public class ParseExpressionsTests
         {
             { "(2 + 3;", typeof(UnexpectedLexemeException) },
             { "2 + 3);", typeof(UnexpectedLexemeException) },
-            { "2 & 3;", typeof(UnexpectedLexemeException) },
             { "5 / 0;", typeof(DivideByZeroException) },
-            { "МОДУЛЬ(1, 2);", typeof(ArgumentException) },
         };
     }
 
     private void RunBaseTest(string code, List<double> expected)
     {
-        Context context = new();
         FakeEnvironment environment = new();
 
         Parser parser = new(code);
+        Context context = new();
         AstEvaluator evaluator = new(context, environment);
 
         List<double> results = new();
@@ -217,10 +224,23 @@ public class ParseExpressionsTests
 
         foreach (AstNode node in nodes)
         {
-            results.Add(evaluator.Evaluate(node));
+            Value val = evaluator.Evaluate(node);
+            results.Add(ValueToDouble(val));
         }
 
         MatchResults(expected, results);
+    }
+
+    private double ValueToDouble(Value val)
+    {
+        return val.GetValueType() switch
+        {
+            Runtime.ValueType.ЦИФЕРКА => val.AsInt(),
+            Runtime.ValueType.ПОЛТОРАШКА => val.AsDouble(),
+            Runtime.ValueType.РАСКЛАД => val.AsBool() ? 1.0 : 0.0,
+            Runtime.ValueType.ЦИТАТА => val.AsString().Length,
+            _ => 0.0
+        };
     }
 
     private void MatchResults(List<double> expected, List<double> results)

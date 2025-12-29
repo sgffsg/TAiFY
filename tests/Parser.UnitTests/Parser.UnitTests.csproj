@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Parser\Parser.csproj" />
+    <ProjectReference Include="..\..\src\Semantics\Semantics.csproj" />
   </ItemGroup>
 
 </Project>
