@@ -10,20 +10,20 @@ public enum ValueType
     /// <summary>
     /// Целочисленное значение.
     /// </summary>
-    Ciferka,
+    ЦИФЕРКА,
 
     /// <summary>
     /// Значение числа с плавающей точкой.
     /// </summary>
-    Poltorashka,
+    ПОЛТОРАШКА,
 
     /// <summary>
     /// Логическое значение.
     /// </summary>
-    Rasklad,
+    РАСКЛАД,
 
     /// <summary>
     /// Строковое значение.
     /// </summary>
-    Citata,
+    ЦИТАТА,
 }
