@@ -489,15 +489,15 @@ public class Parser
 
     /// <summary>
     /// Выполняет парсинг выражения И:
-    ///     logicalAndExpression = comparisonExpression, { "И", comparisonExpression }.
+    ///     logicalAndExpression = equalityExpression, { "И", equalityExpression }.
     /// </summary>
     private Expression ParseLogicalAndExpression()
     {
-        Expression left = ParseComparisonExpression();
+        Expression left = ParseEqualityExpression();
         while (tokens.Peek().Type == TokenType.И)
         {
             tokens.Advance();
-            left = new BinaryOperationExpression(left, BinaryOperation.And, ParseComparisonExpression());
+            left = new BinaryOperationExpression(left, BinaryOperation.And, ParseEqualityExpression());
         }
 
         return left;
@@ -505,17 +505,40 @@ public class Parser
 
     /// <summary>
     /// Выполняет парсинг сравнения выражений:
-    ///     comparisonExpression = additiveExpression, [ ( "==" | "!=" | ".<" | ">" | "<=" | ">=" ), additiveExpression ].
+    ///     equalityExpression = relationalExpression, [ ( "==" | "!=" | ".<" | ">" | "<=" | ">=" ), relationalExpression ].
     /// </summary>
-    private Expression ParseComparisonExpression()
+    private Expression ParseEqualityExpression()
     {
-        Expression left = ParseAdditiveExpression();
+        Expression left = ParseRelationalExpression();
         TokenType type = tokens.Peek().Type;
 
         BinaryOperation? op = type switch
         {
             TokenType.Equal => BinaryOperation.Equal,
             TokenType.NotEqual => BinaryOperation.NotEqual,
+            _ => null,
+        };
+
+        if (op.HasValue)
+        {
+            tokens.Advance();
+            return new BinaryOperationExpression(left, op.Value, ParseRelationalExpression());
+        }
+
+        return left;
+    }
+
+    /// <summary>
+    /// Выполняет парсинг сравнения выражений:
+    ///     equalityExpression = relationalExpression, [ ( "==" | "!=" | ".<" | ">" | "<=" | ">=" ), relationalExpression ].
+    /// </summary>
+    private Expression ParseRelationalExpression()
+    {
+        Expression left = ParseAdditiveExpression();
+        TokenType type = tokens.Peek().Type;
+
+        BinaryOperation? op = type switch
+        {
             TokenType.LessThan => BinaryOperation.LessThan,
             TokenType.GreaterThan => BinaryOperation.GreaterThan,
             TokenType.LessThanOrEqual => BinaryOperation.LessThanOrEqual,
