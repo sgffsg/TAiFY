@@ -52,7 +52,7 @@ public class Parser
             TokenType.БАЗА => ParseConstantDeclaration(),
             TokenType.ПРОКРАСТИНИРУЕМ => ParseProcedureDeclaration(),
             _ when IsTypeName(token) => ParseTypedDeclaration(),
-            _ => ParseStatement()
+            _ => throw new UnexpectedLexemeException("Ожидалась инструкция верхнего уровня", token)
         };
     }
 
