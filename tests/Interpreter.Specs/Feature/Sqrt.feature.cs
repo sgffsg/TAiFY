@@ -173,8 +173,8 @@ namespace Interpreter.Specs.Feature
             разница = МОДУЛЬ(старыйКорень - корень);
         ФИНАЛОЧКА;
         
-        ВЫБРОС(корень);
-        ВЫБРОС(корень * корень);
+        ВЫБРОС(""Корень (приблизительно): "", корень);
+        ВЫБРОС(""Корень * Корень: "", корень * корень);
     ФИНАЛОЧКА
 ФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
@@ -191,9 +191,9 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
                 table14.AddRow(new string[] {
-                            "3.000000001396984"});
+                            "Корень (приблизительно): 3.000000001396984"});
                 table14.AddRow(new string[] {
-                            "9.000000008381903"});
+                            "Корень * Корень: 9.000000008381903"});
 #line 34
         await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table14, "Тогда ");
 #line hidden

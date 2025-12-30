@@ -164,9 +164,9 @@ namespace Interpreter.Specs.Feature
     РАСКЛАД выс = (год % 4 == 0 И (год % 100 != 0 ИЛИ год % 400 == 0));
 
     ЕСЛИ (выс) ТО
-        ВЫБРОС(1);
+        ВЫБРОС(""Високосный год."");
     ИНАЧЕ
-        ВЫБРОС(0);
+        ВЫБРОС(""Обычный год."");
 ФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
                 global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
@@ -182,7 +182,7 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
                 table6.AddRow(new string[] {
-                            "1"});
+                            "Високосный год."});
 #line 25
         await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table6, "Тогда ");
 #line hidden

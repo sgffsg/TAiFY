@@ -160,7 +160,7 @@ namespace Interpreter.Specs.Feature
     ПОЛТОРАШКА цельсий = 0.0;
     ВБРОС(цельсий);
     ПОЛТОРАШКА фаренгейт = цельсий * 1.8 + 32.0;
-    ВЫБРОС(фаренгейт);
+    ВЫБРОС(""В Фаренгейтах: "", фаренгейт);
 
     ЕСЛИ (фаренгейт > 100.0) ТО
         ВЫБРОС(""Очень жарко!"");
@@ -181,7 +181,7 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
                 table4.AddRow(new string[] {
-                            "86"});
+                            "В Фаренгейтах: 86"});
                 table4.AddRow(new string[] {
                             "Нормально."});
 #line 24

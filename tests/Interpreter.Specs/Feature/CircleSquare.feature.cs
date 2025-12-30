@@ -162,7 +162,7 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "Число"});
                 table1.AddRow(new string[] {
-                            "1.0"});
+                            "3.0"});
 #line 20
         await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table1, "И ");
 #line hidden
@@ -172,7 +172,7 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
                 table2.AddRow(new string[] {
-                            "3.1415926535"});
+                            "28.274333881499999"});
 #line 24
         await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table2, "Тогда ");
 #line hidden
