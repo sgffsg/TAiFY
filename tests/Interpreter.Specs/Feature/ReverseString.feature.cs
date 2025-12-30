@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Feature
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class СложениеЧиселFeature : object, global::Xunit.IClassFixture<СложениеЧиселFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class РеверсированиеСтрокиFeature : object, global::Xunit.IClassFixture<РеверсированиеСтрокиFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Feature", "Сложение чисел", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Feature", "Реверсирование строки", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "SumNumbers.feature"
+#line 1 "ReverseString.feature"
 #line hidden
         
-        public СложениеЧиселFeature(СложениеЧиселFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public РеверсированиеСтрокиFeature(РеверсированиеСтрокиFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Feature
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/SumNumbers.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/ReverseString.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Feature
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Сложение чисел")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Сложение чисел")]
-        [global::Xunit.TraitAttribute("Description", "Сложение чисел")]
-        public async global::System.Threading.Tasks.Task СложениеЧисел()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Проверка реверса строки")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Реверсирование строки")]
+        [global::Xunit.TraitAttribute("Description", "Проверка реверса строки")]
+        public async global::System.Threading.Tasks.Task ПроверкаРеверсаСтроки()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Сложение чисел", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Проверка реверса строки", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,28 +155,40 @@ namespace Interpreter.Specs.Feature
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я подготовил код программы:", "ПРОКРАСТИНИРУЕМ ПОГНАЛИ() \r\nПОЕХАЛИ\r\n    ПОЛТОРАШКА первоеЧисло = 0.0;\r\n    ПОЛТО" +
-                        "РАШКА второеЧисло = 0.0;\r\n\r\n    ВБРОС(первоеЧисло, второеЧисло);\r\n    ПОЛТОРАШКА" +
-                        " сумма = первоеЧисло + второеЧисло;\r\n\r\n    ВЫБРОС(сумма);\r\nФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
+        await testRunner.GivenAsync("я подготовил код программы:", @"ПРОКРАСТИНИРУЕМ ПОГНАЛИ() 
+ПОЕХАЛИ
+    ЦИТАТА вход = """";
+    ВБРОС(вход);
+
+    ЦИФЕРКА размер = ДЛИНА(вход);
+
+    ЦИТАТА результат = """";
+    ЦИФЕРКА и = размер - 1;
+
+    ПОКА (и >= 0) 
+    ПОЕХАЛИ
+        результат = результат + вход[и];
+        и = и - 1;
+    ФИНАЛОЧКА;
+    ВЫБРОС(""Наоборот: "", результат);
+ФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
-                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "Число"});
-                table15.AddRow(new string[] {
-                            "10.0"});
-                table15.AddRow(new string[] {
-                            "20.0"});
-#line 18
-        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table15, "И ");
+                table11.AddRow(new string[] {
+                            "тестовая строка"});
+#line 25
+        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table11, "И ");
 #line hidden
-#line 22
+#line 28
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
-                table16.AddRow(new string[] {
-                            "30"});
-#line 23
-        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table16, "Тогда ");
+                table12.AddRow(new string[] {
+                            "Наоборот: акортс яавотсет"});
+#line 29
+        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table12, "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -189,12 +201,12 @@ namespace Interpreter.Specs.Feature
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await СложениеЧиселFeature.FeatureSetupAsync();
+                await РеверсированиеСтрокиFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await СложениеЧиселFeature.FeatureTearDownAsync();
+                await РеверсированиеСтрокиFeature.FeatureTearDownAsync();
             }
         }
     }

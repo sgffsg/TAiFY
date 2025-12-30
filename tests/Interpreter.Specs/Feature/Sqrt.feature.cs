@@ -178,24 +178,24 @@ namespace Interpreter.Specs.Feature
     ФИНАЛОЧКА
 ФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
-                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "Число"});
-                table11.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "9.0"});
 #line 30
-        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table11, "И ");
+        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table13, "И ");
 #line hidden
 #line 33
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
-                table12.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "3.000000001396984"});
-                table12.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "9.000000008381903"});
 #line 34
-        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table12, "Тогда ");
+        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table14, "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
