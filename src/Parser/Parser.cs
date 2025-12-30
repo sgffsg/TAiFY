@@ -308,6 +308,7 @@ public class Parser
         Match(TokenType.Semicolon);
 
         AssignmentExpression iterator = ParseVariableAssignmentExpression();
+        Match(TokenType.CloseParenthesis);
 
         BlockStatement body = ParseBlock();
         return new ForStatement(init, condition, iterator, body);
