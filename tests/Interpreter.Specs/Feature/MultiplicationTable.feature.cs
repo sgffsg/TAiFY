@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Feature
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class МилиВКилометрыFeature : object, global::Xunit.IClassFixture<МилиВКилометрыFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class ТаблицаУмноженияFeature : object, global::Xunit.IClassFixture<ТаблицаУмноженияFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Feature", "Мили в километры", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Feature", "Таблица умножения", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "3_MilesToKm.feature"
+#line 1 "MultiplicationTable.feature"
 #line hidden
         
-        public МилиВКилометрыFeature(МилиВКилометрыFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public ТаблицаУмноженияFeature(ТаблицаУмноженияFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Feature
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/3_MilesToKm.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/MultiplicationTable.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Feature
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Мили в километры")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Мили в километры")]
-        [global::Xunit.TraitAttribute("Description", "Мили в километры")]
-        public async global::System.Threading.Tasks.Task МилиВКилометры()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Таблица умножения до 2")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Таблица умножения")]
+        [global::Xunit.TraitAttribute("Description", "Таблица умножения до 2")]
+        public async global::System.Threading.Tasks.Task ТаблицаУмноженияДо2()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Мили в километры", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Таблица умножения до 2", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,35 +155,51 @@ namespace Interpreter.Specs.Feature
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я запустил программу:", @"(ПОЯСНИТЕЛЬНАЯ-БРИГАДА: Глобальная константа для перевода)
-БАЗА ПОЛТОРАШКА КОЭФФИЦИЕНТ = 1.60934;
+        await testRunner.GivenAsync("я подготовил код программы:", @"ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+ПОЕХАЛИ
+    ЦИФЕРКА н = 0;
+    ВБРОС(н);
+    
+    ЦИФЕРКА и = 1;
+    ЦИФЕРКА жи = 1;
 
-ПРОКРАСТИНИРУЕМ ПОГНАЛИ() ПОЕХАЛИ
-    ПОЛТОРАШКА расстояниеМили = 0.0;
+    ЦИКЛ (и = 1; и <= н; и = и + 1) ПОЕХАЛИ
+        
+        ВЫБРОС(""--- Умножение на "", и, "" ---"");
 
-    ВБРОС(расстояниеМили);
-
-    ПОЛТОРАШКА расстояниеКм = расстояниеМили * КОЭФФИЦИЕНТ;
-
-    ВЫБРОС(расстояниеКм);
+        ЦИКЛ (жи = 1; жи <= н; жи = жи + 1) ПОЕХАЛИ
+            ЦИФЕРКА произв = и * жи;
+            ВЫБРОС(и, "" * "", жи, "" = "", произв);
+        ФИНАЛОЧКА
+    ФИНАЛОЧКА
 ФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "Число"});
-                table5.AddRow(new string[] {
-                            "1"});
-#line 20
-        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table5, "И ");
+                table9.AddRow(new string[] {
+                            "2"});
+#line 26
+        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table9, "И ");
 #line hidden
-#line 23
+#line 29
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
-                table6.AddRow(new string[] {
-                            "1.60934"});
-#line 24
-        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table6, "Тогда ");
+                table10.AddRow(new string[] {
+                            "--- Умножение на 1 ---"});
+                table10.AddRow(new string[] {
+                            "1 * 1 = 1"});
+                table10.AddRow(new string[] {
+                            "1 * 2 = 2"});
+                table10.AddRow(new string[] {
+                            "--- Умножение на 2 ---"});
+                table10.AddRow(new string[] {
+                            "2 * 1 = 2"});
+                table10.AddRow(new string[] {
+                            "2 * 2 = 4"});
+#line 30
+        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table10, "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -196,12 +212,12 @@ namespace Interpreter.Specs.Feature
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await МилиВКилометрыFeature.FeatureSetupAsync();
+                await ТаблицаУмноженияFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await МилиВКилометрыFeature.FeatureTearDownAsync();
+                await ТаблицаУмноженияFeature.FeatureTearDownAsync();
             }
         }
     }

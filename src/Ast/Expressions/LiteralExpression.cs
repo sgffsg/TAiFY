@@ -1,13 +1,15 @@
-﻿namespace Ast.Expressions;
+﻿using Runtime;
+
+namespace Ast.Expressions;
 
 public sealed class LiteralExpression : Expression
 {
-    public LiteralExpression(double value)
+    public LiteralExpression(Value value)
     {
         Value = value;
     }
 
-    public double Value { get; }
+    public Value Value { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

@@ -1,24 +1,28 @@
-﻿using Ast.Statements;
+﻿using Ast.Attributes;
+using Ast.Statements;
 
 namespace Ast.Declarations;
 
-public sealed class FunctionDeclaration : Declaration
+public sealed class FunctionDeclaration : AbstractFunctionDeclaration
 {
-    public FunctionDeclaration(string returnType, string name, List<Parameter> parameters, BlockStatement body)
+    private AstAttribute<AbstractTypeDeclaration?> declaredType;
+
+    public FunctionDeclaration(string name, IReadOnlyList<ParameterDeclaration> parameters, string? typeName, BlockStatement body)
+        : base(name, parameters)
     {
-        ReturnType = returnType;
-        Name = name;
-        Parameters = parameters;
+        TypeName = typeName;
         Body = body;
     }
 
-    public string ReturnType { get; }
-
-    public string Name { get; }
-
-    public List<Parameter> Parameters { get; }
+    public string? TypeName { get; }
 
     public BlockStatement Body { get; }
+
+    public AbstractTypeDeclaration? DeclaredType
+    {
+        get => declaredType.Get();
+        set => declaredType.Set(value);
+    }
 
     public override void Accept(IAstVisitor visitor)
     {

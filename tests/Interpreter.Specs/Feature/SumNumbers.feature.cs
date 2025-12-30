@@ -28,7 +28,7 @@ namespace Interpreter.Specs.Feature
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "1_SumNumbers.feature"
+#line 1 "SumNumbers.feature"
 #line hidden
         
         public СложениеЧиселFeature(СложениеЧиселFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Feature
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/1_SumNumbers.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/SumNumbers.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -155,28 +155,28 @@ namespace Interpreter.Specs.Feature
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я запустил программу:", "ПРОКРАСТИНИРУЕМ ПОГНАЛИ() \r\nПОЕХАЛИ\r\n    ПОЛТОРАШКА первоеЧисло = 0.0;\r\n    ПОЛТО" +
+        await testRunner.GivenAsync("я подготовил код программы:", "ПРОКРАСТИНИРУЕМ ПОГНАЛИ() \r\nПОЕХАЛИ\r\n    ПОЛТОРАШКА первоеЧисло = 0.0;\r\n    ПОЛТО" +
                         "РАШКА второеЧисло = 0.0;\r\n\r\n    ВБРОС(первоеЧисло, второеЧисло);\r\n    ПОЛТОРАШКА" +
                         " сумма = первоеЧисло + второеЧисло;\r\n\r\n    ВЫБРОС(сумма);\r\nФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
                             "Число"});
-                table1.AddRow(new string[] {
-                            "10"});
-                table1.AddRow(new string[] {
-                            "20"});
+                table15.AddRow(new string[] {
+                            "10.0"});
+                table15.AddRow(new string[] {
+                            "20.0"});
 #line 18
-        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table1, "И ");
+        await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table15, "И ");
 #line hidden
 #line 22
         await testRunner.WhenAsync("я выполняю программу", ((string)(null)), ((global::Reqnroll.Table)(null)), "Когда ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
-                table2.AddRow(new string[] {
+                table16.AddRow(new string[] {
                             "30"});
 #line 23
-        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table2, "Тогда ");
+        await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table16, "Тогда ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

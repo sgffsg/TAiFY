@@ -8,9 +8,9 @@ using Ast.Expressions;
 
 namespace Ast.Statements;
 
-public sealed class ForStatement : Statement
+public sealed class ForStatement : Expression
 {
-    public ForStatement(Statement initializer, Expression condition, Statement iterator, BlockStatement body)
+    public ForStatement(AssignmentExpression initializer, Expression condition, AssignmentExpression iterator, BlockStatement body)
     {
         Initializer = initializer;
         Condition = condition;
@@ -18,11 +18,11 @@ public sealed class ForStatement : Statement
         Body = body;
     }
 
-    public Statement Initializer { get; }
+    public AssignmentExpression Initializer { get; }
 
     public Expression Condition { get; }
 
-    public Statement Iterator { get; }
+    public AssignmentExpression Iterator { get; }
 
     public BlockStatement Body { get; }
 

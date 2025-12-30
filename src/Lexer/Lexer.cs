@@ -9,106 +9,73 @@ namespace Lexer
         private static readonly Dictionary<string, TokenType> Keywords = new()
         {
             {
-                "ПОЕХАЛИ", TokenType.Poehali
+                "ПОЕХАЛИ", TokenType.ПОЕХАЛИ
             },
             {
-                "ФИНАЛОЧКА", TokenType.Finalochka
+                "ФИНАЛОЧКА", TokenType.ФИНАЛОЧКА
             },
             {
-                "ПРОКРАСТИНИРУЕМ", TokenType.Prokrastiniryem
+                "ПРОКРАСТИНИРУЕМ", TokenType.ПРОКРАСТИНИРУЕМ
             },
             {
-                "ВБРОС", TokenType.Vbros
+                "ВБРОС", TokenType.ВБРОС
             },
             {
-                "ВЫБРОС", TokenType.Vybros
+                "ВЫБРОС", TokenType.ВЫБРОС
             },
             {
-                "ЦИТАТА", TokenType.Citata
+                "ЦИТАТА", TokenType.ЦИТАТА
             },
             {
-                "ХАЙП", TokenType.Hype
+                "ХАЙП", TokenType.ХАЙП
             },
             {
-                "КРИНЖ", TokenType.Cringe
+                "КРИНЖ", TokenType.КРИНЖ
             },
             {
-                "РАСКЛАД", TokenType.Rasklad
+                "РАСКЛАД", TokenType.РАСКЛАД
             },
             {
-                "ПОЛТОРАШКА", TokenType.Poltorashka
+                "ПОЛТОРАШКА", TokenType.ПОЛТОРАШКА
             },
             {
-                "ДРАТУТИ", TokenType.Dratuti
+                "ДРАТУТИ", TokenType.ДРАТУТИ
             },
             {
-                "ЦИФЕРКА", TokenType.Ciferka
+                "ЦИФЕРКА", TokenType.ЦИФЕРКА
             },
             {
-                "ПШИК", TokenType.Pshik
+                "ХВАТИТ", TokenType.ХВАТИТ
             },
             {
-                "ХВАТИТ", TokenType.Hvatit
+                "ПРОДОЛЖАЕМ", TokenType.ПРОДОЛЖАЕМ
             },
             {
-                "ПРОДОЛЖАЕМ", TokenType.Prodolzhaem
+                "БАЗА", TokenType.БАЗА
             },
             {
-                "БАЗА", TokenType.Baza
+                "ЕСЛИ", TokenType.ЕСЛИ
             },
             {
-                "ЕСЛИ", TokenType.Esli
+                "ТО", TokenType.ТО
             },
             {
-                "ТО", TokenType.To
+                "ИНАЧЕ", TokenType.ИНАЧЕ
             },
             {
-                "ИНАЧЕ", TokenType.Inache
+                "ЦИКЛ", TokenType.ЦИКЛ
             },
             {
-                "ЦИКЛ", TokenType.Cikl
+                "ПОКА", TokenType.ПОКА
             },
             {
-                "ПОКА", TokenType.Poka
+                "И", TokenType.И
             },
             {
-                "И", TokenType.And
+                "ИЛИ", TokenType.ИЛИ
             },
             {
-                "ИЛИ", TokenType.Or
-            },
-            {
-                "НЕ", TokenType.Not
-            },
-            {
-                "ПИ", TokenType.PI
-            },
-            {
-                "ЕШКА", TokenType.EULER
-            },
-            {
-                "МОДУЛЬ", TokenType.Module
-            },
-            {
-                "МИНИМУМ", TokenType.Minimum
-            },
-            {
-                "МАКСИМУМ", TokenType.Maximum
-            },
-            {
-                "СТЕПЕНЬ", TokenType.Pow
-            },
-            {
-                "КОРЕНЬ", TokenType.Sqrt
-            },
-            {
-                "СИНУС", TokenType.Sinus
-            },
-            {
-                "КОСИНУС", TokenType.Cosinus
-            },
-            {
-                "ТАНГЕНС", TokenType.Tangens
+                "НЕ", TokenType.НЕ
             },
         };
 
@@ -296,6 +263,7 @@ namespace Lexer
         {
             StringBuilder value = new StringBuilder();
             bool hasDigits = false;
+            bool isDouble = false;
 
             while (char.IsAsciiDigit(scanner.Peek()))
             {
@@ -306,6 +274,7 @@ namespace Lexer
 
             if (scanner.Peek() == '.')
             {
+                isDouble = true;
                 value.Append(scanner.Peek());
                 scanner.Advance();
 
@@ -345,14 +314,22 @@ namespace Lexer
                 return new Token(TokenType.Error, new TokenValue("No digits in the number"));
             }
 
-            if (double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double resultNumber))
+            if (isDouble)
             {
-                return new Token(TokenType.NumericLiteral, new TokenValue(resultNumber));
+                if (double.TryParse(value.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double res))
+                {
+                    return new Token(TokenType.DoubleLiteral, new TokenValue(res));
+                }
             }
             else
             {
-                return new Token(TokenType.Error, new TokenValue($"Не удалось распознать число: {value}"));
+                if (int.TryParse(value.ToString(), out int res))
+                {
+                    return new Token(TokenType.IntegerLiteral, new TokenValue(res));
+                }
             }
+
+            return new Token(TokenType.Error, new TokenValue($"Не удалось распознать число: {value}"));
         }
 
         private Token ParseStringLiteral()

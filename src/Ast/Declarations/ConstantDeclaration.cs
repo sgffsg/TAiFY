@@ -1,21 +1,28 @@
-﻿using Ast.Expressions;
+﻿using Ast.Attributes;
+using Ast.Expressions;
 
 namespace Ast.Declarations;
 
-public sealed class ConstantDeclaration : Declaration
+public sealed class ConstantDeclaration : AbstractVariableDeclaration
 {
+    private AstAttribute<AbstractTypeDeclaration?> declaredType;
+
     public ConstantDeclaration(string type, string name, Expression value)
+         : base(name)
     {
         Type = type;
-        Name = name;
         Value = value;
     }
 
     public string Type { get; }
 
-    public string Name { get; }
-
     public Expression Value { get; }
+
+    public AbstractTypeDeclaration? DeclaredType
+    {
+        get => declaredType.Get();
+        set => declaredType.Set(value);
+    }
 
     public override void Accept(IAstVisitor visitor)
     {

@@ -1,13 +1,18 @@
-﻿namespace Ast.Statements;
+﻿using Ast.Expressions;
 
-public sealed class BlockStatement : Statement
+namespace Ast.Statements;
+
+public sealed class BlockStatement : Expression
 {
-    public BlockStatement(List<Statement> statements)
+    public BlockStatement(List<AstNode> statements)
     {
         Statements = statements;
     }
 
-    public List<Statement> Statements { get; }
+    /// <summary>
+    /// Список инструкций, объявлений или вложенных блоков.
+    /// </summary>
+    public List<AstNode> Statements { get; }
 
     public override void Accept(IAstVisitor visitor)
     {

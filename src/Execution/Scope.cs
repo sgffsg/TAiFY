@@ -1,36 +1,26 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using Runtime;
 
 namespace Execution;
 
 public class Scope
 {
-    private readonly Dictionary<string, double> variables = [];
+    private readonly Dictionary<string, Value> variables = new();
+    private readonly HashSet<string> constants = new();
 
-    public bool TryGetVariable(string name, out double value)
+    public void Define(string name, Value value, bool isConstant)
     {
-        if (variables.TryGetValue(name, out double v))
+        variables[name] = value;
+        if (isConstant)
         {
-            value = v;
-            return true;
+            constants.Add(name);
         }
-
-        value = 0.0;
-        return false;
     }
 
-    public bool TryAssignVariable(string name, double value)
-    {
-        if (variables.ContainsKey(name))
-        {
-            variables[name] = value;
-            return true;
-        }
+    public bool IsConstant(string name) => constants.Contains(name);
 
-        return false;
-    }
+    public bool TryGetValue(string name, out Value? value) => variables.TryGetValue(name, out value);
 
-    public bool TryDefineVariable(string name, double value)
-    {
-        return variables.TryAdd(name, value);
-    }
+    public void Assign(string name, Value value) => variables[name] = value;
+
+    public bool Contains(string name) => variables.ContainsKey(name);
 }

@@ -6,18 +6,18 @@ namespace Lexer
     {
         private static readonly HashSet<TokenType> Keywords = new()
         {
-            TokenType.Poehali, TokenType.Finalochka, TokenType.Prokrastiniryem, TokenType.Vbros,
-            TokenType.Vybros, TokenType.Hvatit, TokenType.Dratuti, TokenType.Ciferka, TokenType.Poltorashka,
-            TokenType.Citata, TokenType.Rasklad, TokenType.Baza, TokenType.And,
-            TokenType.Or, TokenType.Not, TokenType.Esli, TokenType.To, TokenType.Inache, TokenType.Cikl,
+            TokenType.ПОЕХАЛИ, TokenType.ФИНАЛОЧКА, TokenType.ПРОКРАСТИНИРУЕМ, TokenType.ВБРОС,
+            TokenType.ВЫБРОС, TokenType.ХВАТИТ, TokenType.ПРОДОЛЖАЕМ, TokenType.ДРАТУТИ, TokenType.ЦИФЕРКА,
+            TokenType.ПОЛТОРАШКА, TokenType.ЦИТАТА, TokenType.РАСКЛАД, TokenType.БАЗА, TokenType.И,
+            TokenType.ИЛИ, TokenType.НЕ, TokenType.ЕСЛИ, TokenType.ТО, TokenType.ИНАЧЕ, TokenType.ЦИКЛ,
         };
 
         private static readonly HashSet<TokenType> Operators = new()
         {
             TokenType.Equal, TokenType.NotEqual, TokenType.LessThan, TokenType.LessThanOrEqual,
             TokenType.GreaterThan, TokenType.GreaterThanOrEqual, TokenType.Plus, TokenType.Minus,
-            TokenType.Multiplication, TokenType.Division, TokenType.Remainder, TokenType.And,
-            TokenType.Not, TokenType.Or, TokenType.Assignment, TokenType.ColonTypeIndication,
+            TokenType.Multiplication, TokenType.Division, TokenType.Remainder, TokenType.И,
+            TokenType.НЕ, TokenType.ИЛИ, TokenType.Assignment, TokenType.ColonTypeIndication,
             TokenType.DotFieldAccess, TokenType.OpenSquareBracket, TokenType.CloseSquareBracket,
             TokenType.OpenParenthesis, TokenType.CloseParenthesis,
         };
@@ -34,7 +34,7 @@ namespace Lexer
                 {
                     lexemData.Identifiers++;
                 }
-                else if (t.Type == TokenType.NumericLiteral)
+                else if (t.Type == TokenType.IntegerLiteral)
                 {
                     lexemData.NumberLiterals++;
                 }
