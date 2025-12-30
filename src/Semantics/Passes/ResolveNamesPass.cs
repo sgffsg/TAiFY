@@ -39,13 +39,6 @@ public sealed class ResolveNamesPass : AbstractPass
         DeclareSymbol(d.Name, d);
     }
 
-    public override void Visit(VariableExpression e)
-    {
-        base.Visit(e);
-
-        e.Variable = ResolveVariable(e.Name);
-    }
-
     public override void Visit(ParameterDeclaration d)
     {
         base.Visit(d);
@@ -53,11 +46,6 @@ public sealed class ResolveNamesPass : AbstractPass
         d.Type = ResolveType(d.TypeName);
         d.ResultType = ConvertTypeNameToValueType(d.TypeName);
         DeclareSymbol(d.Name, d);
-    }
-
-    public override void Visit(ForStatement s)
-    {
-        base.Visit(s);
     }
 
     public override void Visit(FunctionDeclaration d)
@@ -84,21 +72,11 @@ public sealed class ResolveNamesPass : AbstractPass
         }
     }
 
-    public override void Visit(AssignmentExpression e)
+    public override void Visit(VariableExpression e)
     {
-        Declaration symbol = symbols.GetSymbol(e.Name);
+        base.Visit(e);
 
-        if (symbol is AbstractVariableDeclaration decl)
-        {
-            e.Variable = decl;
-        }
-        else
-        {
-            throw new Exception($"Попытка присвоить значение '{e.Name}', но это не переменная (БАЗА).");
-        }
-
-        // 3. Не забываем посетить правую часть присваивания (само выражение)
-        e.Value.Accept(this);
+        e.Variable = ResolveVariable(e.Name);
     }
 
     public override void Visit(BlockStatement s)
@@ -112,6 +90,22 @@ public sealed class ResolveNamesPass : AbstractPass
         {
             symbols = symbols.Parent!;
         }
+    }
+
+    public override void Visit(ForStatement s)
+    {
+        base.Visit(s);
+    }
+
+    public override void Visit(WhileStatement s)
+    {
+        base.Visit(s);
+    }
+
+    public override void Visit(IndexAccessExpression e)
+    {
+        e.Target.Accept(this);
+        e.Index.Accept(this);
     }
 
     public override void Visit(FunctionCallExpression e)
@@ -133,10 +127,20 @@ public sealed class ResolveNamesPass : AbstractPass
         }
     }
 
-    public override void Visit(IndexAccessExpression e)
+    public override void Visit(AssignmentExpression e)
     {
-        e.Target.Accept(this);
-        e.Index.Accept(this);
+        Declaration symbol = symbols.GetSymbol(e.Name);
+
+        if (symbol is AbstractVariableDeclaration decl)
+        {
+            e.Variable = decl;
+        }
+        else
+        {
+            throw new Exception($"Попытка присвоить значение '{e.Name}', но это не переменная (БАЗА).");
+        }
+
+        e.Value.Accept(this);
     }
 
     public override void Visit(IndexAssignmentExpression e)

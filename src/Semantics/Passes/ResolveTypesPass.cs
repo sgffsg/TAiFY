@@ -2,9 +2,6 @@
 using Ast.Declarations;
 using Ast.Expressions;
 using Ast.Statements;
-
-using Runtime;
-
 using Semantics.Exceptions;
 
 using ValueType = Runtime.ValueType;
@@ -16,20 +13,18 @@ public sealed class ResolveTypesPass : AbstractPass
     private ValueType? expectedReturnType;
     private bool hasGuaranteedReturn;
 
-    /// <summary>
-    /// Литерал всегда имеет определённый тип.
-    /// </summary>
     public override void Visit(LiteralExpression e)
     {
         base.Visit(e);
         e.ResultType = e.Value.GetValueType();
     }
 
-    /// <summary>
-    /// Выполняет проверки типов для бинарных операций:
-    /// 1. Арифметические и логические операции выполняются над целыми числами и возвращают число.
-    /// 2. Операции сравнения выполняются над двумя числами либо двумя строками и возвращают тот же тип.
-    /// </summary>
+    public override void Visit(VariableExpression e)
+    {
+        base.Visit(e);
+        e.ResultType = e.Variable.ResultType;
+    }
+
     public override void Visit(BinaryOperationExpression e)
     {
         base.Visit(e);
@@ -51,10 +46,6 @@ public sealed class ResolveTypesPass : AbstractPass
         e.ResultType = resultType.Value;
     }
 
-    /// <summary>
-    /// Выполняет проверки типов для унарного минуса.
-    /// Унарный минус применяется только к числам и возвращает число.
-    /// </summary>
     public override void Visit(UnaryOperationExpression e)
     {
         base.Visit(e);
@@ -90,12 +81,6 @@ public sealed class ResolveTypesPass : AbstractPass
         }
     }
 
-    public override void Visit(VariableExpression e)
-    {
-        base.Visit(e);
-        e.ResultType = e.Variable.ResultType;
-    }
-
     public override void Visit(VariableDeclaration d)
     {
         base.Visit(d);
@@ -122,30 +107,6 @@ public sealed class ResolveTypesPass : AbstractPass
         }
     }
 
-    public override void Visit(AssignmentExpression e)
-    {
-        base.Visit(e);
-        ValueType variableResultType = e.Variable.ResultType;
-        ValueType valueResultType = e.Value.ResultType;
-
-        if (variableResultType != valueResultType)
-        {
-            throw new TypeErrorException($"Нельзя присвоить значение типа {valueResultType} переменной типа {variableResultType}.");
-        }
-
-        e.ResultType = ValueType.Void;
-    }
-
-    public override void Visit(IfStatement s)
-    {
-        base.Visit(s);
-
-        if (s.Condition.ResultType != ValueType.РАСКЛАД)
-        {
-            throw new TypeErrorException("Условие в 'ЕСЛИ' должно иметь тип РАСКЛАД.");
-        }
-    }
-
     public override void Visit(FunctionDeclaration d)
     {
         hasGuaranteedReturn = false;
@@ -159,6 +120,16 @@ public sealed class ResolveTypesPass : AbstractPass
         }
 
         expectedReturnType = null;
+    }
+
+    public override void Visit(IfStatement s)
+    {
+        base.Visit(s);
+
+        if (s.Condition.ResultType != ValueType.РАСКЛАД)
+        {
+            throw new TypeErrorException("Условие в 'ЕСЛИ' должно иметь тип РАСКЛАД.");
+        }
     }
 
     public override void Visit(WhileStatement s)
@@ -225,6 +196,20 @@ public sealed class ResolveTypesPass : AbstractPass
         }
 
         e.ResultType = ValueType.ЦИТАТА;
+    }
+
+    public override void Visit(AssignmentExpression e)
+    {
+        base.Visit(e);
+        ValueType variableResultType = e.Variable.ResultType;
+        ValueType valueResultType = e.Value.ResultType;
+
+        if (variableResultType != valueResultType)
+        {
+            throw new TypeErrorException($"Нельзя присвоить значение типа {valueResultType} переменной типа {variableResultType}.");
+        }
+
+        e.ResultType = ValueType.Void;
     }
 
     public override void Visit(IndexAssignmentExpression e)

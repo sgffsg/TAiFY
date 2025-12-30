@@ -18,6 +18,12 @@ public static class Builtins
             args => new Value(Math.Abs(args[0].AsDouble()))
         ),
         new(
+            "СТЕПЕНЬ",
+            [new BuiltinFunctionParameter("x", ValueType.ПОЛТОРАШКА), new BuiltinFunctionParameter("y", ValueType.ПОЛТОРАШКА)],
+            ValueType.ПОЛТОРАШКА,
+            args => new Value(Math.Pow(args[0].AsDouble(), args[1].AsDouble()))
+        ),
+        new(
             "МИНИМУМ",
             [new BuiltinFunctionParameter("x", ValueType.ПОЛТОРАШКА), new BuiltinFunctionParameter("y", ValueType.ПОЛТОРАШКА)],
             ValueType.ПОЛТОРАШКА,
