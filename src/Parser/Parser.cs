@@ -35,6 +35,11 @@ public class Parser
         return nodes;
     }
 
+    public Expression EvaluateExpression()
+    {
+        return ParseExpression();
+    }
+
     /// <summary>
     /// topLevelItem =
     ///     procedureDeclaration | constantDeclaration | typedDeclaration.
