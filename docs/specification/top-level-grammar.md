@@ -152,9 +152,12 @@ ioStatement
     | ( "ВБРОС", "(", identifier, { ",", identifier }, ")", ";" )
     ;
     
-sideEffectStatement = identifier, ( assignmentTail | callTail ), ";" ;
+sideEffectStatement = identifier, ( assignmentTail | indexAssignmentTail | callTail ), ";" ;
 
 assignmentTail = "=", expression ;
+
+indexAssignmentTail = "[", expression, "]", "=", expression ;
+
 callTail       = "(", [ argumentList ], ")" ;
 
 variableAssignment = identifier, "=", expression ;

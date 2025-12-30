@@ -17,21 +17,21 @@ namespace Interpreter.Specs.Feature
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class ПлощадьКругаFeature : object, global::Xunit.IClassFixture<ПлощадьКругаFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class КонвертерFeature : object, global::Xunit.IClassFixture<КонвертерFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Feature", "Площадь круга", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("ru-RU"), "Feature", "Конвертер", null, global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "2_CircleSquare.feature"
+#line 1 "Converter.feature"
 #line hidden
         
-        public ПлощадьКругаFeature(ПлощадьКругаFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public КонвертерFeature(КонвертерFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -105,7 +105,7 @@ namespace Interpreter.Specs.Feature
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/2_CircleSquare.feature.ndjson", 3);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Feature/Converter.feature.ndjson", 3);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -133,15 +133,15 @@ namespace Interpreter.Specs.Feature
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Площадь круга")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Площадь круга")]
-        [global::Xunit.TraitAttribute("Description", "Площадь круга")]
-        public async global::System.Threading.Tasks.Task ПлощадьКруга()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Перевод в фарингейты")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Конвертер")]
+        [global::Xunit.TraitAttribute("Description", "Перевод в фарингейты")]
+        public async global::System.Threading.Tasks.Task ПереводВФарингейты()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Площадь круга", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Перевод в фарингейты", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = null;
 #line 4
@@ -155,14 +155,23 @@ namespace Interpreter.Specs.Feature
             {
                 await this.ScenarioStartAsync();
 #line 5
-        await testRunner.GivenAsync("я запустил программу:", "(ПОЯСНИТЕЛЬНАЯ-БРИГАДА: Вычисляет площадь круга)\r\n\r\nПРОКРАСТИНИРУЕМ ПОГНАЛИ() \r\nП" +
-                        "ОЕХАЛИ\r\n    ПОЛТОРАШКА радиус = 0.0;\r\n\r\n    ВБРОС(радиус);\r\n\r\n    ПОЛТОРАШКА пло" +
-                        "щадьКруга = ПИ * радиус * радиус;\r\n\r\n    ВЫБРОС(площадьКруга);\r\nФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
+        await testRunner.GivenAsync("я подготовил код программы:", @"ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+ПОЕХАЛИ
+    ПОЛТОРАШКА цельсий = 0.0;
+    ВБРОС(цельсий);
+    ПОЛТОРАШКА фаренгейт = цельсий * 1.8 + 32.0;
+    ВЫБРОС(""В Фаренгейтах: "", фаренгейт);
+
+    ЕСЛИ (фаренгейт > 100.0) ТО
+        ВЫБРОС(""Очень жарко!"");
+    ИНАЧЕ
+        ВЫБРОС(""Нормально."");
+ФИНАЛОЧКА", ((global::Reqnroll.Table)(null)), "Дано ");
 #line hidden
                 global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
                             "Число"});
                 table3.AddRow(new string[] {
-                            "1"});
+                            "30.0"});
 #line 20
         await testRunner.AndAsync("я установил входные данные:", ((string)(null)), table3, "И ");
 #line hidden
@@ -172,7 +181,9 @@ namespace Interpreter.Specs.Feature
                 global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "Результат"});
                 table4.AddRow(new string[] {
-                            "3.1415926535"});
+                            "В Фаренгейтах: 86"});
+                table4.AddRow(new string[] {
+                            "Нормально."});
 #line 24
         await testRunner.ThenAsync("я получаю результаты:", ((string)(null)), table4, "Тогда ");
 #line hidden
@@ -187,12 +198,12 @@ namespace Interpreter.Specs.Feature
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await ПлощадьКругаFeature.FeatureSetupAsync();
+                await КонвертерFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await ПлощадьКругаFeature.FeatureTearDownAsync();
+                await КонвертерFeature.FeatureTearDownAsync();
             }
         }
     }

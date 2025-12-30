@@ -1,11 +1,9 @@
-﻿namespace Ast.Statements;
+﻿using Ast.Expressions;
 
-public sealed class BreakStatement : Statement
+namespace Ast.Statements;
+
+public sealed class BreakStatement : Expression
 {
-    public BreakStatement()
-    {
-    }
-
     public override void Accept(IAstVisitor visitor)
     {
         visitor.Visit(this);

@@ -4,6 +4,7 @@
     <ProjectReference Include="..\Ast\Ast.csproj" />
     <ProjectReference Include="..\Execution\Execution.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
+    <ProjectReference Include="..\Semantics\Semantics.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

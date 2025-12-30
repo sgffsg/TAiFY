@@ -1,7 +1,7 @@
 ﻿using Ast.Expressions;
 
 namespace Ast.Statements;
-public sealed class WhileStatement : Statement
+public sealed class WhileStatement : Expression
 {
     public WhileStatement(Expression condition, BlockStatement body)
     {

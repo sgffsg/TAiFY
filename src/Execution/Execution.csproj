@@ -2,6 +2,7 @@
     
   <ItemGroup>
     <ProjectReference Include="..\Ast\Ast.csproj" />
+    <ProjectReference Include="..\Runtime\Runtime.csproj" />
   </ItemGroup>
     
   <PropertyGroup>

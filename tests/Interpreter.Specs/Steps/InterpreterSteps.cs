@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Execution;
 using Reqnroll;
+using Runtime;
 
 namespace Interpreter.Specs.Steps;
 
@@ -12,8 +13,8 @@ public class InterpreterSteps
     private FakeEnvironment? fakeEnvironment;
     private Exception? executionException;
 
-    [Given(@"я запустил программу:")]
-    public void GivenЯЗапустилПрограмму(string multilineText)
+    [Given(@"я подготовил код программы:")]
+    public void GivenЯПодготовилКодПрограммы(string multilineText)
     {
         context = new Context();
         fakeEnvironment = new FakeEnvironment();
@@ -31,16 +32,19 @@ public class InterpreterSteps
 
         foreach (DataTableRow? row in table.Rows)
         {
-            if (row.TryGetValue("Число", out string? valueStr))
+            string rawValue = row["Число"];
+
+            if (int.TryParse(rawValue, out int intVal))
             {
-                if (double.TryParse(valueStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-                {
-                    fakeEnvironment.AddInput(value);
-                }
-                else
-                {
-                    throw new FormatException($"Неверный формат числа: '{valueStr}'");
-                }
+                fakeEnvironment.EnqueueInput(new Value(intVal));
+            }
+            else if (double.TryParse(rawValue, CultureInfo.InvariantCulture, out double dblVal))
+            {
+                fakeEnvironment.EnqueueInput(new Value(dblVal));
+            }
+            else
+            {
+                fakeEnvironment.EnqueueInput(new Value(rawValue));
             }
         }
     }
@@ -50,7 +54,7 @@ public class InterpreterSteps
     {
         try
         {
-            VaibikiInterpreter interpreter = new(context!, fakeEnvironment!);
+            VaibikiInterpreter interpreter = new(fakeEnvironment!);
             interpreter.Execute(programCode!);
             executionException = null;
         }
@@ -75,26 +79,29 @@ public class InterpreterSteps
             throw new InvalidOperationException("Окружение не инициализировано");
         }
 
-        IReadOnlyList<double> results = fakeEnvironment.GetOutput();
-
-        List<double> expectedResults = table.Rows
-            .Select(row => row.TryGetValue("Результат", out string? valueStr) ? valueStr : null)
-            .Where(valueStr => valueStr != null)
-            .Select(valueStr => double.Parse(valueStr!, CultureInfo.InvariantCulture))
-            .ToList();
-
-        if (results.Count != expectedResults.Count)
+        IReadOnlyList<string> actualResults = fakeEnvironment!.GetOutputHistory();
+        if (actualResults.Count != table.Rows.Count)
         {
-            throw new Exception(
-                $"Количество результатов не совпадает. Ожидалось: {expectedResults.Count}, Получено: {results.Count}. " +
-                $"Вывод программы: {string.Join(", ", results)}");
+            Assert.Fail($"Количество строк вывода не совпадает. Ожидалось: {table.Rows.Count}, Получено: {actualResults.Count}. " +
+                        $"\nВывод программы: {string.Join(" | ", actualResults)}");
         }
 
-        for (int i = 0; i < results.Count; i++)
+        for (int i = 0; i < actualResults.Count; i++)
         {
-            if (Math.Abs(results[i] - expectedResults[i]) > 0.0000000001)
+            string expectedStr = table.Rows[i]["Результат"];
+            string actualStr = actualResults[i];
+
+            if (double.TryParse(expectedStr, CultureInfo.InvariantCulture, out double expDouble) && double.TryParse(actualStr, CultureInfo.InvariantCulture, out double actDouble))
             {
-                throw new Exception($"Результат [{i}] не совпадает. Ожидалось: {expectedResults[i]}, Получено: {results[i]}");
+                Assert.Equal(expDouble, actDouble);
+            }
+            else if (long.TryParse(expectedStr, out long expInt) && long.TryParse(actualStr, out long actInt))
+            {
+                Assert.Equal(expInt, actInt);
+            }
+            else
+            {
+                Assert.Equal(expectedStr, actualStr);
             }
         }
     }

@@ -1,530 +1,282 @@
 ﻿using Ast;
 using Ast.Declarations;
-
+using Ast.Expressions;
 using Execution;
-using Execution.Exceptions;
+using Runtime;
+using Semantics;
+using Semantics.Exceptions;
 
 namespace Parser.UnitTests;
 
 public class ParseTopLevelStatementsTests
 {
-    [Fact]
-    public void Parse_int_variable_declaration()
+    [Theory]
+    [MemberData(nameof(GetSemanticViolationsData))]
+    public void SemanticViolations_ShouldThrowExpectedException(string code, Type expectedException)
     {
-        string code = @"ЦИФЕРКА x = 5;";
+        Context context = new();
+        FakeEnvironment environment = new();
+        Assert.Throws(expectedException, () => ExecuteTestCode(context, environment, code));
+    }
+
+    public static TheoryData<string, Type> GetSemanticViolationsData()
+    {
+        return new TheoryData<string, Type>
+        {
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ() ПОЕХАЛИ
+                    ПОЛТОРАШКА радиус = 0.0;
+                    ПОЛТОРАШКА радиус = 1.0;
+                ФИНАЛОЧКА
+                """,
+                typeof(DuplicateSymbolException)
+            },
+            {
+                """
+                БАЗА ПОЛТОРАШКА радиус = 3.0;
+
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ПОЛТОРАШКА радиус = 5.0;
+                ФИНАЛОЧКА
+                """,
+                typeof(DuplicateSymbolException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ() ПОЕХАЛИ
+                    ВЫБРОС(н);
+                ФИНАЛОЧКА
+                """,
+                typeof(UnknownSymbolException)
+            },
+            {
+                """
+                БАЗА ПОЛТОРАШКА радиус = 3.0;
+
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ() 
+                ПОЕХАЛИ
+                    радиус = 5.0;
+                ФИНАЛОЧКА
+                """,
+                typeof(InvalidAssignmentException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ЦИФЕРКА тест = 5;
+                    МИНИМУМ(тест);
+                ФИНАЛОЧКА
+                """,
+                typeof(InvalidFunctionCallException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ЦИФЕРКА тест = 5;
+                    ДЛИНА(тест);
+                ФИНАЛОЧКА
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ХВАТИТ;
+                ФИНАЛОЧКА
+                """,
+                typeof(InvalidExpressionException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ВЫБРОС(1 + "привет");
+                ФИНАЛОЧКА
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ() ПОЕХАЛИ
+                    ВЫБРОС("текст" * 2);
+                ФИНАЛОЧКА
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ() ПОЕХАЛИ
+                    ВЫБРОС(3.14 == "пи");
+                ФИНАЛОЧКА
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ() ПОЕХАЛИ
+                    ЦИФЕРКА икс = "текст";
+                ФИНАЛОЧКА
+                """,
+                typeof(TypeErrorException)
+            },
+            {
+                """
+                ЦИФЕРКА тест() ПОЕХАЛИ
+                    (ПОЯСНИТЕЛЬНАЯ-БРИГАДА: Нет ДРАТУТИ)
+                ФИНАЛОЧКА
+                """,
+                typeof(TypeErrorException)
+            },
+        };
+    }
+
+    /// <summary>
+    /// Тест на корректность выполнения.
+    /// Проверяет, что вывод программы (ВЫБРОС) совпадает с ожидаемыми значениями.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(GetTopLevelTestData))]
+    public void Execution_ShouldProduceExpectedOutput(string code, object[] expectedOutput)
+    {
         Context context = new();
         FakeEnvironment environment = new();
         ExecuteTestCode(context, environment, code);
+        IReadOnlyList<string> actualOutput = environment.GetOutputHistory();
 
-        Assert.True(context.Exists("x"));
-        Assert.Equal(5, context.GetValue("x"));
+        Assert.Equal(expectedOutput.Length, actualOutput.Count);
+        for (int i = 0; i < expectedOutput.Length; i++)
+        {
+            Assert.Equal(expectedOutput[i].ToString(), actualOutput[i]);
+        }
     }
 
-    [Fact]
-    public void Parse_float_variable_declaration()
+    public static TheoryData<string, object[]> GetTopLevelTestData()
     {
-        string code = @"ПОЛТОРАШКА x = 5.1;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("x"));
-        Assert.Equal(5.1, context.GetValue("x"));
-    }
-
-    [Fact]
-    public void Parse_variable_redeclaration()
-    {
-        string code = @"ЦИФЕРКА x = 5;ПОЛТОРАШКА x = 5.1;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_multiple_variable_declarations()
-    {
-        string code = @"ЦИФЕРКА a = 10; ЦИФЕРКА b = 20; ЦИФЕРКА c = a + b;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("a"));
-        Assert.Equal(10, context.GetValue("a"));
-
-        Assert.True(context.Exists("b"));
-        Assert.Equal(20, context.GetValue("b"));
-
-        Assert.True(context.Exists("c"));
-        Assert.Equal(30, context.GetValue("c"));
-    }
-
-    [Fact]
-    public void Parse_variable_reassignment()
-    {
-        string code = @"ЦИФЕРКА x = 5;x = x + 1;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("x"));
-        Assert.Equal(6, context.GetValue("x"));
-    }
-
-    [Fact]
-    public void Parse_variable_reassignment_without_declaration()
-    {
-        string code = @"x = x + 1;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Exception exception = Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_constant_variable_declaration()
-    {
-        string code = @"БАЗА ЦИФЕРКА x = 5;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("x"));
-        Assert.Equal(5, context.GetValue("x"));
-    }
-
-    [Fact]
-    public void Parse_constant_variable_redeclaration()
-    {
-        string code = @"БАЗА ЦИФЕРКА x = 5;БАЗА ЦИФЕРКА x = 2;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_constant_variable_with_same_name_variable_declaration()
-    {
-        string code = @"БАЗА ЦИФЕРКА x = 5;ЦИФЕРКА x = 5;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_constant_variable_usage()
-    {
-        string code = @"БАЗА ЦИФЕРКА МАКС = 100; ЦИФЕРКА результат = МАКС;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("МАКС"));
-        Assert.Equal(100, context.GetValue("МАКС"));
-
-        Assert.True(context.Exists("результат"));
-        Assert.Equal(100, context.GetValue("результат"));
-    }
-
-    [Fact]
-    public void Parse_constant_reassignment_failed()
-    {
-        string code = @"БАЗА ЦИФЕРКА МАКС = 100; МАКС = 50;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Exception exception = Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_variables_in_expression()
-    {
-        string code = @"ЦИФЕРКА радиус = 5; ПОЛТОРАШКА результат = радиус * радиус * ПИ;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("радиус"));
-        Assert.Equal(5, context.GetValue("радиус"));
-
-        Assert.True(context.Exists("результат"));
-        Assert.Equal(5 * 5 * Math.PI, context.GetValue("результат"), 5); // Точность до 5 знаков
-    }
-
-    [Fact]
-    public void Parse_if_branch_with_literal_check()
-    {
-        string code = @"ЕСЛИ (ХАЙП) ТО ВЫБРОС(5);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(5, output[0]);
-    }
-
-    [Fact]
-    public void Parse_empty_else_branch_with_literal_check()
-    {
-        string code = @"ЕСЛИ (КРИНЖ) ТО 5;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Empty(output);
-    }
-
-    [Fact]
-    public void Parse_if_branch_with_comparison_expression()
-    {
-        string code = @"ЕСЛИ (5 > 3) ТО ВЫБРОС(10);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Equal(10, output[0]);
-    }
-
-    [Fact]
-    public void Parse_empty_else_branch_with_comparison_expression()
-    {
-        string code = @"ЕСЛИ (5 < 3) ТО 10;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Empty(output);
-    }
-
-    [Fact]
-    public void Parse_if_else_true_branch()
-    {
-        string code = @"ЕСЛИ (ХАЙП) ТО ВЫБРОС(10); ИНАЧЕ ВЫБРОС(20);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(10, output[0]);
-    }
-
-    [Fact]
-    public void Parse_if_else_false_branch()
-    {
-        string code = @"ЕСЛИ (КРИНЖ) ТО ВЫБРОС(10); ИНАЧЕ ВЫБРОС(20);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(20, output[0]);
-    }
-
-    [Fact]
-    public void Parse_nested_functions()
-    {
-        string code = @"ВЫБРОС(МОДУЛЬ(МИНИМУМ(-10, 5, 20)));";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(10, output[0]);
-    }
-
-    [Fact]
-    public void Parse_combination_of_functions()
-    {
-        string code = @"ВЫБРОС(СТЕПЕНЬ(КОРЕНЬ(16), 2));";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(16, output[0], 5);
-    }
-
-    [Fact]
-    public void Parse_combination_of_variables_and_functions()
-    {
-        string code = @"ЦИФЕРКА x = 5; ЦИФЕРКА y = 10; ВЫБРОС((x + y) * МОДУЛЬ(-2));";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(30, output[0]);
-    }
-
-    [Fact]
-    public void Parse_complex_logical_and_condition()
-    {
-        string code = @"ЕСЛИ (5 > 3 И 10 < 20) ТО ВЫБРОС(100); ИНАЧЕ ВЫБРОС(200);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(100, output[0]);
-    }
-
-    [Fact]
-    public void Parse_complex_logical_or_condition()
-    {
-        string code = @"ЕСЛИ (5 > 10 ИЛИ 10 < 20) ТО ВЫБРОС(100); ИНАЧЕ ВЫБРОС(200);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(100, output[0]);
-    }
-
-    [Fact]
-    public void Parse_complex_logical_and_or_combination()
-    {
-        string code = @"ЕСЛИ ((5 > 3) И (10 < 20 ИЛИ 1 == 2)) ТО ВЫБРОС(100); ИНАЧЕ ВЫБРОС(200);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(100, output[0]);
-    }
-
-    [Fact]
-    public void Parse_unclosed_parenthesis_should_fail()
-    {
-        string code = @"(2 + 3";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<UnexpectedLexemeException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_extra_closed_parenthesis_should_fail()
-    {
-        string code = @"2 + 3)";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<UnexpectedLexemeException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_unknown_operator_should_fail()
-    {
-        string code = @"2 & 3;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<UnexpectedLexemeException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_division_by_zero_should_fail()
-    {
-        string code = @"5 / 0;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<DivideByZeroException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_remainder_by_zero_should_fail()
-    {
-        string code = @"10 % 0;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<DivideByZeroException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_use_undeclared_variable_should_fail()
-    {
-        string code = @"x = 5;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Exception exception = Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_function_too_few_arguments_should_fail()
-    {
-        string code = @"МОДУЛЬ();";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_function_too_many_arguments_should_fail()
-    {
-        string code = @"МОДУЛЬ(1, 2, 3);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Assert.Throws<ArgumentException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_output_string()
-    {
-        string code = @"ВЫБРОС(""Привет"");";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Single(output);
-        Assert.Equal(6, output[0]); // Длина строки "Привет" = 6 символов
-    }
-
-    [Fact]
-    public void Parse_output_multiple_values()
-    {
-        string code = @"ВЫБРОС(1, 2, 3);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Equal(3, output.Count);
-        Assert.Equal(1, output[0]);
-        Assert.Equal(2, output[1]);
-        Assert.Equal(3, output[2]);
-    }
-
-    [Fact]
-    public void Parse_output_with_expressions()
-    {
-        string code = @"ЦИФЕРКА x = 5; ВЫБРОС(x, x * 2, x + 10);";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        ExecuteTestCode(context, environment, code);
-
-        IReadOnlyList<double> output = environment.GetOutput();
-        Assert.Equal(3, output.Count);
-        Assert.Equal(5, output[0]);
-        Assert.Equal(10, output[1]);
-        Assert.Equal(15, output[2]);
-    }
-
-    [Fact]
-    public void Parse_input_statement()
-    {
-        string code = @"ЦИФЕРКА x; ЦИФЕРКА y;ВБРОС(x, y);";
-        double[] inputs = { 10.5, 20.3 };
-        Context context = new();
-        FakeEnvironment environment = new(inputs);
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.True(context.Exists("x"));
-        Assert.True(context.Exists("y"));
-        Assert.Equal(10.5, context.GetValue("x"));
-        Assert.Equal(20.3, context.GetValue("y"));
-    }
-
-    [Fact]
-    public void Parse_input_with_existing_variables()
-    {
-        string code = @"ЦИФЕРКА x = 0; ЦИФЕРКА y = 0; ВБРОС(x, y);";
-        double[] inputs = { 100, 200 };
-        Context context = new();
-        FakeEnvironment environment = new(inputs);
-
-        ExecuteTestCode(context, environment, code);
-
-        Assert.Equal(100, context.GetValue("x"));
-        Assert.Equal(200, context.GetValue("y"));
-    }
-
-    [Fact]
-    public void Parse_break_statement_outside_loop_should_fail()
-    {
-        string code = @"ХВАТИТ;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Exception exception = Assert.Throws<BreakException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_continue_statement_outside_loop_should_fail()
-    {
-        string code = @"ПРОДОЛЖАЕМ;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Exception exception = Assert.Throws<ContinueException>(() => ExecuteTestCode(context, environment, code));
-    }
-
-    [Fact]
-    public void Parse_return_statement_outside_function_should_fail()
-    {
-        string code = @"ДРАТУТИ 5;";
-        Context context = new();
-        FakeEnvironment environment = new();
-
-        Exception exception = Assert.Throws<ReturnException>(() => ExecuteTestCode(context, environment, code));
+        return new TheoryData<string, object[]>
+        {
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ВЫБРОС(7);
+                ФИНАЛОЧКА
+                """,
+                new object[] { 7 }
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ
+                    ЦИФЕРКА х = 5;
+                    ВЫБРОС(х);
+                ФИНАЛОЧКА
+                """,
+                new object[] { 5 }
+            },
+            {
+                """
+                ЦИФЕРКА х = 10;
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ 
+                    ВЫБРОС(х); 
+                ФИНАЛОЧКА
+                """,
+                new object[] { 10 }
+            },
+            {
+                """
+                ЦИФЕРКА х = 10;
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ 
+                    ВЫБРОС(МИНИМУМ(10.0, 3.0));
+                ФИНАЛОЧКА
+                """,
+                new object[] { 3 }
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ 
+                    ЦИФЕРКА и = 0;
+                    ЦИКЛ (и = 1; и <= 5; и = и + 1) ПОЕХАЛИ 
+                        ВЫБРОС(и);
+                    ФИНАЛОЧКА 
+                ФИНАЛОЧКА
+                """,
+                new object[] { 1, 2, 3, 4, 5 }
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ 
+                    ЦИФЕРКА х = 1;
+                    ПОКА (х < 5) ПОЕХАЛИ 
+                        ВЫБРОС(х); 
+                        х = х + 1;
+                    ФИНАЛОЧКА;
+                ФИНАЛОЧКА
+                """,
+                new object[] { 1, 2, 3, 4 }
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ 
+                    ЦИФЕРКА х = 5;
+                    ЕСЛИ (х > 2) ТО ВЫБРОС(10); 
+                    ИНАЧЕ ВЫБРОС(5); 
+                ФИНАЛОЧКА
+                """,
+                new object[] { 10 }
+            },
+            {
+                """
+                ПРОКРАСТИНИРУЕМ ПОГНАЛИ()
+                ПОЕХАЛИ 
+                    ЦИТАТА привет = "привет"; 
+                    ЦИТАТА мир = "мир"; 
+                    ВЫБРОС(привет + мир); 
+                ФИНАЛОЧКА
+                """,
+                new object[] { "приветмир" }
+            },
+        };
     }
 
     private void ExecuteTestCode(Context context, IEnvironment environment, string code)
     {
         Parser parser = new(code);
         List<AstNode> nodes = parser.ParseProgram();
-        AstEvaluator evaluator = new(context, environment);
 
+        SemanticsChecker checker = new(
+            Builtins.Functions,
+            Builtins.Types
+        );
+        checker.Check(nodes);
+
+        AstEvaluator evaluator = new(context, environment);
         foreach (Declaration node in nodes.OfType<Declaration>())
         {
             node.Accept(evaluator);
         }
 
-        foreach (AstNode? node in nodes.Where(n => n is not Declaration))
+        List<AstNode> topLevelStatements = nodes.Where(n => n is not Declaration).ToList();
+        if (topLevelStatements.Count > 0)
         {
-            evaluator.Evaluate(node);
+            foreach (AstNode node in topLevelStatements)
+            {
+                evaluator.Evaluate(node);
+            }
+        }
+        else
+        {
+            FunctionCallExpression mainCall = new FunctionCallExpression("ПОГНАЛИ", new List<Expression>());
+            evaluator.Evaluate(mainCall);
         }
     }
 }

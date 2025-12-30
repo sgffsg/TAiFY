@@ -1,26 +1,27 @@
-﻿namespace Execution.Exceptions;
+﻿using Runtime;
+
+namespace Execution.Exceptions;
 
 public class ReturnException : Exception
 {
-    public ReturnException()
-        : base()
-    {
-    }
+    public ReturnException() => ReturnValue = Value.Void;
 
-    public ReturnException(double value)
-    {
-        Value = value;
-    }
-
-    public ReturnException(string? message)
+    public ReturnException(string message)
         : base(message)
     {
+        ReturnValue = Value.Void;
     }
 
-    public ReturnException(string? message, Exception? innerException)
+    public ReturnException(string message, Exception innerException)
         : base(message, innerException)
     {
+        ReturnValue = Value.Void;
     }
 
-    public double Value { get; }
+    public ReturnException(Value returnValue)
+    {
+        ReturnValue = returnValue;
+    }
+
+    public Value ReturnValue { get; }
 }
