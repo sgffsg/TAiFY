@@ -688,7 +688,7 @@ public class Parser
     private Expression ParsePrimaryExpression()
     {
         Token t = tokens.Peek();
-        Console.WriteLine(t.Type + " " + t.Value);
+
         switch (t.Type)
         {
             case TokenType.IntegerLiteral:

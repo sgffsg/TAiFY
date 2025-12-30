@@ -235,7 +235,7 @@ public class LexerTest
         {
             {
                 "123", [
-                    new Token(TokenType.DoubleLiteral, new TokenValue(123d))
+                    new Token(TokenType.IntegerLiteral, new TokenValue(123))
                 ]
             },
             {

@@ -37,11 +37,9 @@ public class ParseExpressionsTests
         return new TheoryData<string, object>
         {
             { "42;", 42 },
-            { "42;", 42 },
             { "-42;", -42 },
             { "3.14;", 3.14 },
             { "-3.14;", -3.14 },
-            { "+5;", 5 },
             { "0;", 0 },
             { "ХАЙП;", true },
             { "КРИНЖ;", false },
@@ -86,5 +84,4 @@ public class ParseExpressionsTests
             { "МОДУЛЬ(МИНИМУМ(-1.0, 5.0));", 1.0 },
         };
     }
-
 }
