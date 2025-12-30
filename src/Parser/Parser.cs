@@ -246,19 +246,6 @@ public class Parser
     }
 
     /// <summary>
-    /// variableAssignment = identifier, "=", expression ;.
-    /// </summary>
-    private AssignmentExpression ParseAssignmentExpression()
-    {
-        string identifier = ParseIdentifier();
-        Match(TokenType.Assignment);
-        Expression value = ParseExpression();
-        Match(TokenType.Semicolon);
-
-        return new AssignmentExpression(identifier, value);
-    }
-
-    /// <summary>
     /// ifStatement =
     ///     "ЕСЛИ", "(", expression, ")", "ТО", statement,
     ///     ["ИНАЧЕ", statement] ;.
@@ -293,9 +280,7 @@ public class Parser
         Expression condition = ParseExpression();
         Match(TokenType.CloseParenthesis);
 
-        BlockStatement body = tokens.Peek().Type == TokenType.ПОЕХАЛИ
-            ? ParseBlock()
-            : new BlockStatement(new List<AstNode> { ParseStatement() });
+        BlockStatement body = ParseBlock();
 
         Match(TokenType.Semicolon);
 
@@ -311,17 +296,15 @@ public class Parser
         Match(TokenType.ЦИКЛ);
         Match(TokenType.OpenParenthesis);
 
-        AssignmentExpression init = ParseAssignmentExpression();
+        AssignmentExpression init = ParseVariableAssignmentExpression();
+        Match(TokenType.Semicolon);
 
         Expression condition = ParseExpression();
         Match(TokenType.Semicolon);
 
-        AssignmentExpression iterator = ParseAssignmentExpressionWithoutEnd();
-        Match(TokenType.CloseParenthesis);
+        AssignmentExpression iterator = ParseVariableAssignmentExpression();
 
-        BlockStatement body = tokens.Peek().Type == TokenType.ПОЕХАЛИ
-            ? ParseBlock()
-            : new BlockStatement(new List<AstNode> { ParseStatement() });
+        BlockStatement body = ParseBlock();
         return new ForStatement(init, condition, iterator, body);
     }
 
@@ -408,22 +391,32 @@ public class Parser
     }
 
     /// <summary>
-    /// sideEffectStatement = identifier, ( assignmentTail | callTail ), ";" ;.
+    /// sideEffectStatement = identifier, ( assignmentTail | indexAssignmentTail | callTail ), ";" ;.
     /// </summary>
-    private Expression ParseSideEffectStatement()
+    private AstNode ParseSideEffectStatement()
     {
         string identifier = ParseIdentifier();
-        if (tokens.Peek().Type == TokenType.Assignment)
+        Token next = tokens.Peek();
+
+        if (next.Type == TokenType.Assignment)
         {
             return new ExpressionStatement(ParseAssignmentTail(identifier));
         }
-        else if (tokens.Peek().Type == TokenType.OpenParenthesis)
+        else if (next.Type == TokenType.OpenParenthesis)
         {
-            return new ExpressionStatement(ParseCallTail(identifier));
+            FunctionCallExpression call = ParseCallTail(identifier);
+            Match(TokenType.Semicolon);
+            return new ExpressionStatement(call);
+        }
+        else if (next.Type == TokenType.OpenSquareBracket)
+        {
+            IndexAssignmentExpression index = ParseIndexAssignmentTail(identifier);
+            Match(TokenType.Semicolon);
+            return new ExpressionStatement(index);
         }
         else
         {
-            throw new UnexpectedLexemeException("ожидается '=' или '('", tokens.Peek());
+            throw new UnexpectedLexemeException("ожидается '=', '(' или '['", next);
         }
     }
 
@@ -459,6 +452,46 @@ public class Parser
 
         Match(TokenType.CloseParenthesis);
         return new FunctionCallExpression(functionName, args);
+    }
+
+    /// <summary>
+    /// indexAssignmentTail ="[", expression, "]", "=", expression.
+    /// </summary>
+    private IndexAssignmentExpression ParseIndexAssignmentTail(string identifier)
+    {
+        Match(TokenType.OpenSquareBracket);
+        Expression indexExpr = ParseExpression();
+        Match(TokenType.CloseSquareBracket);
+
+        Match(TokenType.Assignment);
+
+        Expression value = ParseExpression();
+
+        return new IndexAssignmentExpression(identifier, indexExpr, value);
+    }
+
+    /// <summary>
+    /// indexSuffix = "[", expression, "]" .
+    /// </summary>
+    private Expression ParseIndexTail(Expression target)
+    {
+        Match(TokenType.OpenSquareBracket);
+        Expression index = ParseExpression();
+        Match(TokenType.CloseSquareBracket);
+
+        return new IndexAccessExpression(target, index);
+    }
+
+    /// <summary>
+    /// variableAssignment = identifier, "=", expression ;.
+    /// </summary>
+    private AssignmentExpression ParseVariableAssignmentExpression()
+    {
+        string identifier = ParseIdentifier();
+        Match(TokenType.Assignment);
+        Expression value = ParseExpression();
+
+        return new AssignmentExpression(identifier, value);
     }
 
     /// <summary>
@@ -660,12 +693,17 @@ public class Parser
                 return ParseLiteral();
 
             case TokenType.Identifier:
-                string identifierName = t.Value?.ToString() ?? "";
+                string identifierName = t.Value!.ToString();
                 tokens.Advance();
 
-                if (tokens.Peek().Type == TokenType.OpenParenthesis)
+                Token next = tokens.Peek();
+                if (next.Type == TokenType.OpenParenthesis)
                 {
                     return ParseCallTail(identifierName);
+                }
+                else if (next.Type == TokenType.OpenSquareBracket)
+                {
+                    return ParseIndexTail(new VariableExpression(identifierName));
                 }
                 else
                 {
