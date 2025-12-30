@@ -133,17 +133,18 @@ public sealed class ResolveNamesPass : AbstractPass
         }
     }
 
-    private AbstractFunctionDeclaration ResolveFunction(string name)
+    public override void Visit(IndexAccessExpression e)
     {
-        Declaration symbol = symbols.GetSymbol(name);
-        if (symbol is AbstractFunctionDeclaration function)
-        {
-            return function;
-        }
+        e.Target.Accept(this);
+        e.Index.Accept(this);
+    }
 
-        throw new InvalidSymbolException(
-            $"Name {name} does not refer to a function"
-        );
+    public override void Visit(IndexAssignmentExpression e)
+    {
+        e.Variable = ResolveVariable(e.Identifier);
+
+        e.IndexExpression.Accept(this);
+        e.Value.Accept(this);
     }
 
     private AbstractVariableDeclaration ResolveVariable(string name)

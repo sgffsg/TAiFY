@@ -122,9 +122,15 @@ public abstract class AbstractPass : IAstVisitor
         s.Expression.Accept(this);
     }
 
-    public virtual void Visit(IndexExpression e)
+    public virtual void Visit(IndexAccessExpression e)
     {
         e.Target.Accept(this);
         e.Index.Accept(this);
+    }
+
+    public virtual void Visit(IndexAssignmentExpression e)
+    {
+        e.IndexExpression.Accept(this);
+        e.Value.Accept(this);
     }
 }

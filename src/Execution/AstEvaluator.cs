@@ -133,7 +133,7 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         context.AssignVariable(e.Name, value);
     }
 
-    public void Visit(IndexExpression e)
+    public void Visit(IndexAccessExpression e)
     {
         Value target = Evaluate(e.Target);
         Value index = Evaluate(e.Index);
@@ -141,6 +141,33 @@ public class AstEvaluator(Context context, IEnvironment environment) : IAstVisit
         string str = target.AsString();
         int idx = index.AsInt();
         values.Push(new Value(str[idx].ToString()));
+    }
+
+    public void Visit(IndexAssignmentExpression e)
+    {
+        Value indexValue = Evaluate(e.IndexExpression);
+        Value newValue = Evaluate(e.Value);
+
+        int idx = indexValue.AsInt();
+        string replacement = newValue.AsString();
+
+        Value targetValue = context.GetValue(e.Identifier);
+        string str = targetValue.AsString();
+
+        if (idx < 0 || idx >= str.Length)
+        {
+            throw new Exception($"Индекс {idx} вне границ строки длиной {str.Length}");
+        }
+
+        char[] chars = str.ToCharArray();
+        chars[idx] = replacement.Length > 0 ? replacement[0] : ' ';
+
+        string updatedStr = new string(chars);
+        Value updatedValue = new Value(updatedStr);
+
+        context.AssignVariable(e.Identifier, updatedValue);
+
+        values.Push(updatedValue);
     }
 
     /// <summary>

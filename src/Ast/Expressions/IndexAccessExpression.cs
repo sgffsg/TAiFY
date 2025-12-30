@@ -1,8 +1,8 @@
 ﻿namespace Ast.Expressions;
 
-public sealed class IndexExpression : Expression
+public sealed class IndexAccessExpression : Expression
 {
-    public IndexExpression(Expression target, Expression index)
+    public IndexAccessExpression(Expression target, Expression index)
     {
         Target = target;
         Index = index;

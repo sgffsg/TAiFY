@@ -210,6 +210,51 @@ public sealed class ResolveTypesPass : AbstractPass
         e.ResultType = e.Function.ResultType;
     }
 
+    public override void Visit(IndexAccessExpression e)
+    {
+        base.Visit(e);
+
+        if (e.Target.ResultType != ValueType.ЦИТАТА)
+        {
+            throw new TypeErrorException("Индексация доступна только для ЦИТАТЫ.");
+        }
+
+        if (e.Index.ResultType != ValueType.ЦИФЕРКА)
+        {
+            throw new TypeErrorException("Индекс должен быть ЦИФЕРКОЙ.");
+        }
+
+        e.ResultType = ValueType.ЦИТАТА;
+    }
+
+    public override void Visit(IndexAssignmentExpression e)
+    {
+        base.Visit(e);
+
+        if (e.Variable.ResultType != ValueType.ЦИТАТА)
+        {
+            throw new TypeErrorException(
+                $"Ошибка: Нельзя использовать индекс для типа {e.Variable.ResultType}. " +
+                $"Это работает только для типа ЦИТАТА.");
+        }
+
+        if (e.IndexExpression.ResultType != ValueType.ЦИФЕРКА)
+        {
+            throw new TypeErrorException(
+                $"Ошибка: Индекс в квадратных скобках должен быть ЦИФЕРКОЙ, " +
+                $"а не {e.IndexExpression.ResultType}.");
+        }
+
+        if (e.Value.ResultType != ValueType.ЦИТАТА)
+        {
+            throw new TypeErrorException(
+                $"Ошибка: Попытка присвоить тип {e.Value.ResultType} элементу строки. " +
+                $"Ожидалась ЦИТАТА.");
+        }
+
+        e.ResultType = ValueType.Void;
+    }
+
     private static ValueType? GetBinaryOperationResultType(BinaryOperation operation, ValueType left, ValueType right)
     {
         if (left != right)

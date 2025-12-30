@@ -1,5 +1,4 @@
 ﻿using Ast.Declarations;
-using Ast.Expressions;
 using Runtime;
 
 using ValueType = Runtime.ValueType;
@@ -54,6 +53,32 @@ public static class Builtins
             ValueType.ЦИФЕРКА,
             args => new Value(args[0].AsString().Length)
         ),
+        new(
+            "ПОДЦИТАТА",
+            [new BuiltinFunctionParameter("строка", ValueType.ЦИТАТА), new BuiltinFunctionParameter("от", ValueType.ЦИФЕРКА), new BuiltinFunctionParameter("длина", ValueType.ЦИФЕРКА),],
+            ValueType.ЦИТАТА,
+            args =>
+            {
+                string text = args[0].AsString();
+                int fromIndex = args[1].AsInt();
+                int length = args[2].AsInt();
+
+                int safeLength = Math.Min(length, Math.Max(0, text.Length - fromIndex));
+
+                if (fromIndex < 0 || fromIndex >= text.Length)
+                {
+                    return new Value("");
+                }
+
+                return new Value(text.Substring(fromIndex, safeLength));
+            }
+        ),
+        new(
+            "ПОИСК",
+            [new BuiltinFunctionParameter("где", ValueType.ЦИТАТА), new BuiltinFunctionParameter("что", ValueType.ЦИТАТА)],
+            ValueType.ЦИФЕРКА,
+            args => new Value(args[0].AsString().IndexOf(args[1].AsString()))
+        ),
     ];
 
     /// <summary>
@@ -64,13 +89,5 @@ public static class Builtins
         new("ПОЛТОРАШКА", ValueType.ПОЛТОРАШКА),
         new("ЦИТАТА", ValueType.ЦИТАТА),
         new("РАСКЛАД", ValueType.РАСКЛАД)
-    ];
-
-    /// <summary>
-    /// Список встроенных констант языка.
-    /// </summary>
-    public static IReadOnlyList<ConstantDeclaration> Constants { get; } = [
-        new ConstantDeclaration("ПОЛТОРАШКА", "ПИ", new LiteralExpression(new Value(3.1415926535))),
-        new ConstantDeclaration("ПОЛТОРАШКА", "ЕШКА", new LiteralExpression(new Value(2.7182818284)))
     ];
 }

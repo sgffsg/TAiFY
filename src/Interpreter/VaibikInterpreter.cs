@@ -36,7 +36,6 @@ public class VaibikiInterpreter
 
         SemanticsChecker checker = new(
             Builtins.Functions,
-            Builtins.Constants,
             Builtins.Types
         );
         checker.Check(nodes);
