@@ -12,7 +12,7 @@ public class ParseTopLevelStatementsTests
 {
     [Theory]
     [MemberData(nameof(GetSemanticViolationsData))]
-    public void SemanticViolations_ShouldThrowExpectedException(string code, Type expectedException)
+    public void Semantic_check_throws_exprexted_exception(string code, Type expectedException)
     {
         Context context = new();
         FakeEnvironment environment = new();
@@ -135,13 +135,9 @@ public class ParseTopLevelStatementsTests
         };
     }
 
-    /// <summary>
-    /// Тест на корректность выполнения.
-    /// Проверяет, что вывод программы (ВЫБРОС) совпадает с ожидаемыми значениями.
-    /// </summary>
     [Theory]
     [MemberData(nameof(GetTopLevelTestData))]
-    public void Execution_ShouldProduceExpectedOutput(string code, object[] expectedOutput)
+    public void Can_top_level_data_parsed(string code, object[] expectedOutput)
     {
         Context context = new();
         FakeEnvironment environment = new();
