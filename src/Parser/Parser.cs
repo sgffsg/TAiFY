@@ -849,16 +849,4 @@ public class Parser
 
         throw new UnexpectedLexemeException(TokenType.Identifier, token);
     }
-
-    /// <summary>
-    /// variableAssignment = identifier, "=", expression.
-    /// </summary>
-    private AssignmentExpression ParseAssignmentExpressionWithoutEnd()
-    {
-        string identifier = ParseIdentifier();
-        Match(TokenType.Assignment);
-        Expression value = ParseExpression();
-
-        return new AssignmentExpression(identifier, value);
-    }
 }
